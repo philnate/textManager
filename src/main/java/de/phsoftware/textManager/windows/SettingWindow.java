@@ -1,6 +1,7 @@
 package de.phsoftware.textManager.windows;
 
 import static de.phsoftware.textManager.utils.DB.ds;
+import static de.phsoftware.textManager.utils.I18N.getCaption;
 
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
@@ -60,62 +61,25 @@ public class SettingWindow {
 	frame.getContentPane().setLayout(
 		new MigLayout("", "[][grow]", "[][][][][][][][][][]"));
 
-	JLabel lblNewLabel = new JLabel("Firmenname:");
-	frame.getContentPane().add(lblNewLabel, "cell 0 0,alignx trailing");
+	createTextField("company", "cell 1 0,growx", "cell 0 0,alignx trailing");
+	createTextField("contact", "cell 1 1,growx", "cell 0 1,alignx trailing");
+	createTextField("street", "flowx,cell 1 2,growx",
+		"cell 0 2,alignx trailing");
+	createTextField("zip", "flowx,cell 1 3,growx",
+		"cell 0 3,alignx trailing");
+	createTextField("email", "cell 1 4,growx", "cell 0 4,alignx trailing");
+	createTextField("phone", "cell 1 5,growx", "cell 0 5,alignx trailing");
+	createTextField("streetNo", "cell 1 2,growx",
+		"cell 1 2,alignx trailing");
+	createTextField("city", "cell 1 3,growx", "cell 1 3,alignx trailing");
+	createTextField("pdfLatex", "flowx,cell 1 6,growx",
+		"cell 0 6,alignx trailing");
+	createTextField("template", "cell 1 7,growx",
+		"cell 0 7,alignx trailing");
+	createTextField("pdfViewer", "cell 1 8,growx",
+		"cell 0 8,alignx trailing");
 
-	createTextField("company", "cell 1 0,growx");
-
-	JLabel lblNewLabel_1 = new JLabel("Kontakt:");
-	frame.getContentPane().add(lblNewLabel_1, "cell 0 1,alignx trailing");
-
-	createTextField("contact", "cell 1 1,growx");
-
-	JLabel lblNewLabel_2 = new JLabel("Straße:");
-	frame.getContentPane().add(lblNewLabel_2, "cell 0 2,alignx trailing");
-
-	createTextField("street", "flowx,cell 1 2,growx");
-
-	JLabel lblNewLabel_4 = new JLabel("PLZ:");
-	frame.getContentPane().add(lblNewLabel_4, "cell 0 3,alignx trailing");
-
-	createTextField("zip", "flowx,cell 1 3,growx");
-
-	JLabel lblNewLabel_6 = new JLabel("EMail:");
-	frame.getContentPane().add(lblNewLabel_6, "cell 0 4,alignx trailing");
-
-	createTextField("email", "cell 1 4,growx");
-
-	JLabel lblNewLabel_7 = new JLabel("Telefon:");
-	frame.getContentPane().add(lblNewLabel_7, "cell 0 5,alignx trailing");
-
-	createTextField("phone", "cell 1 5,growx");
-
-	JLabel lblNewLabel_3 = new JLabel("Nr:");
-	frame.getContentPane().add(lblNewLabel_3, "cell 1 2,alignx trailing");
-
-	createTextField("streetNo", "cell 1 2,growx");
-
-	JLabel lblNewLabel_5 = new JLabel("Stadt:");
-	frame.getContentPane().add(lblNewLabel_5, "cell 1 3,alignx trailing");
-
-	createTextField("city", "cell 1 3,growx");
-
-	JLabel lblNewLabel_8 = new JLabel("Pfad pdfLatex:");
-	frame.getContentPane().add(lblNewLabel_8, "cell 0 6,alignx trailing");
-
-	createTextField("pdfLatex", "flowx,cell 1 6,growx");
-
-	JLabel lblNewLabel_9 = new JLabel("Template Verzeichnis:");
-	frame.getContentPane().add(lblNewLabel_9, "cell 0 7,alignx trailing");
-
-	createTextField("template", "cell 1 7,growx");
-
-	JLabel lblNewLabel_10 = new JLabel("PDF Viewer:");
-	frame.getContentPane().add(lblNewLabel_10, "cell 0 8,alignx trailing");
-
-	createTextField("pdfViewer", "cell 1 8,growx");
-
-	btnV = new JButton("v/");
+	btnV = new JButton(getCaption("sw.button.save.label"));
 	frame.getContentPane().add(btnV, "flowx,cell 1 9");
 	btnV.addActionListener(new ActionListener() {
 
@@ -124,7 +88,7 @@ public class SettingWindow {
 	    }
 	});
 
-	btnX = new JButton("X");
+	btnX = new JButton(getCaption("sw.button.cancel.label"));
 	frame.getContentPane().add(btnX, "cell 1 9");
 	btnX.addActionListener(new ActionListener() {
 
@@ -136,9 +100,11 @@ public class SettingWindow {
 	loadSettings();
     }
 
-    private void createTextField(String name, String layout) {
+    private void createTextField(String name, String layoutTF, String layoutL) {
+	JLabel label = new JLabel(getCaption("sw.label." + name));
+	frame.getContentPane().add(label, layoutL);
 	JTextField text = new JTextField();
-	frame.getContentPane().add(text, layout);
+	frame.getContentPane().add(text, layoutTF);
 	settings.put(name, text);
     }
 

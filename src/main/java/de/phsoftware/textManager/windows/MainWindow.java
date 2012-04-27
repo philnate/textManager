@@ -1,6 +1,8 @@
 package de.phsoftware.textManager.windows;
 
 import static de.phsoftware.textManager.utils.DB.ds;
+import static de.phsoftware.textManager.utils.I18N.getCaption;
+import static de.phsoftware.textManager.utils.I18N.getCaptions;
 
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
@@ -146,7 +148,7 @@ public class MainWindow {
 
 		    @Override
 		    public String getDescription() {
-			return "Word .docx/.doc Datei";
+			return getCaption("mw.fileFilter.docX");
 		    }
 
 		    @Override
@@ -179,8 +181,8 @@ public class MainWindow {
 	JMenuBar menuBar = new JMenuBar();
 	frame.setJMenuBar(menuBar);
 
-	JMenu menu = new JMenu("?");
-	JMenuItem itemCust = new JMenuItem("Kunden bearbeiten");
+	JMenu menu = new JMenu(getCaption("mw.menu.edit"));
+	JMenuItem itemCust = new JMenuItem(getCaption("mw.menu.edit.customer"));
 	itemCust.addActionListener(new ActionListener() {
 
 	    public void actionPerformed(ActionEvent arg0) {
@@ -189,7 +191,8 @@ public class MainWindow {
 	});
 	menu.add(itemCust);
 
-	JMenuItem itemSetting = new JMenuItem("Einstellungen");
+	JMenuItem itemSetting = new JMenuItem(
+		getCaption("mw.menu.edit.settings"));
 	itemSetting.addActionListener(new ActionListener() {
 
 	    public void actionPerformed(ActionEvent arg0) {
@@ -200,13 +203,10 @@ public class MainWindow {
 
 	menuBar.add(menu);
 
-	JMenu menu_1 = new JMenu("New m");
-	menu.add(menu_1);
-
 	CustomerWindow.loadCustomer(customers);
 
-	model = new tmTableModel(new String[] { "Titel", "Wortzahl",
-		"Cent/Wort", "Festpreis", "Gesamt", "Dokumente" });
+	model = new tmTableModel(getCaptions("mw.tableheader", "title", "wc",
+		"cw", "fixPrice", "total", "documents"));
 	fillTableModel();
 	billLines.setModel(model);
 	billLines.getColumnModel().getColumn(0).setPreferredWidth(400);

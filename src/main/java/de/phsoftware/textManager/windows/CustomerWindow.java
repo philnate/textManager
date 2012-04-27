@@ -1,6 +1,7 @@
 package de.phsoftware.textManager.windows;
 
 import static de.phsoftware.textManager.utils.DB.ds;
+import static de.phsoftware.textManager.utils.I18N.getCaption;
 
 import java.awt.EventQueue;
 import java.awt.event.ItemEvent;
@@ -47,14 +48,10 @@ public class CustomerWindow extends WindowAdapter {
     @Override
     public void windowClosing(WindowEvent evt) {
 	if (textCity.isEnabled()) {
-	    switch (JOptionPane
-		    .showConfirmDialog(
-			    null,
-			    "Es existieren möglicherweise ungespeicherte Änderung. Wollen Sie diese speichern?\n"
-				    + " Beachten Sie das unvollständige ausgefüllte Felder später nicht mehr bearbeitet werden können.\n"
-				    + " Drücken Sie Ja um die Daten zu speichern, Nein um die Eingaben zu verwerfen und Abbruch um die Einträge weiter zu bearbeiten",
-			    "Ungespeicherte Eingaben",
-			    JOptionPane.YES_NO_CANCEL_OPTION)) {
+	    switch (JOptionPane.showConfirmDialog(null,
+		    getCaption("cw.dialog.close.msg"),
+		    getCaption("cw.dialog.close.title"),
+		    JOptionPane.YES_NO_CANCEL_OPTION)) {
 	    case JOptionPane.CANCEL_OPTION:
 		return;
 	    case JOptionPane.YES_OPTION:
@@ -114,7 +111,7 @@ public class CustomerWindow extends WindowAdapter {
 		new MigLayout("", "[][grow][117.00px,grow][grow]",
 			"[24px][66.00px][][][]"));
 
-	JLabel lblcustomer = new JLabel("Kunde");
+	JLabel lblcustomer = new JLabel(getCaption("cw.label.customer"));
 	frame.getContentPane().add(lblcustomer, "cell 0 0,alignx left");
 
 	customers = new JComboBox();
@@ -122,55 +119,56 @@ public class CustomerWindow extends WindowAdapter {
 	frame.getContentPane()
 		.add(customers, "flowx,cell 1 0,growx,aligny top");
 
-	JButton btnAddCustomer = new JButton("+");
+	JButton btnAddCustomer = new JButton(getCaption("cw.button.add.label"));
 
 	frame.getContentPane().add(btnAddCustomer,
 		"flowx,cell 2 0,alignx left,growy");
 
-	JLabel lblCompanyName = new JLabel("Firmenname");
+	JLabel lblCompanyName = new JLabel(getCaption("cw.label.company"));
 	frame.getContentPane().add(lblCompanyName, "cell 0 1");
 
 	textCompanyName = new JTextArea();
 	frame.getContentPane().add(textCompanyName,
 		"cell 1 1,growx,aligny center");
 
-	JLabel lblStreet = new JLabel("Straße");
+	JLabel lblStreet = new JLabel(getCaption("cw.label.street"));
 	frame.getContentPane().add(lblStreet, "cell 0 2,alignx left");
 
 	textStreet = new JTextField();
 	frame.getContentPane().add(textStreet, "cell 1 2,growx");
 	textStreet.setColumns(10);
 
-	JLabel lblNr = new JLabel("Nr");
+	JLabel lblNr = new JLabel(getCaption("cw.label.streetNo"));
 	frame.getContentPane().add(lblNr, "cell 2 2,alignx left");
 
 	textNr = new JTextField();
 	frame.getContentPane().add(textNr, "cell 3 2,growx");
 	textNr.setColumns(10);
 
-	JLabel lblZip = new JLabel("PLZ");
+	JLabel lblZip = new JLabel(getCaption("cw.label.zip"));
 	frame.getContentPane().add(lblZip, "cell 0 3,alignx left");
 
 	textZip = new JTextField();
 	frame.getContentPane().add(textZip, "cell 1 3,growx");
 	textZip.setColumns(10);
 
-	JLabel lblCity = new JLabel("Ort");
+	JLabel lblCity = new JLabel(getCaption("cw.label.city"));
 	frame.getContentPane().add(lblCity, "cell 2 3,alignx left");
 
 	textCity = new JTextField();
 	frame.getContentPane().add(textCity, "cell 3 3,growx");
 	textCity.setColumns(10);
 
-	JLabel lblContact = new JLabel("Ansprechpartner");
+	JLabel lblContact = new JLabel(getCaption("cw.label.contact"));
 	frame.getContentPane().add(lblContact, "cell 0 4,alignx trailing");
 
-	btnSave = new JButton("v/");
+	btnSave = new JButton(getCaption("cw.button.save.label"));
 	frame.getContentPane().add(btnSave, "cell 2 0");
 
 	feMale = new JComboBox();
-	feMale.setModel(new DefaultComboBoxModel(
-		new String[] { "Herr", "Frau" }));
+	feMale.setModel(new DefaultComboBoxModel(new String[] {
+		getCaption("cw.label.gender.male"),
+		getCaption("cw.label.gender.female") }));
 	frame.getContentPane().add(feMale, "cell 1 4,growx");
 
 	textContact = new JTextField();
@@ -248,12 +246,10 @@ public class CustomerWindow extends WindowAdapter {
 		|| 0 == textZip.getText().trim().length()
 		|| 0 == textCity.getText().trim().length()) {
 	    // don't save if there's something not filled in
-	    JOptionPane
-		    .showMessageDialog(
-			    null,
-			    "Kunde wurde nicht gespeichert da nicht alle Felder ausgefüllt wurden",
-			    "Fehler beim speichern",
-			    JOptionPane.WARNING_MESSAGE);
+	    JOptionPane.showMessageDialog(null,
+		    getCaption("cw.dialog.save.msg"),
+		    getCaption("cw.dialog.save.title"),
+		    JOptionPane.WARNING_MESSAGE);
 	    return false;
 	}
 	ds.save(new Customer().setCompanyName(textCompanyName.getText())
