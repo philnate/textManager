@@ -6,6 +6,7 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Iterator;
 
 import javax.swing.JOptionPane;
 
@@ -47,8 +48,13 @@ public class Setting {
     }
 
     public static Setting findSetting(String key) {
-	return ds.find(Setting.class).filter("key =", key).limit(1).fetch()
-		.iterator().next();
+	Iterator<Setting> it = ds.find(Setting.class).filter("key =", key)
+		.limit(1).fetch().iterator();
+	if (it.hasNext()) {
+	    return it.next();
+	} else {
+	    return new Setting(key, "");
+	}
     }
 
     public static void main(String[] args) throws InterruptedException,
