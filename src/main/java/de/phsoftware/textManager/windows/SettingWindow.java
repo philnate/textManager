@@ -63,87 +63,57 @@ public class SettingWindow {
 	JLabel lblNewLabel = new JLabel("Firmenname:");
 	frame.getContentPane().add(lblNewLabel, "cell 0 0,alignx trailing");
 
-	JTextField company = new JTextField();
-	frame.getContentPane().add(company, "cell 1 0,growx");
-	company.setColumns(10);
-	settings.put("company", company);
+	createTextField("company", "cell 1 0,growx");
 
 	JLabel lblNewLabel_1 = new JLabel("Kontakt:");
 	frame.getContentPane().add(lblNewLabel_1, "cell 0 1,alignx trailing");
 
-	JTextField contact = new JTextField();
-	frame.getContentPane().add(contact, "cell 1 1,growx");
-	contact.setColumns(10);
-	settings.put("contact", contact);
+	createTextField("contact", "cell 1 1,growx");
 
 	JLabel lblNewLabel_2 = new JLabel("Straße:");
 	frame.getContentPane().add(lblNewLabel_2, "cell 0 2,alignx trailing");
 
-	JTextField street = new JTextField();
-	frame.getContentPane().add(street, "flowx,cell 1 2,growx");
-	street.setColumns(10);
-	settings.put("street", street);
+	createTextField("street", "flowx,cell 1 2,growx");
 
 	JLabel lblNewLabel_4 = new JLabel("PLZ:");
 	frame.getContentPane().add(lblNewLabel_4, "cell 0 3,alignx trailing");
 
-	JTextField zip = new JTextField();
-	frame.getContentPane().add(zip, "flowx,cell 1 3,growx");
-	zip.setColumns(10);
-	settings.put("zip", zip);
+	createTextField("zip", "flowx,cell 1 3,growx");
 
 	JLabel lblNewLabel_6 = new JLabel("EMail:");
 	frame.getContentPane().add(lblNewLabel_6, "cell 0 4,alignx trailing");
 
-	JTextField email = new JTextField();
-	frame.getContentPane().add(email, "cell 1 4,growx");
-	email.setColumns(10);
-	settings.put("email", email);
+	createTextField("email", "cell 1 4,growx");
 
 	JLabel lblNewLabel_7 = new JLabel("Telefon:");
 	frame.getContentPane().add(lblNewLabel_7, "cell 0 5,alignx trailing");
 
-	JTextField phone = new JTextField();
-	frame.getContentPane().add(phone, "cell 1 5,growx");
-	phone.setColumns(10);
-	settings.put("phone", phone);
+	createTextField("phone", "cell 1 5,growx");
 
 	JLabel lblNewLabel_3 = new JLabel("Nr:");
 	frame.getContentPane().add(lblNewLabel_3, "cell 1 2,alignx trailing");
 
-	JTextField streetNo = new JTextField();
-	frame.getContentPane().add(streetNo, "cell 1 2,growx");
-	streetNo.setColumns(10);
-	settings.put("streetNo", streetNo);
+	createTextField("streetNo", "cell 1 2,growx");
 
 	JLabel lblNewLabel_5 = new JLabel("Stadt:");
 	frame.getContentPane().add(lblNewLabel_5, "cell 1 3,alignx trailing");
 
-	JTextField city = new JTextField();
-	frame.getContentPane().add(city, "cell 1 3,growx");
-	city.setColumns(10);
-	settings.put("city", city);
+	createTextField("city", "cell 1 3,growx");
 
 	JLabel lblNewLabel_8 = new JLabel("Pfad pdfLatex:");
 	frame.getContentPane().add(lblNewLabel_8, "cell 0 6,alignx trailing");
 
-	JTextField pdfLatex = new JTextField();
-	frame.getContentPane().add(pdfLatex, "flowx,cell 1 6,growx");
-	settings.put("pdfLatex", pdfLatex);
+	createTextField("pdfLatex", "flowx,cell 1 6,growx");
 
 	JLabel lblNewLabel_9 = new JLabel("Template Verzeichnis:");
 	frame.getContentPane().add(lblNewLabel_9, "cell 0 7,alignx trailing");
 
-	JTextField template = new JTextField();
-	frame.getContentPane().add(template, "cell 1 7,growx");
-	settings.put("template", template);
+	createTextField("template", "cell 1 7,growx");
 
 	JLabel lblNewLabel_10 = new JLabel("PDF Viewer:");
 	frame.getContentPane().add(lblNewLabel_10, "cell 0 8,alignx trailing");
 
-	JTextField pdfViewer = new JTextField();
-	frame.getContentPane().add(pdfViewer, "cell 1 8,growx");
-	settings.put("pdfViewer", pdfViewer);
+	createTextField("pdfViewer", "cell 1 8,growx");
 
 	btnV = new JButton("v/");
 	frame.getContentPane().add(btnV, "flowx,cell 1 9");
@@ -166,7 +136,13 @@ public class SettingWindow {
 	loadSettings();
     }
 
-    public void safeSettings() {
+    private void createTextField(String name, String layout) {
+	JTextField text = new JTextField();
+	frame.getContentPane().add(text, layout);
+	settings.put(name, text);
+    }
+
+    private void safeSettings() {
 	Iterator<Entry<String, JTextField>> it = settings.entrySet().iterator();
 	while (it.hasNext()) {
 	    Entry<String, JTextField> entry = it.next();
@@ -174,7 +150,7 @@ public class SettingWindow {
 	}
     }
 
-    public void loadSettings() {
+    private void loadSettings() {
 	Iterator<Entry<String, JTextField>> it = settings.entrySet().iterator();
 	while (it.hasNext()) {
 	    Entry<String, JTextField> entry = it.next();
