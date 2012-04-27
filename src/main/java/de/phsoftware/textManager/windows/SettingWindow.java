@@ -78,9 +78,15 @@ public class SettingWindow {
 		"cell 0 7,alignx trailing");
 	createTextField("pdfViewer", "cell 1 8,growx",
 		"cell 0 8,alignx trailing");
+	createTextField("accountNo", "cell 1 9, growx",
+		"cell 0 9, alignx trailing");
+	createTextField("bankNo", "cell 1 10, growx",
+		"cell 0 10, alignx trailing");
+	createTextField("bankName", "cell 1 11, growx",
+		"cell 0 11, alignx trailing");
 
 	btnV = new JButton(getCaption("sw.button.save.label"));
-	frame.getContentPane().add(btnV, "flowx,cell 1 9");
+	frame.getContentPane().add(btnV, "flowx,cell 1 12");
 	btnV.addActionListener(new ActionListener() {
 
 	    public void actionPerformed(ActionEvent e) {
@@ -89,7 +95,7 @@ public class SettingWindow {
 	});
 
 	btnX = new JButton(getCaption("sw.button.cancel.label"));
-	frame.getContentPane().add(btnX, "cell 1 9");
+	frame.getContentPane().add(btnX, "cell 1 12");
 	btnX.addActionListener(new ActionListener() {
 
 	    public void actionPerformed(ActionEvent arg0) {
