@@ -23,6 +23,7 @@ import javax.swing.JTextField;
 
 import net.miginfocom.swing.MigLayout;
 import de.phsoftware.textManager.entities.Customer;
+import de.phsoftware.textManager.utils.ImageRegistry;
 
 public class CustomerWindow extends WindowAdapter {
 
@@ -119,7 +120,9 @@ public class CustomerWindow extends WindowAdapter {
 	frame.getContentPane()
 		.add(customers, "flowx,cell 1 0,growx,aligny top");
 
-	JButton btnAddCustomer = new JButton(getCaption("cw.button.add.label"));
+	JButton btnAddCustomer = new JButton();
+	btnAddCustomer.setIcon(ImageRegistry.getImage("load.gif"));
+	btnAddCustomer.setToolTipText(getCaption("cw.tooltip.button.add"));
 
 	frame.getContentPane().add(btnAddCustomer,
 		"flowx,cell 2 0,alignx left,growy");
@@ -162,7 +165,10 @@ public class CustomerWindow extends WindowAdapter {
 	JLabel lblContact = new JLabel(getCaption("cw.label.contact"));
 	frame.getContentPane().add(lblContact, "cell 0 4,alignx trailing");
 
-	btnSave = new JButton(getCaption("cw.button.save.label"));
+	btnSave = new JButton();
+	btnSave.setIcon(ImageRegistry.getImage("save.gif"));
+	btnSave.setToolTipText(getCaption("cw.tooltip.button.save"));
+
 	frame.getContentPane().add(btnSave, "cell 2 0");
 
 	feMale = new JComboBox();

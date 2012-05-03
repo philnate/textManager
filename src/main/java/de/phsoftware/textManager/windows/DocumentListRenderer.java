@@ -1,5 +1,7 @@
 package de.phsoftware.textManager.windows;
 
+import static de.phsoftware.textManager.utils.I18N.getCaption;
+
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -25,6 +27,7 @@ import javax.swing.table.TableCellRenderer;
 
 import net.miginfocom.swing.MigLayout;
 import de.phsoftware.textManager.entities.Document;
+import de.phsoftware.textManager.utils.ImageRegistry;
 
 public class DocumentListRenderer implements TableCellRenderer, TableCellEditor {
 
@@ -99,7 +102,9 @@ public class DocumentListRenderer implements TableCellRenderer, TableCellEditor 
 	});
 
 	panel.add(box, "w 320!, h ::100%");
-	JButton upload = new JButton("+");
+	JButton upload = new JButton();
+	upload.setIcon(ImageRegistry.getImage("load.gif"));
+	upload.setToolTipText(getCaption("mw.tooltip.cell.add"));
 
 	upload.addActionListener(new ActionListener() {
 	    public void actionPerformed(ActionEvent e) {
@@ -111,7 +116,7 @@ public class DocumentListRenderer implements TableCellRenderer, TableCellEditor 
 
 		    @Override
 		    public String getDescription() {
-			return "Word .docx Datei";
+			return getCaption("mw.fileFilter.docX");
 		    }
 
 		    @Override
@@ -137,7 +142,9 @@ public class DocumentListRenderer implements TableCellRenderer, TableCellEditor 
 	    }
 	});
 	panel.add(upload);// ,"w 40!, h ::100%");
-	JButton remove = new JButton("x");
+	JButton remove = new JButton();
+	remove.setIcon(ImageRegistry.getImage("remove.gif"));
+	remove.setToolTipText(getCaption("mw.tooltip.cell.remove"));
 	remove.addActionListener(new ActionListener() {
 
 	    public void actionPerformed(ActionEvent e) {
@@ -158,7 +165,7 @@ public class DocumentListRenderer implements TableCellRenderer, TableCellEditor 
 		selectedFile = null;
 	    }
 	});
-	panel.add(remove);// ,"w 40!, h ::100%");
+	panel.add(remove);
 
 	@SuppressWarnings("unchecked")
 	List<Document> docs = (List<Document>) value;

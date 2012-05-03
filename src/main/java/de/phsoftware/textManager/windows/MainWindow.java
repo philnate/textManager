@@ -36,6 +36,7 @@ import com.toedter.calendar.JYearChooser;
 import de.phsoftware.textManager.entities.BillingItem;
 import de.phsoftware.textManager.entities.Customer;
 import de.phsoftware.textManager.entities.Document;
+import de.phsoftware.textManager.utils.ImageRegistry;
 
 public class MainWindow {
 
@@ -128,7 +129,9 @@ public class MainWindow {
 	monthChooser.addPropertyChangeListener(changeListener);
 	frame.getContentPane().add(yearChooser, "cell 0 0");
 
-	JButton btnAddLine = new JButton("+");
+	JButton btnAddLine = new JButton();
+	btnAddLine.setIcon(ImageRegistry.getImage("load.gif"));
+	btnAddLine.setToolTipText(getCaption("mw.tooltip.add"));
 	btnAddLine.addActionListener(new ActionListener() {
 	    public void actionPerformed(ActionEvent arg0) {
 		addNewBillingItem();
@@ -136,7 +139,9 @@ public class MainWindow {
 	});
 	frame.getContentPane().add(btnAddLine, "cell 0 0");
 
-	JButton btnMassAdd = new JButton("/\\");
+	JButton btnMassAdd = new JButton();
+	btnMassAdd.setIcon(ImageRegistry.getImage("load_all.gif"));
+	btnMassAdd.setToolTipText(getCaption("mw.tooltip.massAdd"));
 	btnMassAdd.addActionListener(new ActionListener() {
 
 	    public void actionPerformed(ActionEvent arg0) {

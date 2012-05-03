@@ -20,6 +20,7 @@ import net.miginfocom.swing.MigLayout;
 import com.google.common.collect.Maps;
 
 import de.phsoftware.textManager.entities.Setting;
+import de.phsoftware.textManager.utils.ImageRegistry;
 
 public class SettingWindow {
 
@@ -85,7 +86,9 @@ public class SettingWindow {
 	createTextField("bankName", "cell 1 11, growx",
 		"cell 0 11, alignx trailing");
 
-	btnV = new JButton(getCaption("sw.button.save.label"));
+	btnV = new JButton();
+	btnV.setIcon(ImageRegistry.getImage("save.gif"));
+	btnV.setToolTipText(getCaption("sw.tooltip.button.save"));
 	frame.getContentPane().add(btnV, "flowx,cell 1 12");
 	btnV.addActionListener(new ActionListener() {
 
@@ -94,7 +97,9 @@ public class SettingWindow {
 	    }
 	});
 
-	btnX = new JButton(getCaption("sw.button.cancel.label"));
+	btnX = new JButton();
+	btnX.setIcon(ImageRegistry.getImage("cancel.gif"));
+	btnX.setToolTipText(getCaption("sw.tooltip.button.cancel"));
 	frame.getContentPane().add(btnX, "cell 1 12");
 	btnX.addActionListener(new ActionListener() {
 
