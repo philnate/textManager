@@ -5,25 +5,23 @@ import static de.phsoftware.textManager.utils.DB.fs;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.StringWriter;
 
 import org.apache.poi.hwpf.HWPFDocument;
 import org.apache.poi.hwpf.extractor.WordExtractor;
 import org.apache.poi.xwpf.extractor.XWPFWordExtractor;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.bson.types.ObjectId;
-import org.docx4j.TextUtils;
-import org.docx4j.openpackaging.packages.WordprocessingMLPackage;
-import org.docx4j.openpackaging.parts.WordprocessingML.MainDocumentPart;
 
 import com.google.code.morphia.annotations.Id;
 import com.mongodb.gridfs.GridFSInputFile;
+
+import de.phsoftware.textManager.utils.WordCount;
 
 public class Document {
     @Id
     private ObjectId id;
     private ObjectId document;
-    private int wordCount;
+    private long wordCount;
     private String title;
     private ObjectId billingItemId;
 
@@ -45,11 +43,11 @@ public class Document {
 	return this;
     }
 
-    public int getWordCount() {
+    public long getWordCount() {
 	return wordCount;
     }
 
-    public Document setWordCount(int wordCount) {
+    public Document setWordCount(long wordCount) {
 	this.wordCount = wordCount;
 	return this;
     }
@@ -77,70 +75,19 @@ public class Document {
 	try {
 	    gFile = fs.createFile(file);
 	    gFile.save();
-	    try {
-		FileInputStream fis = new FileInputStream(
-			file.getAbsolutePath());
-		Document doc = new Document();
-		doc.setDocument((ObjectId) gFile.getId()).setTitle(
-			file.getName());
-		if (file.getName().endsWith(".docx")) {
-		    // StringWriter wr = new StringWriter();
-		    // TextUtils.extractText(dc, wr);
-		    // // System.out
-		    // // .println(wr.getBuffer().toString().split(" ").length);
-		    WordprocessingMLPackage dc = WordprocessingMLPackage
-			    .load(fis);
-		    MainDocumentPart documentPart = dc.getMainDocumentPart();
-
-		    org.docx4j.wml.Document wmlDocumentEl = documentPart
-			    .getJaxbElement();
-		    StringWriter str = new StringWriter();
-		    TextUtils.extractText(wmlDocumentEl, str);
-
-		    WordCount.linecount("/home/user/Desktop/t.txt");
-		    System.out.println(str.getBuffer().toString()
-			    .split("( |\n|\r)").length);
-		    boolean inWord = false;
-		    int numChars = 0;
-		    int numWords = 0;
-		    int numLines = 0;
-
-		    for (int i = 0; i < str.getBuffer().toString().length(); i++) {
-			final char c = str.getBuffer().toString().charAt(i);
-			numChars++;
-			switch (c) {
-			case '\n':
-			    numLines++;
-			    // FALLSTHROUGH
-			case '\t':
-			case ' ':
-			    if (inWord) {
-				numWords++;
-				inWord = false;
-			    }
-			    break;
-			default:
-			    inWord = true;
-			}
-		    }
-
-		    System.out.println("\t" + numLines + "\t" + numWords + "\t"
-			    + numChars);
-
-		    XWPFDocument document = new XWPFDocument(fis);
-		    XWPFWordExtractor extractor = new XWPFWordExtractor(
-			    document);
-		    return doc.setWordCount(extractor.getExtendedProperties()
-			    .getUnderlyingProperties().getWords());
-		} else {
-		    HWPFDocument document = new HWPFDocument(fis);
-		    WordExtractor extractor = new WordExtractor(document);
-		    System.out.println(extractor.getText().split(" ").length);
-		    return doc.setWordCount(extractor.getSummaryInformation()
-			    .getWordCount());
-		}
-	    } catch (Exception e) {
-		return null;
+	    FileInputStream fis = new FileInputStream(file.getAbsolutePath());
+	    Document doc = new Document();
+	    doc.setDocument((ObjectId) gFile.getId()).setTitle(file.getName());
+	    if (file.getName().endsWith(".docx")) {
+		XWPFDocument document = new XWPFDocument(fis);
+		XWPFWordExtractor extractor = new XWPFWordExtractor(document);
+		return doc
+			.setWordCount(WordCount.linecount(extractor.getText()));
+	    } else {
+		HWPFDocument document = new HWPFDocument(fis);
+		WordExtractor extractor = new WordExtractor(document);
+		return doc
+			.setWordCount(WordCount.linecount(extractor.getText()));
 	    }
 	} catch (IOException e1) {
 	    return null;
