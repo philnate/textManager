@@ -7,7 +7,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.File;
 import java.util.EventObject;
 import java.util.List;
 
@@ -21,7 +20,6 @@ import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.event.CellEditorListener;
 import javax.swing.event.ChangeEvent;
-import javax.swing.filechooser.FileFilter;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 
@@ -108,27 +106,7 @@ public class DocumentListRenderer implements TableCellRenderer, TableCellEditor 
 
 	upload.addActionListener(new ActionListener() {
 	    public void actionPerformed(ActionEvent e) {
-		JFileChooser file = new JFileChooser();
-		file.setAcceptAllFileFilterUsed(false);
-		file.setMultiSelectionEnabled(true);
-		file.setFileSelectionMode(JFileChooser.FILES_ONLY);
-		file.addChoosableFileFilter(new FileFilter() {
-
-		    @Override
-		    public String getDescription() {
-			return getCaption("mw.fileFilter.docX");
-		    }
-
-		    @Override
-		    public boolean accept(File arg0) {
-			if (arg0.getName().endsWith(".docx")
-				|| arg0.getName().endsWith(".doc")
-				|| arg0.isDirectory()) {
-			    return true;
-			}
-			return false;
-		    }
-		});
+		JFileChooser file = new DocXFileChooser();
 		switch (file.showOpenDialog(parentWindow)) {
 		case JFileChooser.APPROVE_OPTION:
 		    selectedFile = file.getSelectedFiles();

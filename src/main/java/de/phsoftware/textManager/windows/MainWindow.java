@@ -23,7 +23,6 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.filechooser.FileFilter;
 import javax.swing.table.DefaultTableModel;
 
 import net.miginfocom.swing.MigLayout;
@@ -145,26 +144,7 @@ public class MainWindow {
 	btnMassAdd.addActionListener(new ActionListener() {
 
 	    public void actionPerformed(ActionEvent arg0) {
-		JFileChooser file = new JFileChooser();
-		file.setAcceptAllFileFilterUsed(false);
-		file.setMultiSelectionEnabled(true);
-		file.setFileSelectionMode(JFileChooser.FILES_ONLY);
-		file.addChoosableFileFilter(new FileFilter() {
-
-		    @Override
-		    public String getDescription() {
-			return getCaption("mw.fileFilter.docX");
-		    }
-
-		    @Override
-		    public boolean accept(File arg0) {
-			if (arg0.getName().endsWith(".docx")
-				|| arg0.isDirectory()) {
-			    return true;
-			}
-			return false;
-		    }
-		});
+		JFileChooser file = new DocXFileChooser();
 		switch (file.showOpenDialog(frame)) {
 		case JFileChooser.APPROVE_OPTION:
 		    File[] files = file.getSelectedFiles();
