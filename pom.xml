@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>phsoftware</groupId>
 	<artifactId>textManager</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.1.0-SNAPSHOT</version>
 	<dependencies>
 		<dependency>
 			<groupId>com.google.code.morphia</groupId>
@@ -24,6 +24,7 @@
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>4.10</version>
+			<scope>test</scope>
 		</dependency>
 		<!-- Layout Requirements -->
 		<dependency>
@@ -55,6 +56,12 @@
 			<artifactId>poi-scratchpad</artifactId>
 			<version>3.8</version>
 		</dependency>
+		<!-- Templating -->
+		<dependency>
+			<groupId>org.apache.velocity</groupId>
+			<artifactId>velocity</artifactId>
+			<version>1.7</version>
+		</dependency>
 	</dependencies>
 	<repositories>
 		<repository>
@@ -62,4 +69,41 @@
 			<url>http://morphia.googlecode.com/svn/mavenrepo/</url>
 		</repository>
 	</repositories>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<version>2.2-beta-4</version>
+				<executions>
+					<execution>
+						<configuration>
+							<archive>
+								<manifest>
+									<addClasspath>true</addClasspath>
+									<mainClass>de.phsoftware.textManager.windows.MainWindow</mainClass>
+								</manifest>
+							</archive>
+							<descriptorRefs>
+								<descriptorRef>jar-with-dependencies</descriptorRef>
+							</descriptorRefs>
+						</configuration>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
+					<execution>
+					<id>bin</id>
+					<configuration>
+						<descriptors><descriptor>src/main/assembly/zip.xml</descriptor></descriptors></configuration>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
 </project>
