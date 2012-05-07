@@ -6,6 +6,8 @@ import static de.phsoftware.textManager.utils.I18N.getCaption;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -22,17 +24,28 @@ import com.google.common.collect.Maps;
 import de.phsoftware.textManager.entities.Setting;
 import de.phsoftware.textManager.utils.ImageRegistry;
 
-public class SettingWindow {
+public class SettingWindow extends WindowAdapter {
 
     private JFrame frame;
     private final Map<String, JTextField> settings = Maps.newHashMap();
     private JButton btnV;
     private JButton btnX;
+    private static boolean debug = false;
+
+    @Override
+    public void windowClosing(WindowEvent evt) {
+	if (debug) {
+	    System.exit(0);
+	} else {
+	    frame.dispose();
+	}
+    }
 
     /**
      * Launch the Window, debugging only
      */
     public static void main(String[] args) {
+	debug = true;
 	EventQueue.invokeLater(new Runnable() {
 	    public void run() {
 		try {
@@ -58,7 +71,8 @@ public class SettingWindow {
     private void initialize() {
 	frame = new JFrame();
 	frame.setBounds(100, 100, 857, 624);
-	frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+	frame.addWindowListener(this);
 	frame.getContentPane().setLayout(
 		new MigLayout("", "[][grow]", "[][][][][][][][][][]"));
 
