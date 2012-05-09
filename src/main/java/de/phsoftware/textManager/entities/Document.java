@@ -83,11 +83,14 @@ public class Document {
 		XWPFWordExtractor extractor = new XWPFWordExtractor(document);
 		return doc
 			.setWordCount(WordCount.linecount(extractor.getText()));
-	    } else {
+	    } else if (file.getName().endsWith(".doc")) {
 		HWPFDocument document = new HWPFDocument(fis);
 		WordExtractor extractor = new WordExtractor(document);
 		return doc
 			.setWordCount(WordCount.linecount(extractor.getText()));
+	    } else {
+		throw new IllegalArgumentException(
+			"Can't handle non doc(X) files");
 	    }
 	} catch (IOException e1) {
 	    return null;
