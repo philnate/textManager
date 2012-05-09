@@ -13,7 +13,13 @@ import javax.swing.JOptionPane;
 import com.google.code.morphia.annotations.Entity;
 import com.google.code.morphia.annotations.Id;
 
-@Entity
+/**
+ * simply key value document storing general settings about the app
+ * 
+ * @author user
+ * 
+ */
+@Entity(noClassnameStored = true)
 public class Setting {
 
     @Id
