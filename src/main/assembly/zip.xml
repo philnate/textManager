@@ -8,6 +8,13 @@
 	</formats>
 	<includeBaseDirectory>false</includeBaseDirectory>
 	<fileSets>
+			<fileSet>
+			<directory>${project.basedir}/win</directory>
+			<outputDirectory>/</outputDirectory>
+			<includes>
+				<include>start.bat</include>
+			</includes>
+		</fileSet>
 		<fileSet>
 			<directory>${project.basedir}/win</directory>
 			<outputDirectory>/mongo</outputDirectory>
