@@ -1,5 +1,8 @@
 package de.phsoftware.textManager.entities;
 
+import static de.phsoftware.textManager.utils.DB.ds;
+import static de.phsoftware.textManager.utils.I18N.getCaption;
+
 import org.bson.types.ObjectId;
 
 import com.google.code.morphia.annotations.Entity;
@@ -22,7 +25,21 @@ public class Customer {
     private String streetNo;
     private String city;
     private boolean male;
+    // TODO split contact name into first and lastname
     private String contactName;
+
+    public String getFirstName() {
+	return contactName.split(" ")[0];
+    }
+
+    public String getLastName() {
+	String[] lastName = contactName.split(" ");
+	if (1 == lastName.length) {
+	    return lastName[0];
+	} else {
+	    return lastName[1];
+	}
+    }
 
     public ObjectId getId() {
 	return id;
@@ -73,6 +90,10 @@ public class Customer {
 	return this;
     }
 
+    public String getGender() {
+	return (male) ? getCaption("gender.male") : getCaption("gender.female");
+    }
+
     public String getContactName() {
 	return contactName;
     }
@@ -94,5 +115,9 @@ public class Customer {
     public Customer setCity(String city) {
 	this.city = city;
 	return this;
+    }
+
+    public static Customer load(ObjectId id) {
+	return ds.find(Customer.class).filter("_id", id).get();
     }
 }
