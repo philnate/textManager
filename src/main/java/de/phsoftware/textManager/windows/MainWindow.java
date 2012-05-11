@@ -35,6 +35,7 @@ import com.toedter.calendar.JYearChooser;
 import de.phsoftware.textManager.entities.BillingItem;
 import de.phsoftware.textManager.entities.Customer;
 import de.phsoftware.textManager.entities.Document;
+import de.phsoftware.textManager.updates.Updater;
 import de.phsoftware.textManager.utils.ImageRegistry;
 
 public class MainWindow {
@@ -70,6 +71,7 @@ public class MainWindow {
      * Create the window.
      */
     public MainWindow() {
+	Updater.checkUpdateNeeded();
 	initialize();
     }
 
