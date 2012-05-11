@@ -73,37 +73,28 @@ public class SettingWindow extends WindowAdapter {
 	frame.setBounds(100, 100, 857, 624);
 	frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 	frame.addWindowListener(this);
-	frame.getContentPane().setLayout(
-		new MigLayout("", "[][grow]", "[][][][][][][][][][]"));
+	frame.getContentPane().setLayout(new MigLayout("", "[][grow]", ""));
 
-	createTextField("company", "cell 1 0,growx", "cell 0 0,alignx trailing");
-	createTextField("contact", "cell 1 1,growx", "cell 0 1,alignx trailing");
-	createTextField("street", "flowx,cell 1 2,growx",
-		"cell 0 2,alignx trailing");
-	createTextField("zip", "flowx,cell 1 3,growx",
-		"cell 0 3,alignx trailing");
-	createTextField("email", "cell 1 4,growx", "cell 0 4,alignx trailing");
-	createTextField("phone", "cell 1 5,growx", "cell 0 5,alignx trailing");
-	createTextField("streetNo", "cell 1 2,growx",
-		"cell 1 2,alignx trailing");
-	createTextField("city", "cell 1 3,growx", "cell 1 3,alignx trailing");
-	createTextField("pdfLatex", "flowx,cell 1 6,growx",
-		"cell 0 6,alignx trailing");
-	createTextField("template", "cell 1 7,growx",
-		"cell 0 7,alignx trailing");
-	createTextField("pdfViewer", "cell 1 8,growx",
-		"cell 0 8,alignx trailing");
-	createTextField("accountNo", "cell 1 9, growx",
-		"cell 0 9, alignx trailing");
-	createTextField("bankNo", "cell 1 10, growx",
-		"cell 0 10, alignx trailing");
-	createTextField("bankName", "cell 1 11, growx",
-		"cell 0 11, alignx trailing");
+	createTextField("company", null, null);
+	createTextField("contact", null, null);
+	createTextField("street", null, null);
+	createTextField("zip", null, null);
+	createTextField("email", null, null);
+	createTextField("phone", null, null);
+	createTextField("streetNo", null, null);
+	createTextField("city", null, null);
+	createTextField("taxNo", null, null);
+	createTextField("accountNo", null, null);
+	createTextField("bankNo", null, null);
+	createTextField("bankName", null, null);
+	createTextField("pdfLatex", null, null);
+	createTextField("template", null, null);
+	createTextField("pdfViewer", null, null);
 
 	btnV = new JButton();
 	btnV.setIcon(ImageRegistry.getImage("save.gif"));
 	btnV.setToolTipText(getCaption("sw.tooltip.button.save"));
-	frame.getContentPane().add(btnV, "flowx,cell 1 12");
+	frame.getContentPane().add(btnV, "flowx");
 	btnV.addActionListener(new ActionListener() {
 
 	    public void actionPerformed(ActionEvent e) {
@@ -114,7 +105,7 @@ public class SettingWindow extends WindowAdapter {
 	btnX = new JButton();
 	btnX.setIcon(ImageRegistry.getImage("cancel.gif"));
 	btnX.setToolTipText(getCaption("sw.tooltip.button.cancel"));
-	frame.getContentPane().add(btnX, "cell 1 12");
+	frame.getContentPane().add(btnX);
 	btnX.addActionListener(new ActionListener() {
 
 	    public void actionPerformed(ActionEvent arg0) {
@@ -127,9 +118,10 @@ public class SettingWindow extends WindowAdapter {
 
     private void createTextField(String name, String layoutTF, String layoutL) {
 	JLabel label = new JLabel(getCaption("sw.label." + name));
-	frame.getContentPane().add(label, layoutL);
+	frame.getContentPane().add(label, (null == layoutTF) ? "" : layoutTF);
 	JTextField text = new JTextField();
-	frame.getContentPane().add(text, layoutTF);
+	frame.getContentPane().add(text,
+		(null == layoutL) ? "growx,wrap" : layoutL);
 	settings.put(name, text);
     }
 
