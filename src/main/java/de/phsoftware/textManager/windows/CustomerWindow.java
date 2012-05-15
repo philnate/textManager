@@ -18,7 +18,6 @@ import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 import net.miginfocom.swing.MigLayout;
@@ -34,7 +33,7 @@ public class CustomerWindow extends WindowAdapter {
     private JTextField textCity;
     private JTextField textNr;
     private JComboBox customers;
-    private JTextArea textCompanyName;
+    private JTextField textCompanyName;
     private JButton btnSave;
     private JComboBox feMale;
     private final JComboBox refresh;
@@ -130,7 +129,7 @@ public class CustomerWindow extends WindowAdapter {
 	JLabel lblCompanyName = new JLabel(getCaption("cw.label.company"));
 	frame.getContentPane().add(lblCompanyName, "cell 0 1");
 
-	textCompanyName = new JTextArea();
+	textCompanyName = new JTextField();
 	frame.getContentPane().add(textCompanyName,
 		"cell 1 1,growx,aligny center");
 
@@ -173,8 +172,7 @@ public class CustomerWindow extends WindowAdapter {
 
 	feMale = new JComboBox();
 	feMale.setModel(new DefaultComboBoxModel(new String[] {
-		getCaption("cw.label.gender.male"),
-		getCaption("cw.label.gender.female") }));
+		getCaption("gender.male"), getCaption("gender.female") }));
 	frame.getContentPane().add(feMale, "cell 1 4,growx");
 
 	textContact = new JTextField();
