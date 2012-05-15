@@ -12,7 +12,9 @@ import com.mongodb.gridfs.GridFS;
 public class DB {
 
     public static final Datastore ds = create();
-    public static final GridFS fs = new GridFS(ds.getDB(), "docs");
+    public static final GridFS docs = new GridFS(ds.getDB(), "doc");
+    public static final GridFS pdf = new GridFS(ds.getDB(), "pdf");
+    public static final GridFS tex = new GridFS(ds.getDB(), "tex");
 
     @SuppressWarnings("deprecation")
     private static Datastore create() {

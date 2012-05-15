@@ -83,7 +83,7 @@
 \setkomavar{fromaddress}{$street\,\,$zip $city\,}
 \setkomavar{fromphone}[\Mobilefone~]{$phone\,}
 \setkomavar{fromfax}[]{Steuernummer: $taxNo}
-\setkomavar{fromemail}[\Letter~]{$mail\,}
+\setkomavar{fromemail}[\Letter~]{$email\,}
 %\setkomavar{fromurl}[]{http://max-mustermann.de}
 %\setkomafont{fromaddress}{\small\rmfamily\mdseries\slshape\color{myblue}}
 
@@ -134,7 +134,7 @@ $bankName}
 %\setkomavar{yourmail}{}
 %\setkomavar{myref}{}
 %\setkomavar{customer}{}
-\setkomavar{invoice}{012015}
+\setkomavar{invoice}{$billNo}
 %---------------------------------------------------------------------------
 % Datum und Ort werden hier eingetragen
 \setkomavar{date}{\today}
@@ -146,7 +146,7 @@ $bankName}
 
 \begin{letter}
 {
-$customer.firstname $customer.lastname\\
+$customer.firstName $customer.lastName\\
 $customer.street $customer.streetNo\\
 $customer.zip $customer.city\\
 }
@@ -156,29 +156,25 @@ $customer.zip $customer.city\\
 }
 }
 %---------------------------------------------------------------------------
-\opening{Sehr geehrter $customer.male $customer.lastname,}
+\opening{Sehr geehrter $customer.gender $customer.lastName,}
 Für die, im $month von mir erstellten, Texte stelle ich Ihnen folgende Beträge in Rechnung.
-Wie vereinbart, berechne ich Ihnen pro Wort ?1,5? Cent.
+%Wie vereinbart, berechne ich Ihnen pro Wort ?1,5? Cent.%
 Bitte überweisen Sie den folgenden Rechnungsbetrag innerhalb von 14 Tagen auf das unten angegebene Konto.
 
 \vspace{5pt}
 \begin{tabular} {lrrr}%{*{4} {m{100pt}}} 
 \hline
-Leistung                                           & Wortzahl  & & Preis in \texteuro \\\hline
-\rowcolor[gray]{0.9} Onlinetext Garderobenschränke & 299       & & 4,49  \\ 
-                     Onlinetext kfw Anschlussfinanzierung     & 299       & & 4,49  \\ 
-\rowcolor[gray]{0.9} Onlinetext OFM Manager        & 311       & & 4,67  \\ 
-                     Onlinetext private Altersvorsorge & 303   & & 4,55      \\\hline
-                                                   &           & Gesamtpreis & 18,20 \\ \hline\hline     
+Leistung                                           & Wortzahl  & Cent/Word & Preis in \texteuro \\\hline
+#foreach ($item in $allItems)
+#if ($velocityCount%2 ==0) \rowcolor[gray]{0.9} #else#end $item.title &  $item.wordCount	& #if ($item.fixedPrice) - #else $item.centPerWord #end		& $math.roundTo(2,$item.total)  \\
+#end
+ \hline\hline
 \end{tabular}
 
 Als Kleinunternehmer besteht nach §19 UStG keine Umsatzsteuerpflicht.
 \\
 
-
-
-
-\closing{Mit freundlichen Grüßen,\\\includegraphics{ich.jpg}\\}
+\closing{Mit freundlichen Grüßen,\\\includegraphics{signum.jpg}\\}
 
 
 %---------------------------------------------------------------------------

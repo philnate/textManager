@@ -7,6 +7,8 @@ import static de.phsoftware.textManager.utils.I18N.getCaptions;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
@@ -23,19 +25,23 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
 import net.miginfocom.swing.MigLayout;
 
 import org.bson.types.ObjectId;
 
+import com.google.common.base.Preconditions;
 import com.toedter.calendar.JMonthChooser;
 import com.toedter.calendar.JYearChooser;
 
+import de.phsoftware.textManager.entities.Bill;
 import de.phsoftware.textManager.entities.BillingItem;
 import de.phsoftware.textManager.entities.Customer;
 import de.phsoftware.textManager.entities.Document;
 import de.phsoftware.textManager.updates.Updater;
+import de.phsoftware.textManager.utils.CreatePDF;
 import de.phsoftware.textManager.utils.ImageRegistry;
 
 public class MainWindow {
@@ -49,6 +55,10 @@ public class MainWindow {
     private PropertyChangeListener changeListener;
     private List<BillingItem> curBill;
     private JComboBox customers;
+    private JTextField billNo;
+    private Bill bill;
+    private JButton build;
+    private JButton view;
 
     /**
      * Launch the application.
@@ -138,6 +148,7 @@ public class MainWindow {
 		addNewBillingItem();
 	    }
 	});
+
 	frame.getContentPane().add(btnAddLine, "cell 0 0");
 
 	JButton btnMassAdd = new JButton();
@@ -164,6 +175,32 @@ public class MainWindow {
 	});
 
 	frame.getContentPane().add(btnMassAdd, "cell 0 0");
+
+	billNo = new JTextField();
+	frame.getContentPane().add(billNo, "cell 0 0");
+	billNo.setColumns(10);
+	billNo.addKeyListener(new KeyAdapter() {
+	    @Override
+	    public void keyReleased(KeyEvent arg0) {
+		bill.setBillNo(billNo.getText());
+		ds.save(bill);
+	    }
+	});
+
+	build = new JButton();
+	build.addActionListener(new ActionListener() {
+	    public void actionPerformed(ActionEvent arg0) {
+		try {
+		    new CreatePDF(bill);
+		} catch (Exception e) {
+		    // TODO Auto-generated catch block
+		    e.printStackTrace();
+		}
+	    }
+	});
+	build.setToolTipText(getCaption("mw.tooltip.build"));
+	build.setIcon(ImageRegistry.getImage("build.png"));
+	frame.getContentPane().add(build, "cell 0 0");
 
 	JMenuBar menuBar = new JMenuBar();
 	frame.setJMenuBar(menuBar);
@@ -196,6 +233,32 @@ public class MainWindow {
 		"cw", "fixPrice", "total", "documents"));
 	fillTableModel();
 	billLines.setModel(model);
+
+	view = new JButton();
+	view.setToolTipText(getCaption("mw.tooltip.view"));
+	view.setEnabled(false);
+	view.addActionListener(new ActionListener() {
+	    public void actionPerformed(ActionEvent e) {
+		// GridFSDBFile file
+		// =pdf.findOne(QueryBuilder.start("month").is(monthChooser.getMonth()).and("year").is(yearChooser.getYear()).and("customerId").is(((Customer)
+		// customers.getSelectedItem()).getId()).get());
+		// if (null != file) {
+		// Setting.findSetting("template").get;
+		// }
+	    }
+	});
+	frame.getContentPane().add(view, "cell 0 0");
+	// DecimalFormat df = new DecimalFormat("#,##0.##"); // you shouldn't
+	// // need more "#"
+	// // to the left
+
+	// billLines.getColumnModel().getColumn(4)
+	// .setCellRenderer(NumberRenderer.getCurrencyRenderer());
+	// billLines
+	// .getColumnModel()
+	// .getColumn(4)
+	// .setCellEditor(
+	// new DefaultCellEditor(new JFormattedTextField(df)));
 	billLines.getColumnModel().getColumn(0).setPreferredWidth(400);
 	billLines.getColumnModel().getColumn(5).setPreferredWidth(400);
 
@@ -233,6 +296,10 @@ public class MainWindow {
 	    BillingItem item = it.next();
 	    model.addRow(new Object[] { item });
 	}
+
+	bill = checkBillExists(monthChooser.getMonth(), yearChooser.getYear(),
+		((Customer) customers.getSelectedItem()));
+	billNo.setText(bill.getBillNo());
     }
 
     private class tmTableModel extends DefaultTableModel {
@@ -333,5 +400,25 @@ public class MainWindow {
 	    }
 	    ds.save(item);
 	}
+    }
+
+    private Bill checkBillExists(int month, int year, Customer customer) {
+	List<Bill> bill = ds.find(Bill.class).filter("month", month)
+		.filter("year", year).filter("customerId", customer.getId())
+		.asList();
+	if (bill.isEmpty()) {
+	    Bill b = new Bill().setMonth(month).setYear(year)
+		    .setCustomer(customer.getId()).setId(new ObjectId());
+	    ds.save(b);
+	    return b;
+	} else {
+	    Preconditions
+		    .checkArgument(
+			    bill.size() == 1,
+			    "there should be only one bill matching the query, but got multiple {}",
+			    bill);
+	    return bill.iterator().next();
+	}
+
     }
 }

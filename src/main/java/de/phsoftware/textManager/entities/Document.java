@@ -1,6 +1,6 @@
 package de.phsoftware.textManager.entities;
 
-import static de.phsoftware.textManager.utils.DB.fs;
+import static de.phsoftware.textManager.utils.DB.docs;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -73,7 +73,7 @@ public class Document {
     public static Document loadAndSave(File file) {
 	GridFSInputFile gFile;
 	try {
-	    gFile = fs.createFile(file);
+	    gFile = docs.createFile(file);
 	    gFile.save();
 	    FileInputStream fis = new FileInputStream(file.getAbsolutePath());
 	    Document doc = new Document();
@@ -98,6 +98,6 @@ public class Document {
     }
 
     public void delete() {
-	fs.remove(document);
+	docs.remove(document);
     }
 }

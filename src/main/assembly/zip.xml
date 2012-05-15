@@ -8,7 +8,7 @@
 	</formats>
 	<includeBaseDirectory>false</includeBaseDirectory>
 	<fileSets>
-			<fileSet>
+		<fileSet>
 			<directory>${project.basedir}/win</directory>
 			<outputDirectory>/</outputDirectory>
 			<includes>
@@ -20,6 +20,15 @@
 			<outputDirectory>/mongo</outputDirectory>
 			<includes>
 				<include>*.exe</include>
+			</includes>
+		</fileSet>
+		<fileSet>
+			<directory>${project.basedir}/template</directory>
+			<outputDirectory>/template</outputDirectory>
+			<includes>
+				<include>template.tex.sample</include>
+				<include>slashbox.sty</include>
+				<include>signum.jpg</include>
 			</includes>
 		</fileSet>
 		<fileSet>
