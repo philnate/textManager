@@ -256,11 +256,11 @@ public class CustomerWindow extends WindowAdapter {
 		    JOptionPane.WARNING_MESSAGE);
 	    return false;
 	}
-	ds.save(new Customer().setCompanyName(textCompanyName.getText())
+	new Customer().setCompanyName(textCompanyName.getText())
 		.setContactName(textContact.getText())
 		.setMale(feMale.getSelectedIndex() == 0 ? true : false)
 		.setStreet(textStreet.getText()).setStreetNo(textNr.getText())
-		.setZip(textZip.getText()).setCity(textCity.getText()));
+		.setZip(textZip.getText()).setCity(textCity.getText()).save();
 	setEnabled(false);
 	loadCustomer(customers);
 	return true;

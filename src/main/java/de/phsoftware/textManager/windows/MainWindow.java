@@ -64,7 +64,6 @@ public class MainWindow {
      * Launch the application.
      */
     public static void main(String[] args) {
-
 	EventQueue.invokeLater(new Runnable() {
 	    public void run() {
 		try {
@@ -182,8 +181,7 @@ public class MainWindow {
 	billNo.addKeyListener(new KeyAdapter() {
 	    @Override
 	    public void keyReleased(KeyEvent arg0) {
-		bill.setBillNo(billNo.getText());
-		ds.save(bill);
+		bill.setBillNo(billNo.getText()).save();
 	    }
 	});
 
@@ -398,7 +396,7 @@ public class MainWindow {
 		throw new IllegalArgumentException(
 			"Got columnIndex out of bounds");
 	    }
-	    ds.save(item);
+	    item.save();
 	}
     }
 
@@ -409,7 +407,7 @@ public class MainWindow {
 	if (bill.isEmpty()) {
 	    Bill b = new Bill().setMonth(month).setYear(year)
 		    .setCustomer(customer.getId()).setId(new ObjectId());
-	    ds.save(b);
+	    b.save();
 	    return b;
 	} else {
 	    Preconditions

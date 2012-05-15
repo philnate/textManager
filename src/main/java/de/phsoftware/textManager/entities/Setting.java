@@ -14,7 +14,7 @@ import com.google.code.morphia.annotations.Id;
  * 
  */
 @Entity(noClassnameStored = true)
-public class Setting {
+public class Setting extends Entry {
 
     @Id
     private String key;

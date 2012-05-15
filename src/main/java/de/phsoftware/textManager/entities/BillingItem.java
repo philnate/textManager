@@ -16,7 +16,7 @@ import com.google.code.morphia.annotations.Id;
  * 
  */
 @Entity(noClassnameStored = true)
-public class BillingItem {
+public class BillingItem extends Entry {
     @Id
     private ObjectId id;
     private String title;

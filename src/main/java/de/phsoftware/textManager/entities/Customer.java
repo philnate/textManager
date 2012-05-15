@@ -16,7 +16,7 @@ import com.google.code.morphia.annotations.Id;
  * 
  */
 @Entity(noClassnameStored = true)
-public class Customer {
+public class Customer extends Entry {
     @Id
     private ObjectId id;
     private String companyName;

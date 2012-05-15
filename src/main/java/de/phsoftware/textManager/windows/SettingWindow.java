@@ -1,6 +1,5 @@
 package de.phsoftware.textManager.windows;
 
-import static de.phsoftware.textManager.utils.DB.ds;
 import static de.phsoftware.textManager.utils.I18N.getCaption;
 
 import java.awt.EventQueue;
@@ -129,7 +128,7 @@ public class SettingWindow extends WindowAdapter {
 	Iterator<Entry<String, JTextField>> it = settings.entrySet().iterator();
 	while (it.hasNext()) {
 	    Entry<String, JTextField> entry = it.next();
-	    ds.save(new Setting(entry.getKey(), entry.getValue().getText()));
+	    new Setting(entry.getKey(), entry.getValue().getText()).save();
 	}
     }
 
