@@ -80,7 +80,7 @@
 % Absender Daten
 \setkomavar{fromname}{$contact\,\,}
 %{ }
-\setkomavar{fromaddress}{$street\,\,$zip $city\,}
+\setkomavar{fromaddress}{$street\,$streetNo\,$zip $city\,}
 \setkomavar{fromphone}[\Mobilefone~]{$phone\,}
 \setkomavar{fromfax}[]{Steuernummer: $taxNo}
 \setkomavar{fromemail}[\Letter~]{$email\,}
@@ -146,7 +146,7 @@ $bankName}
 
 \begin{letter}
 {
-$customer.firstName $customer.lastName\\
+$customer.companyName\\
 $customer.street $customer.streetNo\\
 $customer.zip $customer.city\\
 }
@@ -156,7 +156,7 @@ $customer.zip $customer.city\\
 }
 }
 %---------------------------------------------------------------------------
-\opening{Sehr geehrter $customer.gender $customer.lastName,}
+\opening{Sehr #if ($customer.male==true) geehrter #else geehrte #end $customer.gender $customer.lastName,}
 Für die, im $month von mir erstellten, Texte stelle ich Ihnen folgende Beträge in Rechnung.
 %Wie vereinbart, berechne ich Ihnen pro Wort ?1,5? Cent.%
 Bitte überweisen Sie den folgenden Rechnungsbetrag innerhalb von 14 Tagen auf das unten angegebene Konto.
