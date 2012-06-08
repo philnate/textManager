@@ -165,10 +165,14 @@ Bitte überweisen Sie den folgenden Rechnungsbetrag innerhalb von 14 Tagen auf da
 \begin{tabular} {lrrr}%{*{4} {m{100pt}}} 
 \hline
 Leistung                                           & Wortzahl  & Cent/Word & Preis in \texteuro \\\hline
+#set ($total = 0)
 #foreach ($item in $allItems)
+#set($total =$math.add($total, $item.total))
 #if ($velocityCount%2 ==0) \rowcolor[gray]{0.9} #else#end $item.title &  $item.wordCount	& #if ($item.fixedPrice) - #else $item.centPerWord #end		& $math.roundTo(2,$item.total)  \\
 #end
  \hline\hline
+ \multicolumn{4}{r}{$total}\\
+ \hline
 \end{tabular}
 
 Als Kleinunternehmer besteht nach §19 UStG keine Umsatzsteuerpflicht.
