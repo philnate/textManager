@@ -7,6 +7,8 @@ import static de.phsoftware.textManager.utils.I18N.getCaptions;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeEvent;
@@ -52,13 +54,32 @@ public class MainWindow {
     private JScrollPane jScrollPane;
     private JMonthChooser monthChooser;
     private JYearChooser yearChooser;
-    private PropertyChangeListener changeListener;
+    private ChangeListener changeListener;
     private List<BillingItem> curBill;
     private JComboBox customers;
     private JTextField billNo;
     private Bill bill;
     private JButton build;
     private JButton view;
+
+    /**
+     * on value change load different bill into table
+     * 
+     * @author philnate
+     * 
+     */
+    private class ChangeListener implements PropertyChangeListener,
+	    ItemListener {
+
+	public void itemStateChanged(ItemEvent arg0) {
+	    fillTableModel();
+	}
+
+	public void propertyChange(PropertyChangeEvent evt) {
+	    fillTableModel();
+	}
+
+    }
 
     /**
      * Launch the application.
@@ -88,14 +109,7 @@ public class MainWindow {
      * Initialize the contents of the frame.
      */
     private void initialize() {
-	changeListener = new PropertyChangeListener() {
-	    /**
-	     * on value change load different bill
-	     */
-	    public void propertyChange(PropertyChangeEvent evt) {
-		fillTableModel();
-	    }
-	};
+	changeListener = new ChangeListener();
 
 	frame = new JFrame();
 	frame.setBounds(100, 100, 1197, 500);
@@ -104,7 +118,7 @@ public class MainWindow {
 		new MigLayout("", "[grow]", "[][grow]"));
 
 	customers = new JComboBox();
-	customers.addPropertyChangeListener(changeListener);
+	customers.addItemListener(changeListener);
 
 	frame.getContentPane().add(customers, "flowx,cell 0 0,growx");
 
@@ -136,7 +150,7 @@ public class MainWindow {
 	frame.getContentPane().add(monthChooser, "cell 0 0");
 
 	yearChooser = new JYearChooser();
-	monthChooser.addPropertyChangeListener(changeListener);
+	yearChooser.addPropertyChangeListener(changeListener);
 	frame.getContentPane().add(yearChooser, "cell 0 0");
 
 	JButton btnAddLine = new JButton();
@@ -278,6 +292,9 @@ public class MainWindow {
     }
 
     private void fillTableModel() {
+	if (null == model) {
+	    return;
+	}
 	model.setRowCount(0);
 	if (null == customers.getSelectedItem()) {
 	    return;
