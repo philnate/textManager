@@ -6,6 +6,7 @@ import static de.phsoftware.textManager.utils.DB.tex;
 
 import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
@@ -15,6 +16,7 @@ import java.util.Iterator;
 import javax.swing.JOptionPane;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
 import org.apache.velocity.tools.generic.MathTool;
@@ -34,6 +36,13 @@ public class CreatePDF {
     private final int year;
     private final Customer customer;
 
+    /**
+     * For testing purpose only
+     * 
+     * @param args
+     * @throws IOException
+     * @throws InterruptedException
+     */
     public static void main(String[] args) throws IOException,
 	    InterruptedException {
 	new CreatePDF(new Bill().setBillNo("unique").setMonth(4).setYear(2012)
@@ -112,6 +121,11 @@ public class CreatePDF {
 	    pdf.remove(QueryBuilder.start("month").is(month).and("year")
 		    .is(year).and("customerId").is(customer.getId()).get());
 	    pdfFile.save();
+	    File[] files = path.listFiles((FileFilter) new WildcardFileFilter(
+		    bill.getBillNo() + ".*"));
+	    for (File file : files) {
+		FileUtils.forceDelete(file);
+	    }
 	} else {
 	    new JOptionPane(
 		    "Bei der Erstellung der Rechnung ist ein Fehler aufgetreten. Es wurde keine Rechnung erstellt.\n Bitte Schauen sie in die Logdatei für nähere Fehlerinformationen.",
