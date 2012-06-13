@@ -44,6 +44,7 @@ import de.phsoftware.textManager.entities.Customer;
 import de.phsoftware.textManager.entities.Document;
 import de.phsoftware.textManager.updates.Updater;
 import de.phsoftware.textManager.utils.CreatePDF;
+import de.phsoftware.textManager.utils.FileDrop;
 import de.phsoftware.textManager.utils.ImageRegistry;
 
 public class MainWindow {
@@ -144,6 +145,16 @@ public class MainWindow {
 
 	jScrollPane.setViewportView(billLines);
 	frame.getContentPane().add(jScrollPane, "cell 0 1,grow");
+
+	// for each file added through drag&drop create a new lineItem
+	new FileDrop(jScrollPane, new FileDrop.Listener() {
+
+	    public void filesDropped(File[] files) {
+		for (File file : files) {
+		    addNewBillingItem(Document.loadAndSave(file));
+		}
+	    }
+	});
 
 	monthChooser = new JMonthChooser();
 	monthChooser.addPropertyChangeListener(changeListener);
