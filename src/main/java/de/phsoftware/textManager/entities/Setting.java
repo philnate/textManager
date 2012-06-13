@@ -47,13 +47,29 @@ public class Setting extends Entry {
 	return this;
     }
 
-    public static Setting findSetting(String key) {
+    /**
+     * returns the value for the given key or the default value if no such key
+     * exists. In case no setting with this key can be found and the default
+     * value will be returned the returned property won't be safed, this has to
+     * happen manually.
+     * 
+     * @param key
+     *            to look up
+     * @param def
+     *            default value for this key if no value is set
+     * @return
+     */
+    public static Setting findSetting(String key, String def) {
 	Iterator<Setting> it = ds.find(Setting.class).filter("key =", key)
 		.limit(1).fetch().iterator();
 	if (it.hasNext()) {
 	    return it.next();
 	} else {
-	    return new Setting(key, "");
+	    return new Setting(key, def);
 	}
+    }
+
+    public static Setting findSetting(String key) {
+	return findSetting(key, "");
     }
 }
