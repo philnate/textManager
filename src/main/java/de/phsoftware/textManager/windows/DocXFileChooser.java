@@ -1,13 +1,18 @@
 package de.phsoftware.textManager.windows;
+
 import static de.phsoftware.textManager.utils.I18N.getCaption;
 
+import java.awt.Component;
+import java.awt.HeadlessException;
 import java.io.File;
 
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
 
-public class DocXFileChooser extends JFileChooser {
+import de.phsoftware.textManager.entities.Setting;
 
+public class DocXFileChooser extends JFileChooser {
+    private static String lastDir = "lastDocXDirectory";
     /**
      * 
      */
@@ -16,6 +21,8 @@ public class DocXFileChooser extends JFileChooser {
     public DocXFileChooser() {
 	setAcceptAllFileFilterUsed(false);
 	setMultiSelectionEnabled(true);
+	setCurrentDirectory(new File(Setting.findSetting(lastDir,
+		getCurrentDirectory().toString()).getValue()));
 	setFileSelectionMode(JFileChooser.FILES_ONLY);
 	addChoosableFileFilter(new FileFilter() {
 
@@ -34,5 +41,12 @@ public class DocXFileChooser extends JFileChooser {
 		return false;
 	    }
 	});
+    }
+
+    @Override
+    public int showOpenDialog(Component parent) throws HeadlessException {
+	int returnCode = super.showOpenDialog(parent);
+	new Setting(lastDir, getCurrentDirectory().toString()).save();
+	return returnCode;
     }
 }
