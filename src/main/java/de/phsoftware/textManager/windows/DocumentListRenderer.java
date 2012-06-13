@@ -5,8 +5,6 @@ import static de.phsoftware.textManager.utils.I18N.getCaption;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.util.EventObject;
 import java.util.List;
 
@@ -20,6 +18,8 @@ import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.event.CellEditorListener;
 import javax.swing.event.ChangeEvent;
+import javax.swing.event.PopupMenuEvent;
+import javax.swing.event.PopupMenuListener;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 
@@ -89,17 +89,24 @@ public class DocumentListRenderer implements TableCellRenderer, TableCellEditor 
 	JPanel panel = new JPanel(new MigLayout("insets 0, gap 0! 0!",
 		"[][][]", ""));// new GridLayout(1, 3, 0, 0));
 	panel.setBorder(BorderFactory.createEmptyBorder());
-	final JComboBox box = new JComboBox();
+	final JComboBox attachedDocs = new JComboBox();
+	attachedDocs.addPopupMenuListener(new PopupMenuListener() {
 
-	box.addMouseListener(new MouseAdapter() {
+	    public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
+		// TODO Auto-generated method stub
+	    }
 
-	    @Override
-	    public void mouseReleased(MouseEvent arg0) {
+	    public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
+		// TODO Auto-generated method stub
 		that.fireEditingStopped();
+	    }
+
+	    public void popupMenuCanceled(PopupMenuEvent e) {
+		// TODO Auto-generated method stub
 	    }
 	});
 
-	panel.add(box, "w 320!, h ::100%");
+	panel.add(attachedDocs, "w 320!, h ::100%");
 	JButton upload = new JButton();
 	upload.setIcon(ImageRegistry.getImage("load.gif"));
 	upload.setToolTipText(getCaption("mw.tooltip.cell.add"));
@@ -135,7 +142,7 @@ public class DocumentListRenderer implements TableCellRenderer, TableCellEditor 
 		    selectedFile = null;
 		    break;
 		case JOptionPane.YES_OPTION:
-		    selectedFile = ((Document) box.getSelectedItem())
+		    selectedFile = ((Document) attachedDocs.getSelectedItem())
 			    .getDocument();
 		    break;
 		}
@@ -150,7 +157,7 @@ public class DocumentListRenderer implements TableCellRenderer, TableCellEditor 
 	if (null != docs && 0 != docs.size()) {
 	    remove.setEnabled(true);
 	    for (Document doc : docs) {
-		box.addItem(doc);
+		attachedDocs.addItem(doc);
 	    }
 	} else {
 	    remove.setEnabled(false);
