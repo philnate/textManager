@@ -114,16 +114,17 @@ public class BillingItem extends Entry {
 	return documents;
     }
 
-    public void setDocuments(List<Document> documents) {
+    public BillingItem setDocuments(List<Document> documents) {
 	this.documents = documents;
 	wordCount = 0;
 	for (Document doc : documents) {
 	    wordCount += doc.getWordCount();
 	}
 	recalculate();
+	return this;
     }
 
-    public void addDocument(Document document) {
+    public BillingItem addDocument(Document document) {
 	if (null == this.documents) {
 	    documents = new ArrayList<Document>();
 	    title = document.getTitle();
@@ -131,6 +132,7 @@ public class BillingItem extends Entry {
 	this.documents.add(document);
 	this.wordCount += document.getWordCount();
 	recalculate();
+	return this;
     }
 
     public void removeDocument(ObjectId document) {

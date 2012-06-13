@@ -176,8 +176,7 @@ public class MainWindow {
 		    File[] files = file.getSelectedFiles();
 		    if (null != files) {
 			for (File fl : files) {
-			    addNewBillingItem().addDocument(
-				    Document.loadAndSave(fl));
+			    addNewBillingItem(Document.loadAndSave(fl));
 			}
 		    }
 		    break;
@@ -288,6 +287,13 @@ public class MainWindow {
 		.setMonth(monthChooser.getMonth())
 		.setYear(yearChooser.getYear());
 	model.addRow(new Object[] { item });
+	item.save();
+	return item;
+    }
+
+    private BillingItem addNewBillingItem(Document document) {
+	BillingItem item = addNewBillingItem().addDocument(document);
+	item.save();
 	return item;
     }
 
