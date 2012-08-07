@@ -32,7 +32,7 @@
 \usepackage{url}
 \usepackage{lmodern}
 \usepackage[latin1]{inputenc}
-\usepackage{tabularx}
+\usepackage{longtable}
 \usepackage[table]{xcolor}
 \usepackage{slashbox,pict2e}
 \usepackage{colortbl}
@@ -162,7 +162,7 @@ Für die, im $month von mir erstellten, Texte stelle ich Ihnen folgende Beträge i
 Bitte überweisen Sie den folgenden Rechnungsbetrag innerhalb von 14 Tagen auf das unten angegebene Konto.
 
 \vspace{5pt}
-\begin{tabular} {lrrr}%{*{4} {m{100pt}}} 
+\begin{longtable} {lrrr}%{*{4} {m{100pt}}} 
 \hline
 Leistung                                           & Wortzahl  & Cent/Word & Preis in \texteuro \\\hline
 #set ($total = 0)
@@ -173,7 +173,7 @@ Leistung                                           & Wortzahl  & Cent/Word & Pre
  \hline\hline
  \multicolumn{4}{r}{$total}\\
  \hline
-\end{tabular}
+\end{longtable}
 
 Als Kleinunternehmer besteht nach §19 UStG keine Umsatzsteuerpflicht.
 \\
