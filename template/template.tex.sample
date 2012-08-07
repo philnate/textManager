@@ -171,7 +171,7 @@ Leistung                                           & Wortzahl  & Cent/Word & Pre
 #if ($velocityCount%2 ==0) \rowcolor[gray]{0.9} #else#end $item.title &  $item.wordCount	& #if ($item.fixedPrice) - #else $item.centPerWord #end		& $math.roundTo(2,$item.total)  \\
 #end
  \hline\hline
- \multicolumn{4}{r}{$total}\\
+ \multicolumn{3}{r}{Gesamtsumme} & $total\\
  \hline
 \end{longtable}
 
