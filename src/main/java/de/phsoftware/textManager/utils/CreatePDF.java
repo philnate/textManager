@@ -59,8 +59,9 @@ public class CreatePDF {
 
     @SuppressWarnings("deprecation")
     public void preparePDF() throws IOException, InterruptedException {
-	File template = new File(Setting.findSetting("template").getValue());
-	File path = template.getParentFile();
+	File path = new File(System.getProperty("user.dir"), "template");
+	File template = new File(path, Setting.findSetting("template")
+		.getValue());
 
 	Velocity.setProperty("file.resource.loader.path",
 		path.getAbsolutePath());
