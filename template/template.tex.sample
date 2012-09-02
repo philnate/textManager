@@ -168,7 +168,7 @@ Leistung                                           & Wortzahl  & Cent/Word & Pre
 #set ($total = 0)
 #foreach ($item in $allItems)
 #set($total =$math.add($total, $math.roundTo(2,$item.total)))
-#if ($velocityCount%2 ==0) \rowcolor[gray]{0.9} #else#end $item.title &  $item.wordCount	& #if ($item.fixedPrice) - #else $item.centPerWord #end		& $math.roundTo(2,$item.total)  \\
+#if ($velocityCount%2 ==0) \rowcolor[gray]{0.9} #else#end $item.title &  #if ($item.wordCount == 0) - #else $item.wordCount #end	& #if ($item.fixedPrice) - #else $item.centPerWord #end		& $math.roundTo(2,$item.total)  \\
 #end
  \hline\hline
  \multicolumn{3}{r}{Gesamtsumme} & $total\\
