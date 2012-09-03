@@ -1,4 +1,4 @@
-package de.phsoftware.textManager.windows;
+package de.phsoftware.textManager.windows.helper;
 
 import static de.phsoftware.textManager.utils.I18N.getCaption;
 

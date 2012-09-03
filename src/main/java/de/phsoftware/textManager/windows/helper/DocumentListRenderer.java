@@ -1,4 +1,4 @@
-package de.phsoftware.textManager.windows;
+package de.phsoftware.textManager.windows.helper;
 
 import static de.phsoftware.textManager.utils.I18N.getCaption;
 
@@ -31,10 +31,12 @@ public class DocumentListRenderer implements TableCellRenderer, TableCellEditor 
 
     CellEditorListener listener = null;
     JFrame parentWindow;
+    // MainWindow window;
     private Object selectedFile;
 
-    public DocumentListRenderer(JFrame parentWindow) {
+    public DocumentListRenderer(JFrame parentWindow/* , MainWindow window */) {
 	this.parentWindow = parentWindow;
+	// this.window = window;
     }
 
     public void addCellEditorListener(CellEditorListener arg0) {
@@ -84,10 +86,10 @@ public class DocumentListRenderer implements TableCellRenderer, TableCellEditor 
 	return getTableCell(value);
     }
 
-    private Component getTableCell(Object value) {
+    private Component getTableCell(final Object value) {
 	final DocumentListRenderer that = this;
 	JPanel panel = new JPanel(new MigLayout("insets 0, gap 0! 0!",
-		"[][][]", ""));// new GridLayout(1, 3, 0, 0));
+		"[][][][]", ""));// new GridLayout(1, 3, 0, 0));
 	panel.setBorder(BorderFactory.createEmptyBorder());
 	final JComboBox attachedDocs = new JComboBox();
 	attachedDocs.addPopupMenuListener(new PopupMenuListener() {

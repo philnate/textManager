@@ -22,6 +22,7 @@ import com.google.common.collect.Maps;
 
 import de.phsoftware.textManager.entities.Setting;
 import de.phsoftware.textManager.utils.ImageRegistry;
+import de.phsoftware.textManager.windows.helper.ContextMenuMouseListener;
 
 public class SettingWindow extends WindowAdapter {
 

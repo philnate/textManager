@@ -2,7 +2,7 @@ package de.phsoftware.textManager.windows;
 
 import static de.phsoftware.textManager.utils.DB.ds;
 import static de.phsoftware.textManager.utils.I18N.getCaption;
-import static de.phsoftware.textManager.windows.ContextMenuMouseListener.RIGHT_CLICK_MENU;
+import static de.phsoftware.textManager.windows.helper.ContextMenuMouseListener.RIGHT_CLICK_MENU;
 
 import java.awt.EventQueue;
 import java.awt.event.ItemEvent;

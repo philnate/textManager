@@ -46,6 +46,8 @@ import de.phsoftware.textManager.updates.Updater;
 import de.phsoftware.textManager.utils.CreatePDF;
 import de.phsoftware.textManager.utils.FileDrop;
 import de.phsoftware.textManager.utils.ImageRegistry;
+import de.phsoftware.textManager.windows.helper.DocXFileChooser;
+import de.phsoftware.textManager.windows.helper.DocumentListRenderer;
 
 public class MainWindow {
 
