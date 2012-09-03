@@ -2,6 +2,7 @@ package de.phsoftware.textManager.windows;
 
 import static de.phsoftware.textManager.utils.DB.ds;
 import static de.phsoftware.textManager.utils.I18N.getCaption;
+import static de.phsoftware.textManager.windows.ContextMenuMouseListener.RIGHT_CLICK_MENU;
 
 import java.awt.EventQueue;
 import java.awt.event.ItemEvent;
@@ -130,6 +131,7 @@ public class CustomerWindow extends WindowAdapter {
 	frame.getContentPane().add(lblCompanyName, "cell 0 1");
 
 	textCompanyName = new JTextField();
+	textCompanyName.addMouseListener(RIGHT_CLICK_MENU);
 	frame.getContentPane().add(textCompanyName,
 		"cell 1 1,growx,aligny center");
 
@@ -137,6 +139,7 @@ public class CustomerWindow extends WindowAdapter {
 	frame.getContentPane().add(lblStreet, "cell 0 2,alignx left");
 
 	textStreet = new JTextField();
+	textStreet.addMouseListener(RIGHT_CLICK_MENU);
 	frame.getContentPane().add(textStreet, "cell 1 2,growx");
 	textStreet.setColumns(10);
 
@@ -144,6 +147,7 @@ public class CustomerWindow extends WindowAdapter {
 	frame.getContentPane().add(lblNr, "cell 2 2,alignx left");
 
 	textNr = new JTextField();
+	textNr.addMouseListener(RIGHT_CLICK_MENU);
 	frame.getContentPane().add(textNr, "cell 3 2,growx");
 	textNr.setColumns(10);
 
@@ -151,6 +155,7 @@ public class CustomerWindow extends WindowAdapter {
 	frame.getContentPane().add(lblZip, "cell 0 3,alignx left");
 
 	textZip = new JTextField();
+	textZip.addMouseListener(RIGHT_CLICK_MENU);
 	frame.getContentPane().add(textZip, "cell 1 3,growx");
 	textZip.setColumns(10);
 
@@ -158,26 +163,27 @@ public class CustomerWindow extends WindowAdapter {
 	frame.getContentPane().add(lblCity, "cell 2 3,alignx left");
 
 	textCity = new JTextField();
+	textCity.addMouseListener(RIGHT_CLICK_MENU);
 	frame.getContentPane().add(textCity, "cell 3 3,growx");
 	textCity.setColumns(10);
 
 	JLabel lblContact = new JLabel(getCaption("cw.label.contact"));
 	frame.getContentPane().add(lblContact, "cell 0 4,alignx trailing");
 
+	textContact = new JTextField();
+	textContact.addMouseListener(RIGHT_CLICK_MENU);
+	frame.getContentPane().add(textContact, "cell 2 4,growx");
+	textContact.setColumns(10);
+
 	btnSave = new JButton();
 	btnSave.setIcon(ImageRegistry.getImage("save.gif"));
 	btnSave.setToolTipText(getCaption("cw.tooltip.button.save"));
-
 	frame.getContentPane().add(btnSave, "cell 2 0");
 
 	feMale = new JComboBox();
 	feMale.setModel(new DefaultComboBoxModel(new String[] {
 		getCaption("gender.male"), getCaption("gender.female") }));
 	frame.getContentPane().add(feMale, "cell 1 4,growx");
-
-	textContact = new JTextField();
-	frame.getContentPane().add(textContact, "cell 2 4,growx");
-	textContact.setColumns(10);
 
 	/**
 	 * loads selected Customer data into fields

@@ -119,6 +119,7 @@ public class SettingWindow extends WindowAdapter {
 	JLabel label = new JLabel(getCaption("sw.label." + name));
 	frame.getContentPane().add(label, (null == layoutTF) ? "" : layoutTF);
 	JTextField text = new JTextField();
+	text.addMouseListener(ContextMenuMouseListener.RIGHT_CLICK_MENU);
 	frame.getContentPane().add(text,
 		(null == layoutL) ? "growx,wrap" : layoutL);
 	settings.put(name, text);
