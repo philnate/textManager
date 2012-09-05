@@ -90,6 +90,7 @@ public class SettingWindow extends WindowAdapter {
 	createTextField("pdfLatex", null, null);
 	createTextField("template", null, null);
 	createTextField("pdfViewer", null, null);
+	createTextField("locale", null, null);
 
 	btnV = new JButton();
 	btnV.setIcon(ImageRegistry.getImage("save.gif"));
