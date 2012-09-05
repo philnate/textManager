@@ -9,17 +9,22 @@ import com.mongodb.gridfs.GridFS;
  * @author philnate
  * 
  */
+@SuppressWarnings("deprecation")
 public class DB {
 
-    public static final Datastore ds = create();
-    public static final GridFS docs = new GridFS(ds.getDB(), "doc");
-    public static final GridFS pdf = new GridFS(ds.getDB(), "pdf");
-    public static final GridFS tex = new GridFS(ds.getDB(), "tex");
+    public static final Datastore ds;
+    public static final GridFS docs;
+    public static final GridFS pdf;
+    public static final GridFS tex;
 
-    @SuppressWarnings("deprecation")
-    private static Datastore create() {
+    static {
 	Morphia store = new Morphia();
 	store.mapPackage("de.phsoftware.textManager.entities");
-	return store.createDatastore("textManager");
+	ds = store.createDatastore("textManager");
+	ds.ensureIndexes();
+
+	docs = new GridFS(ds.getDB(), "doc");
+	pdf = new GridFS(ds.getDB(), "pdf");
+	tex = new GridFS(ds.getDB(), "tex");
     }
 }
