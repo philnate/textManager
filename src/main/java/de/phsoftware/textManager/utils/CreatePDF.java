@@ -11,7 +11,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
 import java.text.DateFormatSymbols;
+import java.text.NumberFormat;
 import java.util.Iterator;
+import java.util.Locale;
 
 import javax.swing.JOptionPane;
 
@@ -75,6 +77,9 @@ public class CreatePDF {
 	    ctx.put(cur.getKey(), cur.getValue());
 	}
 
+	ctx.put("number",
+		NumberFormat.getNumberInstance(new Locale(Setting.findSetting(
+			"locale").getValue())));
 	// TODO update schema to have separate first and lastname
 	// Customer data
 	ctx.put("customer", customer);
