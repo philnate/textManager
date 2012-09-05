@@ -9,7 +9,7 @@ import com.google.code.morphia.annotations.Indexed;
 import com.google.code.morphia.annotations.Indexes;
 
 @Entity(noClassnameStored = true)
-@Indexes(@Index(value = "customerid, year, month", unique = true))
+@Indexes(@Index(value = "customerId, year, month", unique = true))
 public class Bill extends Entry {
 
     @Id
