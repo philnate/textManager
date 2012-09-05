@@ -9,8 +9,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
@@ -25,6 +23,7 @@ import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
@@ -35,6 +34,7 @@ import net.miginfocom.swing.MigLayout;
 import org.bson.types.ObjectId;
 
 import com.google.common.base.Preconditions;
+import com.mongodb.MongoException.DuplicateKey;
 import com.toedter.calendar.JMonthChooser;
 import com.toedter.calendar.JYearChooser;
 
@@ -204,18 +204,38 @@ public class MainWindow {
 	billNo = new JTextField();
 	frame.getContentPane().add(billNo, "cell 0 0");
 	billNo.setColumns(10);
-	billNo.addKeyListener(new KeyAdapter() {
-	    @Override
-	    public void keyReleased(KeyEvent arg0) {
-		bill.setBillNo(billNo.getText()).save();
-	    }
-	});
 
 	build = new JButton();
 	build.addActionListener(new ActionListener() {
 	    public void actionPerformed(ActionEvent arg0) {
 		try {
+		    // check that billNo isn't empty or already used within
+		    // another Bill
+		    if (billNo.getText().trim().equals("")) {
+			JOptionPane
+				.showMessageDialog(
+					frame,
+					getCaption("mw.dialog.error.billNoBlank.msg"),
+					getCaption("mw.dialog.error.billNoBlank.title"),
+					JOptionPane.ERROR_MESSAGE);
+			return;
+		    }
+		    try {
+			bill.setBillNo(billNo.getText()).save();
+		    } catch (DuplicateKey e) {
+			// unset the internal value as this is already used
+			bill.setBillNo("");
+			JOptionPane.showMessageDialog(
+				frame,
+				String.format(
+					getCaption("mw.error.billNoUsed.msg"),
+					billNo.getText()),
+				getCaption("mw.dialog.error.billNoBlank.title"),
+				JOptionPane.ERROR_MESSAGE);
+			return;
+		    }
 		    new CreatePDF(bill);
+		    // }
 		} catch (Exception e) {
 		    // TODO Auto-generated catch block
 		    e.printStackTrace();
