@@ -3,9 +3,12 @@ package de.phsoftware.textManager.entities;
 import static de.phsoftware.textManager.utils.DB.ds;
 
 import java.util.Iterator;
+import java.util.Locale;
+import java.util.Map;
 
 import com.google.code.morphia.annotations.Entity;
 import com.google.code.morphia.annotations.Id;
+import com.google.common.collect.Maps;
 
 /**
  * simply key value document storing general settings about the app
@@ -19,9 +22,13 @@ public class Setting extends Entry {
     @Id
     private String key;
     private String value;
+    private static final Map<String, String> defaults = Maps.newHashMap();
+
+    static {
+	defaults.put("locale", Locale.getDefault().getLanguage());
+    }
 
     public Setting() {
-
     }
 
     public Setting(String key, String value) {
@@ -70,6 +77,7 @@ public class Setting extends Entry {
     }
 
     public static Setting findSetting(String key) {
-	return findSetting(key, "");
+	return findSetting(key, (defaults.containsKey(key)) ? defaults.get(key)
+		: "");
     }
 }
