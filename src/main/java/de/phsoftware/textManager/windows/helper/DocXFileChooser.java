@@ -21,7 +21,7 @@ public class DocXFileChooser extends JFileChooser {
     public DocXFileChooser() {
 	setAcceptAllFileFilterUsed(false);
 	setMultiSelectionEnabled(true);
-	setCurrentDirectory(new File(Setting.findSetting(lastDir,
+	setCurrentDirectory(new File(Setting.find(lastDir,
 		getCurrentDirectory().toString()).getValue()));
 	setFileSelectionMode(JFileChooser.FILES_ONLY);
 	addChoosableFileFilter(new FileFilter() {

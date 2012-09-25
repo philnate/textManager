@@ -140,7 +140,7 @@ public class SettingWindow extends WindowAdapter {
 	while (it.hasNext()) {
 	    Entry<String, JTextField> entry = it.next();
 	    entry.getValue().setText(
-		    Setting.findSetting(entry.getKey()).getValue());
+		    Setting.find(entry.getKey()).getValue());
 	}
     }
 }

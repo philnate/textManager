@@ -1,5 +1,7 @@
 package de.phsoftware.textManager.entities;
 
+import static de.phsoftware.textManager.utils.DB.ds;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,6 +9,7 @@ import org.bson.types.ObjectId;
 
 import com.google.code.morphia.annotations.Entity;
 import com.google.code.morphia.annotations.Id;
+import com.google.code.morphia.query.Query;
 
 /**
  * Entity which represents details about a single BillingItem like title, price,
@@ -151,5 +154,18 @@ public class BillingItem extends Entry {
 	if (!fixedPrice) {
 	    total = centPerWord * wordCount;
 	}
+    }
+
+    public static Query<BillingItem> find() {
+	return ds.find(BillingItem.class);
+    }
+
+    public static BillingItem find(ObjectId id) {
+	return ds.get(BillingItem.class, id);
+    }
+
+    public static List<BillingItem> find(ObjectId customer, int year, int month) {
+	return find().filter("month", month).filter("year", year)
+		.filter("customerId", customer).asList();
     }
 }

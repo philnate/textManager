@@ -24,7 +24,7 @@ public class Updater {
      */
     public static void checkUpdateNeeded() {
 	createUpdateList();
-	Setting v = Setting.findSetting("version");
+	Setting v = Setting.find("version");
 	if (null == v) {
 	    v = new Setting("version", "1");
 	    ds.save(v);

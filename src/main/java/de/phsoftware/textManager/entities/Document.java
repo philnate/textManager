@@ -1,6 +1,7 @@
 package de.phsoftware.textManager.entities;
 
 import static de.phsoftware.textManager.utils.DB.docs;
+import static de.phsoftware.textManager.utils.DB.ds;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -13,6 +14,7 @@ import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.bson.types.ObjectId;
 
 import com.google.code.morphia.annotations.Id;
+import com.google.code.morphia.query.Query;
 import com.mongodb.gridfs.GridFSInputFile;
 
 import de.phsoftware.textManager.utils.WordCount;
@@ -99,5 +101,13 @@ public class Document {
 
     public void delete() {
 	docs.remove(document);
+    }
+
+    public static Query<Document> find() {
+	return ds.find(Document.class);
+    }
+
+    public static Document find(ObjectId id) {
+	return ds.get(Document.class, id);
     }
 }

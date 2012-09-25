@@ -8,6 +8,7 @@ import java.util.Map;
 
 import com.google.code.morphia.annotations.Entity;
 import com.google.code.morphia.annotations.Id;
+import com.google.code.morphia.query.Query;
 import com.google.common.collect.Maps;
 
 /**
@@ -54,6 +55,10 @@ public class Setting extends Entry {
 	return this;
     }
 
+    public static Query<Setting> find() {
+	return ds.find(Setting.class);
+    }
+
     /**
      * returns the value for the given key or the default value if no such key
      * exists. In case no setting with this key can be found and the default
@@ -66,7 +71,7 @@ public class Setting extends Entry {
      *            default value for this key if no value is set
      * @return
      */
-    public static Setting findSetting(String key, String def) {
+    public static Setting find(String key, String def) {
 	Iterator<Setting> it = ds.find(Setting.class).filter("key =", key)
 		.limit(1).fetch().iterator();
 	if (it.hasNext()) {
@@ -76,8 +81,7 @@ public class Setting extends Entry {
 	}
     }
 
-    public static Setting findSetting(String key) {
-	return findSetting(key, (defaults.containsKey(key)) ? defaults.get(key)
-		: "");
+    public static Setting find(String key) {
+	return find(key, (defaults.containsKey(key)) ? defaults.get(key) : "");
     }
 }

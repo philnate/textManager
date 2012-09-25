@@ -1,5 +1,7 @@
 package de.phsoftware.textManager.entities;
 
+import static de.phsoftware.textManager.utils.DB.ds;
+
 import org.bson.types.ObjectId;
 
 import com.google.code.morphia.annotations.Entity;
@@ -7,6 +9,7 @@ import com.google.code.morphia.annotations.Id;
 import com.google.code.morphia.annotations.Index;
 import com.google.code.morphia.annotations.Indexed;
 import com.google.code.morphia.annotations.Indexes;
+import com.google.code.morphia.query.Query;
 
 @Entity(noClassnameStored = true)
 @Indexes(@Index(value = "customerId, year, month", unique = true))
@@ -63,5 +66,14 @@ public class Bill extends Entry {
     public Bill setBillNo(String billNo) {
 	this.billNo = billNo;
 	return this;
+    }
+
+    public static Query<Bill> find() {
+	return ds.find(Bill.class);
+    }
+
+    public static Bill find(ObjectId customer, int year, int month) {
+	return find().filter("customerId", customer).filter("year", year)
+		.filter("month", month).get();
     }
 }

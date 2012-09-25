@@ -7,6 +7,7 @@ import org.bson.types.ObjectId;
 
 import com.google.code.morphia.annotations.Entity;
 import com.google.code.morphia.annotations.Id;
+import com.google.code.morphia.query.Query;
 
 /**
  * Represents the Customer for which texter jobs are done, contains Address and
@@ -117,7 +118,11 @@ public class Customer extends Entry {
 	return this;
     }
 
-    public static Customer load(ObjectId id) {
-	return ds.find(Customer.class).filter("_id", id).get();
+    public static Query<Customer> find() {
+	return ds.find(Customer.class);
+    }
+
+    public static Customer find(ObjectId id) {
+	return ds.get(Customer.class, id);
     }
 }

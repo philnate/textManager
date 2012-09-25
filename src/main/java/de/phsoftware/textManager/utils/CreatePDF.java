@@ -55,15 +55,14 @@ public class CreatePDF {
 	this.bill = bill;
 	this.month = bill.getMonth();
 	this.year = bill.getYear();
-	this.customer = Customer.load(bill.getCustomer());
+	this.customer = Customer.find(bill.getCustomer());
 	preparePDF();
     }
 
     @SuppressWarnings("deprecation")
     public void preparePDF() throws IOException, InterruptedException {
 	File path = new File(System.getProperty("user.dir"), "template");
-	File template = new File(path, Setting.findSetting("template")
-		.getValue());
+	File template = new File(path, Setting.find("template").getValue());
 
 	Velocity.setProperty("file.resource.loader.path",
 		path.getAbsolutePath());
@@ -77,9 +76,8 @@ public class CreatePDF {
 	    ctx.put(cur.getKey(), cur.getValue());
 	}
 
-	ctx.put("number",
-		NumberFormat.getNumberInstance(new Locale(Setting.findSetting(
-			"locale").getValue())));
+	ctx.put("number", NumberFormat.getNumberInstance(new Locale(Setting
+		.find("locale").getValue())));
 	// TODO update schema to have separate first and lastname
 	// Customer data
 	ctx.put("customer", customer);
@@ -88,9 +86,7 @@ public class CreatePDF {
 	ctx.put("month", new DateFormatSymbols().getMonths()[month]);
 	ctx.put("math", new MathTool());
 	// Billing data
-	ctx.put("allItems", ds.find(BillingItem.class).filter("month", month)
-		.filter("year", year).filter("customerId", customer.getId())
-		.asList());
+	ctx.put("allItems", BillingItem.find(customer.getId(), year, month));
 	ctx.put("billNo", bill.getBillNo());
 
 	StringWriter writer = new StringWriter();
@@ -102,9 +98,9 @@ public class CreatePDF {
 	// TODO improve creation of pdf else that it doesn't block or that it's
 	// killed after some time if nothing happened
 
-	ProcessBuilder pdfLatex = new ProcessBuilder(Setting.findSetting(
-		"pdfLatex").getValue(), "-interaction nonstopmode",
-		"-output-format pdf", filledTemplate.toString());
+	ProcessBuilder pdfLatex = new ProcessBuilder(Setting.find("pdfLatex")
+		.getValue(), "-interaction nonstopmode", "-output-format pdf",
+		filledTemplate.toString());
 
 	// Saving template file (just in case it may be needed later
 	GridFSFile texFile = tex.createFile(filledTemplate);
@@ -117,8 +113,8 @@ public class CreatePDF {
 	String pdfPath = filledTemplate.toString().replaceAll("tex$", "pdf");
 	if (0 == printOutputStream(pdfLatex.start())) {
 	    // display Bill in DocumentViewer
-	    new ProcessBuilder(Setting.findSetting("pdfViewer").getValue(),
-		    pdfPath).start().waitFor();
+	    new ProcessBuilder(Setting.find("pdfViewer").getValue(), pdfPath)
+		    .start().waitFor();
 	    System.out.println(pdfPath);
 	    GridFSFile pdfFile = pdf.createFile(new File(pdfPath));
 	    pdfFile.put("month", month);

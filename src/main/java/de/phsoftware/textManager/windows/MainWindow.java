@@ -1,6 +1,5 @@
 package de.phsoftware.textManager.windows;
 
-import static de.phsoftware.textManager.utils.DB.ds;
 import static de.phsoftware.textManager.utils.I18N.getCaption;
 import static de.phsoftware.textManager.utils.I18N.getCaptions;
 
@@ -33,7 +32,6 @@ import net.miginfocom.swing.MigLayout;
 
 import org.bson.types.ObjectId;
 
-import com.google.common.base.Preconditions;
 import com.mongodb.MongoException.DuplicateKey;
 import com.toedter.calendar.JMonthChooser;
 import com.toedter.calendar.JYearChooser;
@@ -338,13 +336,9 @@ public class MainWindow {
 	if (null == customers.getSelectedItem()) {
 	    return;
 	}
-	curBill = ds
-		.createQuery(BillingItem.class)
-		.filter("month", monthChooser.getMonth())
-		.filter("year", yearChooser.getYear())
-		.filter("customerId",
-			((Customer) customers.getSelectedItem()).getId())
-		.asList();
+	curBill = BillingItem.find(
+		((Customer) customers.getSelectedItem()).getId(),
+		yearChooser.getYear(), monthChooser.getMonth());
 	Iterator<BillingItem> it = curBill.iterator();
 	while (it.hasNext()) {
 	    BillingItem item = it.next();
@@ -457,22 +451,14 @@ public class MainWindow {
     }
 
     private Bill checkBillExists(int month, int year, Customer customer) {
-	List<Bill> bill = ds.find(Bill.class).filter("month", month)
-		.filter("year", year).filter("customerId", customer.getId())
-		.asList();
-	if (bill.isEmpty()) {
+	Bill bill = Bill.find(customer.getId(), year, month);
+	if (bill == null) {
 	    Bill b = new Bill().setMonth(month).setYear(year)
 		    .setCustomer(customer.getId()).setId(new ObjectId());
 	    b.save();
 	    return b;
 	} else {
-	    Preconditions
-		    .checkArgument(
-			    bill.size() == 1,
-			    "there should be only one bill matching the query, but got multiple {}",
-			    bill);
-	    return bill.iterator().next();
+	    return bill;
 	}
-
     }
 }
