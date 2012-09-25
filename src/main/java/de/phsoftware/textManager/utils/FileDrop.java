@@ -21,13 +21,14 @@ import java.io.PrintStream;
 import java.io.Reader;
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.TooManyListenersException;
 
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.border.Border;
+
+import de.phsoftware.textManager.utils.FileDrop.TransferableObject;
 
 /**
  * This class makes it easy to drag and drop files from the operating system to
@@ -330,7 +331,6 @@ public class FileDrop {
 			    // Get a useful list
 			    List fileList = (List) tr
 				    .getTransferData(DataFlavor.javaFileListFlavor);
-			    Iterator iterator = fileList.iterator();
 
 			    // Convert list to array
 			    File[] filesTemp = new File[fileList.size()];

@@ -11,7 +11,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.Iterator;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
@@ -295,10 +294,9 @@ public class CustomerWindow extends WindowAdapter {
 	    return;
 	}
 	jcb.removeAllItems();
-	Iterator<Customer> it = ds.find(Customer.class)
-		.order("companyName, contactName").asList().iterator();
-	while (it.hasNext()) {
-	    jcb.addItem(it.next());
+	for (Customer cust : ds.find(Customer.class)
+		.order("companyName, contactName").asList()) {
+	    jcb.addItem(cust);
 	}
     }
 }

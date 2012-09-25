@@ -12,7 +12,6 @@ import java.io.InputStream;
 import java.io.StringWriter;
 import java.text.DateFormatSymbols;
 import java.text.NumberFormat;
-import java.util.Iterator;
 import java.util.Locale;
 
 import javax.swing.JOptionPane;
@@ -70,10 +69,8 @@ public class CreatePDF {
 	VelocityContext ctx = new VelocityContext();
 
 	// User data/Settings
-	Iterator<Setting> it = ds.find(Setting.class).iterator();
-	while (it.hasNext()) {
-	    Setting cur = it.next();
-	    ctx.put(cur.getKey(), cur.getValue());
+	for (Setting setting : ds.find(Setting.class).asList()) {
+	    ctx.put(setting.getKey(), setting.getValue());
 	}
 
 	ctx.put("number", NumberFormat.getNumberInstance(new Locale(Setting

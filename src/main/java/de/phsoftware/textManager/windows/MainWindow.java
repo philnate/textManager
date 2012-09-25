@@ -11,7 +11,6 @@ import java.awt.event.ItemListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
@@ -339,9 +338,7 @@ public class MainWindow {
 	curBill = BillingItem.find(
 		((Customer) customers.getSelectedItem()).getId(),
 		yearChooser.getYear(), monthChooser.getMonth());
-	Iterator<BillingItem> it = curBill.iterator();
-	while (it.hasNext()) {
-	    BillingItem item = it.next();
+	for (BillingItem item : curBill) {
 	    model.addRow(new Object[] { item });
 	}
 

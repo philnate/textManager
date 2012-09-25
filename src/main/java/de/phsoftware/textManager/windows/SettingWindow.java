@@ -7,7 +7,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -128,19 +127,14 @@ public class SettingWindow extends WindowAdapter {
     }
 
     private void safeSettings() {
-	Iterator<Entry<String, JTextField>> it = settings.entrySet().iterator();
-	while (it.hasNext()) {
-	    Entry<String, JTextField> entry = it.next();
+	for (Entry<String, JTextField> entry : settings.entrySet()) {
 	    new Setting(entry.getKey(), entry.getValue().getText()).save();
 	}
     }
 
     private void loadSettings() {
-	Iterator<Entry<String, JTextField>> it = settings.entrySet().iterator();
-	while (it.hasNext()) {
-	    Entry<String, JTextField> entry = it.next();
-	    entry.getValue().setText(
-		    Setting.find(entry.getKey()).getValue());
+	for (Entry<String, JTextField> entry : settings.entrySet()) {
+	    entry.getValue().setText(Setting.find(entry.getKey()).getValue());
 	}
     }
 }

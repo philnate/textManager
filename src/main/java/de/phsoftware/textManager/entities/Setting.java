@@ -2,7 +2,7 @@ package de.phsoftware.textManager.entities;
 
 import static de.phsoftware.textManager.utils.DB.ds;
 
-import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -72,10 +72,10 @@ public class Setting extends Entry {
      * @return
      */
     public static Setting find(String key, String def) {
-	Iterator<Setting> it = ds.find(Setting.class).filter("key =", key)
-		.limit(1).fetch().iterator();
-	if (it.hasNext()) {
-	    return it.next();
+	List<Setting> list = ds.find(Setting.class).filter("key =", key)
+		.limit(1).asList();
+	if (list.size() == 1) {
+	    return list.get(0);
 	} else {
 	    return new Setting(key, def);
 	}
