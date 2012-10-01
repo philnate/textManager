@@ -25,10 +25,13 @@ import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
 
 import net.miginfocom.swing.MigLayout;
 
+import org.apache.commons.lang.StringUtils;
 import org.bson.types.ObjectId;
 
 import com.mongodb.MongoException.DuplicateKey;
@@ -199,10 +202,27 @@ public class MainWindow {
 	frame.getContentPane().add(btnMassAdd, "cell 0 0");
 
 	billNo = new JTextField();
+	// enable/disable build button based upon text in billNo
+	billNo.getDocument().addDocumentListener(new DocumentListener() {
+
+	    public void removeUpdate(DocumentEvent arg0) {
+		build.setEnabled(StringUtils.isNotBlank(billNo.getText()));
+	    }
+
+	    public void insertUpdate(DocumentEvent arg0) {
+		build.setEnabled(StringUtils.isNotBlank(billNo.getText()));
+	    }
+
+	    public void changedUpdate(DocumentEvent arg0) {
+		build.setEnabled(StringUtils.isNotBlank(billNo.getText()));
+	    }
+	});
 	frame.getContentPane().add(billNo, "cell 0 0");
 	billNo.setColumns(10);
 
 	build = new JButton();
+	build.setEnabled(false);// disable build Button until there's some
+				// billNo entered
 	build.addActionListener(new ActionListener() {
 	    public void actionPerformed(ActionEvent arg0) {
 		try {
