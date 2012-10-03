@@ -8,6 +8,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
@@ -22,6 +24,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
@@ -322,6 +325,34 @@ public class MainWindow {
 	// new DefaultCellEditor(new JFormattedTextField(df)));
 	billLines.getColumnModel().getColumn(0).setPreferredWidth(400);
 	billLines.getColumnModel().getColumn(5).setPreferredWidth(400);
+
+	// Menu for Row actions, e.g. delete row
+	billLines.addMouseListener(new MouseAdapter() {
+	    @Override
+	    public void mousePressed(MouseEvent e) {
+		if (e.getButton() == MouseEvent.BUTTON3) {
+		    JPopupMenu menu = new JPopupMenu();
+		    JMenuItem delete = new JMenuItem(
+			    getCaption("mw.itemmenu.delete"));
+		    delete.addMouseListener(new MouseAdapter() {
+
+			@Override
+			public void mousePressed(MouseEvent e) {
+			    if (JOptionPane.showConfirmDialog(frame,
+				    getCaption("mw.dialog.itemdelete.title")) == JOptionPane.YES_OPTION) {
+				System.out.println("delete");
+				int row = billLines.rowAtPoint(e.getPoint());
+				((BillingItem) ((Vector) model.getDataVector()
+					.get(row)).get(0)).delete();
+				model.removeRow(row);
+			    }
+			}
+		    });
+		    menu.add(delete);
+		    menu.show(billLines, e.getX(), e.getY());
+		}
+	    }
+	});
 
     }
 
