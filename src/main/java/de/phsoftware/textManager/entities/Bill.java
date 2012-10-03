@@ -10,6 +10,7 @@ import com.google.code.morphia.annotations.Index;
 import com.google.code.morphia.annotations.Indexed;
 import com.google.code.morphia.annotations.Indexes;
 import com.google.code.morphia.query.Query;
+import com.mongodb.WriteConcern;
 
 @Entity(noClassnameStored = true)
 @Indexes(@Index(value = "customerId, year, month", unique = true))
@@ -75,5 +76,13 @@ public class Bill extends Entry {
     public static Bill find(ObjectId customer, int year, int month) {
 	return find().filter("customerId", customer).filter("year", year)
 		.filter("month", month).get();
+    }
+
+    @Override
+    public void delete() {
+	for (BillingItem item : BillingItem.find(getCustomer(), year, month)) {
+	    item.delete();
+	}
+	ds.delete(this, WriteConcern.SAFE);
     }
 }

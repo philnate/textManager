@@ -10,6 +10,7 @@ import org.bson.types.ObjectId;
 import com.google.code.morphia.annotations.Entity;
 import com.google.code.morphia.annotations.Id;
 import com.google.code.morphia.query.Query;
+import com.mongodb.WriteConcern;
 
 /**
  * Entity which represents details about a single BillingItem like title, price,
@@ -167,5 +168,13 @@ public class BillingItem extends Entry {
     public static List<BillingItem> find(ObjectId customer, int year, int month) {
 	return find().filter("month", month).filter("year", year)
 		.filter("customerId", customer).asList();
+    }
+
+    @Override
+    public void delete() {
+	for (Document doc : documents) {
+	    doc.delete();
+	}
+	ds.delete(this, WriteConcern.SAFE);
     }
 }

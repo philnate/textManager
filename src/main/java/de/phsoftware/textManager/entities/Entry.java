@@ -24,4 +24,9 @@ public abstract class Entry {
     public String toString() {
 	return ToStringBuilder.reflectionToString(this);
     }
+
+    /**
+     * deletes the current entry and all linked documents if existent
+     */
+    public abstract void delete();
 }

@@ -10,6 +10,7 @@ import com.google.code.morphia.annotations.Entity;
 import com.google.code.morphia.annotations.Id;
 import com.google.code.morphia.query.Query;
 import com.google.common.collect.Maps;
+import com.mongodb.WriteConcern;
 
 /**
  * simply key value document storing general settings about the app
@@ -83,5 +84,10 @@ public class Setting extends Entry {
 
     public static Setting find(String key) {
 	return find(key, (defaults.containsKey(key)) ? defaults.get(key) : "");
+    }
+
+    @Override
+    public void delete() {
+	ds.delete(this, WriteConcern.SAFE);
     }
 }

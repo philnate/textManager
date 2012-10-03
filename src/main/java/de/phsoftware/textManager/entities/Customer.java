@@ -8,6 +8,7 @@ import org.bson.types.ObjectId;
 import com.google.code.morphia.annotations.Entity;
 import com.google.code.morphia.annotations.Id;
 import com.google.code.morphia.query.Query;
+import com.mongodb.WriteConcern;
 
 /**
  * Represents the Customer for which texter jobs are done, contains Address and
@@ -124,5 +125,13 @@ public class Customer extends Entry {
 
     public static Customer find(ObjectId id) {
 	return ds.get(Customer.class, id);
+    }
+
+    @Override
+    public void delete() {
+	for (Bill bill : Bill.find().filter("customerId", id).asList()) {
+	    bill.delete();
+	}
+	ds.delete(this, WriteConcern.SAFE);
     }
 }
