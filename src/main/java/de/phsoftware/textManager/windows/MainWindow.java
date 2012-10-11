@@ -46,9 +46,11 @@ import de.phsoftware.textManager.entities.BillingItem;
 import de.phsoftware.textManager.entities.Customer;
 import de.phsoftware.textManager.entities.Document;
 import de.phsoftware.textManager.updates.Updater;
-import de.phsoftware.textManager.utils.CreatePDF;
 import de.phsoftware.textManager.utils.FileDrop;
 import de.phsoftware.textManager.utils.ImageRegistry;
+import de.phsoftware.textManager.utils.NotifyingThread;
+import de.phsoftware.textManager.utils.PDFCreator;
+import de.phsoftware.textManager.utils.ThreadCompleteListener;
 import de.phsoftware.textManager.windows.helper.DocXFileChooser;
 import de.phsoftware.textManager.windows.helper.DocumentListRenderer;
 
@@ -67,6 +69,7 @@ public class MainWindow {
     private Bill bill;
     private JButton build;
     private JButton view;
+    private Thread runningThread;
 
     /**
      * on value change load different bill into table
@@ -228,37 +231,58 @@ public class MainWindow {
 				// billNo entered
 	build.addActionListener(new ActionListener() {
 	    public void actionPerformed(ActionEvent arg0) {
-		try {
-		    // check that billNo isn't empty or already used within
-		    // another Bill
-		    if (billNo.getText().trim().equals("")) {
-			JOptionPane
-				.showMessageDialog(
-					frame,
-					getCaption("mw.dialog.error.billNoBlank.msg"),
-					getCaption("mw.dialog.error.billNoBlank.title"),
-					JOptionPane.ERROR_MESSAGE);
-			return;
-		    }
+		if (runningThread == null) {
 		    try {
-			bill.setBillNo(billNo.getText()).save();
-		    } catch (DuplicateKey e) {
-			// unset the internal value as this is already used
-			bill.setBillNo("");
-			JOptionPane.showMessageDialog(
-				frame,
-				String.format(
-					getCaption("mw.error.billNoUsed.msg"),
-					billNo.getText()),
-				getCaption("mw.dialog.error.billNoBlank.title"),
-				JOptionPane.ERROR_MESSAGE);
-			return;
+			// check that billNo isn't empty or already used within
+			// another Bill
+			if (billNo.getText().trim().equals("")) {
+			    JOptionPane
+				    .showMessageDialog(
+					    frame,
+					    getCaption("mw.dialog.error.billNoBlank.msg"),
+					    getCaption("mw.dialog.error.billNoBlank.title"),
+					    JOptionPane.ERROR_MESSAGE);
+			    return;
+			}
+			try {
+			    bill.setBillNo(billNo.getText()).save();
+			} catch (DuplicateKey e) {
+			    // unset the internal value as this is already used
+			    bill.setBillNo("");
+			    JOptionPane.showMessageDialog(
+				    frame,
+				    String.format(
+					    getCaption("mw.error.billNoUsed.msg"),
+					    billNo.getText()),
+				    getCaption("mw.dialog.error.billNoBlank.title"),
+				    JOptionPane.ERROR_MESSAGE);
+			    return;
+			}
+			PDFCreator pdf = new PDFCreator(bill);
+			pdf.addListener(new ThreadCompleteListener() {
+
+			    public void threadCompleted(
+				    NotifyingThread notifyingThread) {
+				build.setToolTipText(getCaption("mw.tooltip.build"));
+				build.setIcon(ImageRegistry
+					.getImage("build.png"));
+				runningThread = null;
+			    }
+			});
+			runningThread = new Thread(pdf);
+			runningThread.start();
+		    } catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		    }
-		    new CreatePDF(bill);
-		    // }
-		} catch (Exception e) {
-		    // TODO Auto-generated catch block
-		    e.printStackTrace();
+		    build.setToolTipText(getCaption("mw.tooltip.build.cancel"));
+		    build.setIcon(ImageRegistry.getImage("cancel.gif"));
+		} else {
+		    runningThread.interrupt();
+		    runningThread = null;
+		    build.setToolTipText(getCaption("mw.tooltip.build"));
+		    build.setIcon(ImageRegistry.getImage("build.png"));
+
 		}
 	    }
 	});
