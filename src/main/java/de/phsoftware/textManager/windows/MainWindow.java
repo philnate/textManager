@@ -1,5 +1,6 @@
 package de.phsoftware.textManager.windows;
 
+import static de.phsoftware.textManager.utils.DB.pdf;
 import static de.phsoftware.textManager.utils.I18N.getCaption;
 import static de.phsoftware.textManager.utils.I18N.getCaptions;
 
@@ -13,6 +14,7 @@ import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.Vector;
 
@@ -45,7 +47,9 @@ import de.phsoftware.textManager.entities.Bill;
 import de.phsoftware.textManager.entities.BillingItem;
 import de.phsoftware.textManager.entities.Customer;
 import de.phsoftware.textManager.entities.Document;
+import de.phsoftware.textManager.entities.Setting;
 import de.phsoftware.textManager.updates.Updater;
+import de.phsoftware.textManager.utils.DB;
 import de.phsoftware.textManager.utils.FileDrop;
 import de.phsoftware.textManager.utils.ImageRegistry;
 import de.phsoftware.textManager.utils.NotifyingThread;
@@ -212,15 +216,21 @@ public class MainWindow {
 	billNo.getDocument().addDocumentListener(new DocumentListener() {
 
 	    public void removeUpdate(DocumentEvent arg0) {
-		build.setEnabled(StringUtils.isNotBlank(billNo.getText()));
+		setButtonStates();
 	    }
 
 	    public void insertUpdate(DocumentEvent arg0) {
-		build.setEnabled(StringUtils.isNotBlank(billNo.getText()));
+		setButtonStates();
 	    }
 
 	    public void changedUpdate(DocumentEvent arg0) {
-		build.setEnabled(StringUtils.isNotBlank(billNo.getText()));
+		setButtonStates();
+	    }
+
+	    private void setButtonStates() {
+		boolean notBlank = StringUtils.isNotBlank(billNo.getText());
+		build.setEnabled(notBlank);
+		view.setEnabled(pdf.find(billNo.getText() + ".pdf").size() == 1);
 	    }
 	});
 	frame.getContentPane().add(billNo, "cell 0 0");
@@ -267,6 +277,8 @@ public class MainWindow {
 				build.setIcon(ImageRegistry
 					.getImage("build.png"));
 				runningThread = null;
+				view.setEnabled(DB.pdf.find(
+					billNo.getText() + ".pdf").size() == 1);
 			    }
 			});
 			runningThread = new Thread(pdf);
@@ -324,15 +336,23 @@ public class MainWindow {
 
 	view = new JButton();
 	view.setToolTipText(getCaption("mw.tooltip.view"));
+	view.setIcon(ImageRegistry.getImage("view.gif"));
 	view.setEnabled(false);
 	view.addActionListener(new ActionListener() {
 	    public void actionPerformed(ActionEvent e) {
-		// GridFSDBFile file
-		// =pdf.findOne(QueryBuilder.start("month").is(monthChooser.getMonth()).and("year").is(yearChooser.getYear()).and("customerId").is(((Customer)
-		// customers.getSelectedItem()).getId()).get());
-		// if (null != file) {
-		// Setting.findSetting("template").get;
-		// }
+		File file = new File(System.getProperty("user.dir"), String
+			.format("template/%s.tmp.pdf", billNo.getText()));
+		try {
+		    pdf.findOne(billNo.getText() + ".pdf").writeTo(file);
+		    new ProcessBuilder(Setting.find("pdfViewer").getValue(),
+			    file.getAbsolutePath()).start().waitFor();
+		    file.delete();
+		} catch (IOException e1) {
+		    // TODO Auto-generated catch block
+		    e1.printStackTrace();
+		} catch (InterruptedException e1) {
+		    e1.printStackTrace();
+		}
 	    }
 	});
 	frame.getContentPane().add(view, "cell 0 0");
