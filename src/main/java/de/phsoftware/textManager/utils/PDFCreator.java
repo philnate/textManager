@@ -138,20 +138,15 @@ public class PDFCreator extends NotifyingThread {
     }
 
     private int printOutputStream(Process proc) throws IOException {
-	InputStream in = proc.getInputStream();
-	int c = 0;
+	InputStream is = proc.getInputStream();
 	try {
-	    while (c != -1) {
-		for (int i = 0; i < in.available(); i++) {
-		    c = in.read();
-		    System.out.print((char) c);
-		}
-		Thread.sleep(100);
-		if (isInterrupted()) {
-		    throw new InterruptedException();
-		}
-	    }
+	    Thread writer = new WriteStream(is);
+	    writer.start();
 	    int rc = proc.waitFor();
+	    if (writer.isAlive()) {
+		Thread.sleep(1000);
+		writer.interrupt();
+	    }
 	    System.out.println("Return code:" + rc);
 	    return rc;
 	} catch (InterruptedException e) {
@@ -159,7 +154,7 @@ public class PDFCreator extends NotifyingThread {
 	} finally {
 	    proc.destroy();
 	    System.out.println("creation interrupted");
-	    in.close();
+	    is.close();
 	}
     }
 
@@ -167,5 +162,39 @@ public class PDFCreator extends NotifyingThread {
     protected void doRun() {
 	Thread.currentThread().setName("Pdf Creator:" + bill.getBillNo());
 	preparePDF();
+    }
+
+    private class WriteStream extends Thread {
+	private final InputStream is;
+
+	public WriteStream(InputStream is) {
+	    this.is = is;
+	}
+
+	@Override
+	public void run() {
+	    while (true) {
+		try {
+		    for (int i = 0; i < is.available(); i++) {
+			int c = is.read();
+			if (c == -1) {
+			    return;
+			}
+			System.out.print((char) c);
+		    }
+		    Thread.sleep(10);
+		    if (isInterrupted()) {
+			return;
+		    }
+		} catch (IOException e) {
+		    e.printStackTrace();
+		    return;
+		} catch (InterruptedException e) {
+		    e.printStackTrace();
+		    return;
+		}
+	    }
+	}
+
     }
 }
