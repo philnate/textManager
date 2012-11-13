@@ -318,7 +318,30 @@ public class MainWindow {
 	build.setToolTipText(getCaption("mw.tooltip.build"));
 	build.setIcon(ImageRegistry.getImage("build.png"));
 	frame.getContentPane().add(build, "cell 0 0");
-
+	
+	view = new JButton();
+	view.setToolTipText(getCaption("mw.tooltip.view"));
+	view.setIcon(ImageRegistry.getImage("view.gif"));
+	view.setEnabled(false);
+	view.addActionListener(new ActionListener() {
+	    public void actionPerformed(ActionEvent e) {
+		File file = new File(System.getProperty("user.dir"), String
+			.format("template/%s.tmp.pdf", billNo.getText()));
+		try {
+		    pdf.findOne(billNo.getText() + ".pdf").writeTo(file);
+		    new ProcessBuilder(Setting.find("pdfViewer").getValue(),
+			    file.getAbsolutePath()).start().waitFor();
+		    file.delete();
+		} catch (IOException e1) {
+		    // TODO Auto-generated catch block
+		    e1.printStackTrace();
+		} catch (InterruptedException e1) {
+		    e1.printStackTrace();
+		}
+	    }
+	});
+	frame.getContentPane().add(view, "cell 0 0");
+	
 	JMenuBar menuBar = new JMenuBar();
 	frame.setJMenuBar(menuBar);
 
@@ -342,6 +365,16 @@ public class MainWindow {
 	});
 	menu.add(itemSetting);
 
+	JMenuItem itemImport = new JMenu(getCaption("mw.menu.edit.import"));
+	itemImport.addActionListener(new ActionListener() {
+		
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			new ImportWindow();
+		}
+	});
+	menu.add(itemImport);
+	
 	menuBar.add(menu);
 
 	CustomerWindow.loadCustomer(customers);
@@ -351,28 +384,6 @@ public class MainWindow {
 	fillTableModel();
 	billLines.setModel(model);
 
-	view = new JButton();
-	view.setToolTipText(getCaption("mw.tooltip.view"));
-	view.setIcon(ImageRegistry.getImage("view.gif"));
-	view.setEnabled(false);
-	view.addActionListener(new ActionListener() {
-	    public void actionPerformed(ActionEvent e) {
-		File file = new File(System.getProperty("user.dir"), String
-			.format("template/%s.tmp.pdf", billNo.getText()));
-		try {
-		    pdf.findOne(billNo.getText() + ".pdf").writeTo(file);
-		    new ProcessBuilder(Setting.find("pdfViewer").getValue(),
-			    file.getAbsolutePath()).start().waitFor();
-		    file.delete();
-		} catch (IOException e1) {
-		    // TODO Auto-generated catch block
-		    e1.printStackTrace();
-		} catch (InterruptedException e1) {
-		    e1.printStackTrace();
-		}
-	    }
-	});
-	frame.getContentPane().add(view, "cell 0 0");
 	// DecimalFormat df = new DecimalFormat("#,##0.##"); // you shouldn't
 	// // need more "#"
 	// // to the left
