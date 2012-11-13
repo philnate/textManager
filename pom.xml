@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>phsoftware</groupId>
 	<artifactId>textManager</artifactId>
-	<version>0.1.0-SNAPSHOT</version>
+	<version>1.0.0-SNAPSHOT</version>
 	<dependencies>
 		<dependency>
 			<groupId>com.google.code.morphia</groupId>
@@ -81,6 +81,27 @@
 	</repositories>
 	<build>
 		<plugins>
+			<plugin>
+				<groupId>com.google.code.maven-license-plugin</groupId>
+				<artifactId>maven-license-plugin</artifactId>
+				<version>1.4.0</version>
+				<configuration>
+					<header>licenseHeader.tpl</header>
+					<excludes>
+						<exclude>**/de/phsoftware/textManager/utils/FileDrop.java</exclude>
+					</excludes>
+					<includes>
+						<include>**/*.java</include>
+					</includes>
+					<properties>
+						<project>
+							textManager
+						</project>
+						<year>${2012-}</year>
+					</properties>
+					<encoding>UTF-8</encoding>
+				</configuration>
+			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-assembly-plugin</artifactId>
