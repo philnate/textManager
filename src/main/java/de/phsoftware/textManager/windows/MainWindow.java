@@ -101,10 +101,12 @@ public class MainWindow {
     private class ChangeListener implements PropertyChangeListener,
 	    ItemListener {
 
+	@Override
 	public void itemStateChanged(ItemEvent arg0) {
 	    fillTableModel();
 	}
 
+	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 	    fillTableModel();
 	}
@@ -116,6 +118,7 @@ public class MainWindow {
      */
     public static void main(String[] args) {
 	EventQueue.invokeLater(new Runnable() {
+	    @Override
 	    public void run() {
 		try {
 		    MainWindow window = new MainWindow();
@@ -178,6 +181,7 @@ public class MainWindow {
 	// for each file added through drag&drop create a new lineItem
 	new FileDrop(jScrollPane, new FileDrop.Listener() {
 
+	    @Override
 	    public void filesDropped(File[] files) {
 		for (File file : files) {
 		    addNewBillingItem(Document.loadAndSave(file));
@@ -197,6 +201,7 @@ public class MainWindow {
 	btnAddLine.setIcon(ImageRegistry.getImage("load.gif"));
 	btnAddLine.setToolTipText(getCaption("mw.tooltip.add"));
 	btnAddLine.addActionListener(new ActionListener() {
+	    @Override
 	    public void actionPerformed(ActionEvent arg0) {
 		addNewBillingItem();
 	    }
@@ -209,6 +214,7 @@ public class MainWindow {
 	btnMassAdd.setToolTipText(getCaption("mw.tooltip.massAdd"));
 	btnMassAdd.addActionListener(new ActionListener() {
 
+	    @Override
 	    public void actionPerformed(ActionEvent arg0) {
 		JFileChooser file = new DocXFileChooser();
 		switch (file.showOpenDialog(frame)) {
@@ -232,14 +238,17 @@ public class MainWindow {
 	// enable/disable build button based upon text in billNo
 	billNo.getDocument().addDocumentListener(new DocumentListener() {
 
+	    @Override
 	    public void removeUpdate(DocumentEvent arg0) {
 		setButtonStates();
 	    }
 
+	    @Override
 	    public void insertUpdate(DocumentEvent arg0) {
 		setButtonStates();
 	    }
 
+	    @Override
 	    public void changedUpdate(DocumentEvent arg0) {
 		setButtonStates();
 	    }
@@ -257,6 +266,7 @@ public class MainWindow {
 	build.setEnabled(false);// disable build Button until there's some
 				// billNo entered
 	build.addActionListener(new ActionListener() {
+	    @Override
 	    public void actionPerformed(ActionEvent arg0) {
 		if (runningThread == null) {
 		    try {
@@ -288,6 +298,7 @@ public class MainWindow {
 			PDFCreator pdf = new PDFCreator(bill);
 			pdf.addListener(new ThreadCompleteListener() {
 
+			    @Override
 			    public void threadCompleted(
 				    NotifyingThread notifyingThread) {
 				build.setToolTipText(getCaption("mw.tooltip.build"));
@@ -318,12 +329,13 @@ public class MainWindow {
 	build.setToolTipText(getCaption("mw.tooltip.build"));
 	build.setIcon(ImageRegistry.getImage("build.png"));
 	frame.getContentPane().add(build, "cell 0 0");
-	
+
 	view = new JButton();
 	view.setToolTipText(getCaption("mw.tooltip.view"));
 	view.setIcon(ImageRegistry.getImage("view.gif"));
 	view.setEnabled(false);
 	view.addActionListener(new ActionListener() {
+	    @Override
 	    public void actionPerformed(ActionEvent e) {
 		File file = new File(System.getProperty("user.dir"), String
 			.format("template/%s.tmp.pdf", billNo.getText()));
@@ -341,7 +353,7 @@ public class MainWindow {
 	    }
 	});
 	frame.getContentPane().add(view, "cell 0 0");
-	
+
 	JMenuBar menuBar = new JMenuBar();
 	frame.setJMenuBar(menuBar);
 
@@ -349,6 +361,7 @@ public class MainWindow {
 	JMenuItem itemCust = new JMenuItem(getCaption("mw.menu.edit.customer"));
 	itemCust.addActionListener(new ActionListener() {
 
+	    @Override
 	    public void actionPerformed(ActionEvent arg0) {
 		new CustomerWindow(customers);
 	    }
@@ -359,6 +372,7 @@ public class MainWindow {
 		getCaption("mw.menu.edit.settings"));
 	itemSetting.addActionListener(new ActionListener() {
 
+	    @Override
 	    public void actionPerformed(ActionEvent arg0) {
 		new SettingWindow();
 	    }
@@ -367,14 +381,14 @@ public class MainWindow {
 
 	JMenuItem itemImport = new JMenu(getCaption("mw.menu.edit.import"));
 	itemImport.addActionListener(new ActionListener() {
-		
-		@Override
-		public void actionPerformed(ActionEvent arg0) {
-			new ImportWindow();
-		}
+
+	    @Override
+	    public void actionPerformed(ActionEvent arg0) {
+		new ImportWindow();
+	    }
 	});
 	menu.add(itemImport);
-	
+
 	menuBar.add(menu);
 
 	CustomerWindow.loadCustomer(customers);

@@ -20,51 +20,51 @@ import java.awt.EventQueue;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
-import javax.swing.JComboBox;
 import javax.swing.JFrame;
 
 public class ImportWindow extends WindowAdapter {
-	private JFrame frame;
-	private static boolean debug = false;
+    private JFrame frame;
+    private static boolean debug = false;
 
-	@Override
-	public void windowClosing(WindowEvent evt) {
-		if (debug) {
-			System.exit(0);
-		} else {
-			frame.dispose();
+    @Override
+    public void windowClosing(WindowEvent evt) {
+	if (debug) {
+	    System.exit(0);
+	} else {
+	    frame.dispose();
+	}
+    }
+
+    /**
+     * Launch the Window, debugging only
+     */
+    public static void main(String[] args) {
+	EventQueue.invokeLater(new Runnable() {
+	    @Override
+	    public void run() {
+		try {
+		    debug = true;
+		    new ImportWindow();
+		} catch (Exception e) {
+		    e.printStackTrace();
 		}
-	}
+	    }
+	});
+    }
 
-	/**
-	 * Launch the Window, debugging only
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					debug = true;
-					new ImportWindow();
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+    /**
+     * Create the window.
+     */
+    public ImportWindow() {
+	initialize();
+	frame.setVisible(true);
+    }
 
-	/**
-	 * Create the window.
-	 */
-	public ImportWindow() {
-		initialize();
-		frame.setVisible(true);
-	}
-
-	/**
-	 * Initialize the contents of the frame.
-	 */
-	private void initialize() {
-		frame = new JFrame();
-		frame.setBounds(100, 100, 829, 251);
-	}
+    /**
+     * Initialize the contents of the frame.
+     */
+    private void initialize() {
+	frame = new JFrame();
+	frame.setBounds(100, 100, 829, 251);
+    }
 }

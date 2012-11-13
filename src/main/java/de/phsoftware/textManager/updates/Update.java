@@ -17,7 +17,6 @@
  */
 package de.phsoftware.textManager.updates;
 
-
 /**
  * Base class from which concrete schema updates inherit. Performs basic
  * validations and starts update process
