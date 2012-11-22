@@ -97,7 +97,7 @@
 						<project>
 							textManager
 						</project>
-						<year>${2012-}</year>
+						<year>2012-</year>
 					</properties>
 					<encoding>UTF-8</encoding>
 				</configuration>
