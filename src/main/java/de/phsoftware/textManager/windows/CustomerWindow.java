@@ -17,7 +17,6 @@
  */
 package de.phsoftware.textManager.windows;
 
-import static de.phsoftware.textManager.utils.DB.ds;
 import static de.phsoftware.textManager.utils.I18N.getCaption;
 import static de.phsoftware.textManager.windows.helper.ContextMenuMouseListener.RIGHT_CLICK_MENU;
 
@@ -40,6 +39,7 @@ import javax.swing.JTextField;
 import net.miginfocom.swing.MigLayout;
 import de.phsoftware.textManager.entities.Customer;
 import de.phsoftware.textManager.utils.ImageRegistry;
+import de.phsoftware.textManager.windows.components.CustomerComboBox;
 
 public class CustomerWindow extends WindowAdapter {
 
@@ -49,11 +49,11 @@ public class CustomerWindow extends WindowAdapter {
     private JTextField textZip;
     private JTextField textCity;
     private JTextField textNr;
-    private JComboBox customers;
+    private CustomerComboBox customers;
     private JTextField textCompanyName;
     private JButton btnSave;
     private JComboBox feMale;
-    private final JComboBox refresh;
+    private final CustomerComboBox refresh;
     // tells what behavior to show on closing
     private static boolean debug = false;
 
@@ -84,7 +84,7 @@ public class CustomerWindow extends WindowAdapter {
 	    }
 	}
 	frame.dispose();
-	loadCustomer(refresh);
+	refresh.loadCustomer();
 	if (debug) {
 	    // on debug this will exit the window and app
 	    System.exit(0);
@@ -96,6 +96,7 @@ public class CustomerWindow extends WindowAdapter {
      */
     public static void main(String[] args) {
 	EventQueue.invokeLater(new Runnable() {
+	    @Override
 	    public void run() {
 		try {
 		    debug = true;
@@ -110,7 +111,7 @@ public class CustomerWindow extends WindowAdapter {
     /**
      * Create the window.
      */
-    public CustomerWindow(JComboBox refresh) {
+    public CustomerWindow(CustomerComboBox refresh) {
 	this.refresh = refresh;
 	initialize();
 	frame.setVisible(true);
@@ -131,7 +132,7 @@ public class CustomerWindow extends WindowAdapter {
 	JLabel lblcustomer = new JLabel(getCaption("cw.label.customer"));
 	frame.getContentPane().add(lblcustomer, "cell 0 0,alignx left");
 
-	customers = new JComboBox();
+	customers = new CustomerComboBox();
 
 	frame.getContentPane()
 		.add(customers, "flowx,cell 1 0,growx,aligny top");
@@ -206,9 +207,10 @@ public class CustomerWindow extends WindowAdapter {
 	 */
 	customers.addItemListener(new ItemListener() {
 
+	    @Override
 	    public void itemStateChanged(ItemEvent arg0) {
 		if (arg0.getStateChange() == ItemEvent.SELECTED) {
-		    Customer c = (Customer) customers.getSelectedItem();
+		    Customer c = customers.getSelectedCustomer();
 		    if (null == c) {
 			return;
 		    }
@@ -224,7 +226,7 @@ public class CustomerWindow extends WindowAdapter {
 	});
 	// needs to be called after registering listener as else on startup it
 	// will be empty
-	loadCustomer(customers);
+	customers.loadCustomer();
 	/**
 	 * sets up everything so that a new customer can be created
 	 */
@@ -284,7 +286,7 @@ public class CustomerWindow extends WindowAdapter {
 		.setStreet(textStreet.getText()).setStreetNo(textNr.getText())
 		.setZip(textZip.getText()).setCity(textCity.getText()).save();
 	setEnabled(false);
-	loadCustomer(customers);
+	customers.loadCustomer();
 	return true;
     }
 
@@ -300,20 +302,5 @@ public class CustomerWindow extends WindowAdapter {
 	textNr.setEnabled(enabled);
 	textStreet.setEnabled(enabled);
 	textZip.setEnabled(enabled);
-    }
-
-    /**
-     * loads all customers currently stored in collection and shows their
-     * heading in Combobox
-     */
-    public static void loadCustomer(JComboBox jcb) {
-	if (null == jcb) {
-	    return;
-	}
-	jcb.removeAllItems();
-	for (Customer cust : ds.find(Customer.class)
-		.order("companyName, contactName").asList()) {
-	    jcb.addItem(cust);
-	}
     }
 }

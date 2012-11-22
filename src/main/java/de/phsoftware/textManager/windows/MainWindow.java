@@ -32,7 +32,6 @@ import java.io.IOException;
 import java.util.List;
 
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -66,6 +65,7 @@ import de.phsoftware.textManager.utils.NotifyingThread;
 import de.phsoftware.textManager.utils.PDFCreator;
 import de.phsoftware.textManager.utils.ThreadCompleteListener;
 import de.phsoftware.textManager.windows.components.BillingItemTable;
+import de.phsoftware.textManager.windows.components.CustomerComboBox;
 import de.phsoftware.textManager.windows.helper.DocXFileChooser;
 
 public class MainWindow {
@@ -78,7 +78,7 @@ public class MainWindow {
     private JYearChooser yearChooser;
     private ChangeListener changeListener;
     private List<BillingItem> curBill;
-    private JComboBox<Customer> customers;
+    private CustomerComboBox customers;
     private JTextField billNo;
     private Bill bill;
     private JButton build;
@@ -143,7 +143,7 @@ public class MainWindow {
 	frame.getContentPane().setLayout(
 		new MigLayout("", "[grow]", "[][grow]"));
 
-	customers = new JComboBox<Customer>();
+	customers = new CustomerComboBox();
 	customers.addItemListener(changeListener);
 
 	frame.getContentPane().add(customers, "flowx,cell 0 0,growx");
@@ -367,7 +367,7 @@ public class MainWindow {
 
 	menuBar.add(menu);
 
-	CustomerWindow.loadCustomer(customers);
+	customers.loadCustomer();
 	fillTableModel();
 
 	// DecimalFormat df = new DecimalFormat("#,##0.##"); // you shouldn't
@@ -384,8 +384,7 @@ public class MainWindow {
     }
 
     private BillingItem addNewBillingItem() {
-	return billLines.addNewBillingItem(
-		(Customer) customers.getSelectedItem(),
+	return billLines.addNewBillingItem(customers.getSelectedCustomer(),
 		monthChooser.getMonth(), yearChooser.getYear());
     }
 
@@ -400,18 +399,18 @@ public class MainWindow {
 	    return;
 	}
 	billLines.flushRows();
-	if (null == customers.getSelectedItem()) {
+	Customer c = customers.getSelectedCustomer();
+	if (null == c) {
 	    return;
 	}
-	curBill = BillingItem.find(
-		((Customer) customers.getSelectedItem()).getId(),
-		yearChooser.getYear(), monthChooser.getMonth());
+	curBill = BillingItem.find(c.getId(), yearChooser.getYear(),
+		monthChooser.getMonth());
 	for (BillingItem item : curBill) {
 	    billLines.addRow(item);
 	}
 
 	bill = checkBillExists(monthChooser.getMonth(), yearChooser.getYear(),
-		((Customer) customers.getSelectedItem()));
+		c);
 	billNo.setText(bill.getBillNo());
     }
 
