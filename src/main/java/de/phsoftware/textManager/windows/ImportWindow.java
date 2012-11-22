@@ -17,11 +17,19 @@
  */
 package de.phsoftware.textManager.windows;
 
+import static de.phsoftware.textManager.utils.I18N.getCaption;
+
 import java.awt.EventQueue;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
+import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+
+import net.miginfocom.swing.MigLayout;
+import de.phsoftware.textManager.windows.components.BillingItemTable;
 
 public class ImportWindow extends WindowAdapter {
     private JFrame frame;
@@ -66,6 +74,24 @@ public class ImportWindow extends WindowAdapter {
      */
     private void initialize() {
 	frame = new JFrame();
-	frame.setBounds(100, 100, 829, 251);
+	frame.setBounds(100, 100, 1000, 800);
+	frame.getContentPane().setLayout(
+		new MigLayout("", "[grow]", "[grow][][grow]"));
+
+	JButton read = new JButton(getCaption("iw.tooltip.button.read"));
+	JButton imprt = new JButton(getCaption("iw.tooltip.button.import"));
+
+	frame.getContentPane().add(read, "cell 0 1");
+	frame.getContentPane().add(imprt, "cell 0 1");
+
+	JTextArea input = new JTextArea();
+	input.setRows(20);
+	frame.getContentPane().add(input, "flowx,cell 0 0,growx");
+
+	JScrollPane pane = new JScrollPane();
+	BillingItemTable table = new BillingItemTable(frame);
+	table.setContextMenuEnabled(false);
+	pane.setViewportView(table);
+	frame.getContentPane().add(pane, "growy, cell 0 2,growx");
     }
 }

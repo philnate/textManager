@@ -46,6 +46,8 @@ public class BillingItemTable extends JTable {
 
     private final BillingItemTableModel model;
 
+    private boolean contextMenuEnabled = true;
+
     public BillingItemTable(final JFrame frame) {
 	super();
 	setRowHeight(24);
@@ -56,8 +58,8 @@ public class BillingItemTable extends JTable {
 	setDefaultEditor(List.class, docList);
 
 	// set model and adjust column Model
-	model = new BillingItemTableModel(getCaptions("mw.tableheader",
-		"title", "wc", "cw", "fixPrice", "total", "documents"));
+	model = new BillingItemTableModel(getCaptions("bit.header", "title",
+		"wc", "cw", "fixPrice", "total", "documents"));
 	setModel(model);
 	getColumnModel().getColumn(0).setPreferredWidth(400);
 	getColumnModel().getColumn(5).setPreferredWidth(400);
@@ -67,7 +69,7 @@ public class BillingItemTable extends JTable {
 	addMouseListener(new MouseAdapter() {
 	    @Override
 	    public void mousePressed(MouseEvent e) {
-		if (e.getButton() == MouseEvent.BUTTON3) {
+		if (contextMenuEnabled && e.getButton() == MouseEvent.BUTTON3) {
 		    JPopupMenu menu = new JPopupMenu();
 		    JMenuItem delete = new JMenuItem(
 			    getCaption("mw.itemmenu.delete"));
@@ -124,5 +126,14 @@ public class BillingItemTable extends JTable {
 
     public void addRow(BillingItem item) {
 	model.addRow(new Object[] { item });
+    }
+
+    /**
+     * per default this menu is activated
+     * 
+     * @param enabled
+     */
+    public void setContextMenuEnabled(boolean enabled) {
+	contextMenuEnabled = enabled;
     }
 }
