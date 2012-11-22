@@ -19,21 +19,17 @@ package de.phsoftware.textManager.windows;
 
 import static de.phsoftware.textManager.utils.DB.pdf;
 import static de.phsoftware.textManager.utils.I18N.getCaption;
-import static de.phsoftware.textManager.utils.I18N.getCaptions;
 
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
-import java.util.Vector;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -43,13 +39,10 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
-import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
-import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import javax.swing.table.DefaultTableModel;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -72,20 +65,20 @@ import de.phsoftware.textManager.utils.ImageRegistry;
 import de.phsoftware.textManager.utils.NotifyingThread;
 import de.phsoftware.textManager.utils.PDFCreator;
 import de.phsoftware.textManager.utils.ThreadCompleteListener;
+import de.phsoftware.textManager.windows.components.BillingItemTable;
 import de.phsoftware.textManager.windows.helper.DocXFileChooser;
-import de.phsoftware.textManager.windows.helper.DocumentListRenderer;
 
 public class MainWindow {
 
     private JFrame frame;
-    private JTable billLines;
-    private DefaultTableModel model;
+    private BillingItemTable billLines;
+    // private DefaultTableModel model;
     private JScrollPane jScrollPane;
     private JMonthChooser monthChooser;
     private JYearChooser yearChooser;
     private ChangeListener changeListener;
     private List<BillingItem> curBill;
-    private JComboBox customers;
+    private JComboBox<Customer> customers;
     private JTextField billNo;
     private Bill bill;
     private JButton build;
@@ -150,30 +143,13 @@ public class MainWindow {
 	frame.getContentPane().setLayout(
 		new MigLayout("", "[grow]", "[][grow]"));
 
-	customers = new JComboBox();
+	customers = new JComboBox<Customer>();
 	customers.addItemListener(changeListener);
 
 	frame.getContentPane().add(customers, "flowx,cell 0 0,growx");
 
 	jScrollPane = new JScrollPane();
-	billLines = new JTable() {
-	    private static final long serialVersionUID = 2641781237435176875L;
-
-	    @Override
-	    public boolean isCellEditable(int rowIndex, int colIndex) {
-		if (4 == colIndex) {
-		    return (Boolean) dataModel.getValueAt(rowIndex, 3);
-		} else {
-		    return true;
-		}
-	    }
-	};
-	billLines.setRowHeight(24);
-	billLines.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-
-	DocumentListRenderer docList = new DocumentListRenderer(frame);
-	billLines.setDefaultRenderer(List.class, docList);
-	billLines.setDefaultEditor(List.class, docList);
+	billLines = new BillingItemTable(frame);
 
 	jScrollPane.setViewportView(billLines);
 	frame.getContentPane().add(jScrollPane, "cell 0 1,grow");
@@ -392,11 +368,7 @@ public class MainWindow {
 	menuBar.add(menu);
 
 	CustomerWindow.loadCustomer(customers);
-
-	model = new tmTableModel(getCaptions("mw.tableheader", "title", "wc",
-		"cw", "fixPrice", "total", "documents"));
 	fillTableModel();
-	billLines.setModel(model);
 
 	// DecimalFormat df = new DecimalFormat("#,##0.##"); // you shouldn't
 	// // need more "#"
@@ -409,53 +381,12 @@ public class MainWindow {
 	// .getColumn(4)
 	// .setCellEditor(
 	// new DefaultCellEditor(new JFormattedTextField(df)));
-	billLines.getColumnModel().getColumn(0).setPreferredWidth(400);
-	billLines.getColumnModel().getColumn(5).setPreferredWidth(400);
-
-	// Menu for Row actions, e.g. delete row
-	billLines.addMouseListener(new MouseAdapter() {
-	    @Override
-	    public void mousePressed(MouseEvent e) {
-		if (e.getButton() == MouseEvent.BUTTON3) {
-		    JPopupMenu menu = new JPopupMenu();
-		    JMenuItem delete = new JMenuItem(
-			    getCaption("mw.itemmenu.delete"));
-		    delete.addMouseListener(new MouseAdapter() {
-
-			@Override
-			public void mousePressed(MouseEvent e) {
-			    if (JOptionPane.showConfirmDialog(frame,
-				    getCaption("mw.dialog.itemdelete.title")) == JOptionPane.YES_OPTION) {
-				System.out.println("delete");
-				int row = billLines.rowAtPoint(e.getPoint());
-				((BillingItem) ((Vector) model.getDataVector()
-					.get(row)).get(0)).delete();
-				model.removeRow(row);
-			    }
-			}
-		    });
-		    menu.add(delete);
-		    menu.show(billLines, e.getX(), e.getY());
-		}
-	    }
-	});
-
     }
 
-    /**
-     * Creates a new BillingItem and returns it. BillingItem is initialized with
-     * current selected customer, month and year.
-     * 
-     * @return BillingItem newly created BillingItem with basic Initialization
-     */
     private BillingItem addNewBillingItem() {
-	BillingItem item = new BillingItem()
-		.setCustomerId(((Customer) customers.getSelectedItem()).getId())
-		.setMonth(monthChooser.getMonth())
-		.setYear(yearChooser.getYear());
-	model.addRow(new Object[] { item });
-	item.save();
-	return item;
+	return billLines.addNewBillingItem(
+		(Customer) customers.getSelectedItem(),
+		monthChooser.getMonth(), yearChooser.getYear());
     }
 
     private BillingItem addNewBillingItem(Document document) {
@@ -465,10 +396,10 @@ public class MainWindow {
     }
 
     private void fillTableModel() {
-	if (null == model) {
+	if (null == billLines) {
 	    return;
 	}
-	model.setRowCount(0);
+	billLines.flushRows();
 	if (null == customers.getSelectedItem()) {
 	    return;
 	}
@@ -476,112 +407,12 @@ public class MainWindow {
 		((Customer) customers.getSelectedItem()).getId(),
 		yearChooser.getYear(), monthChooser.getMonth());
 	for (BillingItem item : curBill) {
-	    model.addRow(new Object[] { item });
+	    billLines.addRow(item);
 	}
 
 	bill = checkBillExists(monthChooser.getMonth(), yearChooser.getYear(),
 		((Customer) customers.getSelectedItem()));
 	billNo.setText(bill.getBillNo());
-    }
-
-    private class tmTableModel extends DefaultTableModel {
-
-	private static final long serialVersionUID = -1178926028075689166L;
-
-	public tmTableModel(String[] columnNames) {
-	    super(columnNames, 0);
-	}
-
-	@Override
-	public Class<?> getColumnClass(int columnIndex) {
-	    switch (columnIndex) {
-	    case 0:
-		return String.class;
-	    case 1:
-		return Integer.class;
-	    case 3:
-		return Boolean.class;
-	    case 2: /* fallthrough */
-	    case 4:
-		return Double.class;
-	    case 5:
-		return List.class;
-	    }
-	    return getValueAt(0, columnIndex).getClass();
-	}
-
-	@Override
-	public Object getValueAt(int rowIndex, int columnIndex) {
-	    @SuppressWarnings("rawtypes")
-	    BillingItem item = (BillingItem) ((Vector) dataVector
-		    .elementAt(rowIndex)).get(0);
-	    switch (columnIndex) {
-	    case 0:
-		return item.getTitle();
-	    case 1:
-		return item.getWordCount();
-	    case 2:
-		return item.getCentPerWord();
-	    case 3:
-		return item.isFixedPrice();
-	    case 4:
-		return item.getTotal();
-	    case 5:
-		return item.getDocuments();
-	    default:
-		throw new IllegalArgumentException(
-			"Got columnIndex out of bounds");
-	    }
-	}
-
-	@Override
-	public void setValueAt(Object value, int rowIndex, int columnIndex) {
-	    @SuppressWarnings("rawtypes")
-	    BillingItem item = (BillingItem) ((Vector) dataVector
-		    .elementAt(rowIndex)).get(0);
-	    switch (columnIndex) {
-	    case 0:
-		item.setTitle((String) value);
-		break;
-	    case 1:
-		item.setWordCount((Integer) value);
-		if (!item.isFixedPrice()) {
-		    setValueAt(item.getWordCount() * item.getCentPerWord(),
-			    rowIndex, 4);
-		    fireTableCellUpdated(rowIndex, 4);
-		    return;// no need to save twice
-		}
-		break;
-	    case 2:
-		item.setCentPerWord((Double) value);
-		if (!item.isFixedPrice()) {
-		    setValueAt(item.getWordCount() * item.getCentPerWord(),
-			    rowIndex, 4);
-		    fireTableCellUpdated(rowIndex, 4);
-		    return;// no need to save twice
-		}
-		break;
-	    case 3:
-		item.setFixedPrice((Boolean) value);
-		break;
-	    case 4:
-		item.setTotal((Double) value);
-		break;
-	    case 5:
-		if (null != value && value.getClass().isArray()) {
-		    for (File file : (File[]) value) {
-			item.addDocument(Document.loadAndSave(file));
-		    }
-		} else if (value instanceof ObjectId) {
-		    item.removeDocument((ObjectId) value);
-		}
-		break;
-	    default:
-		throw new IllegalArgumentException(
-			"Got columnIndex out of bounds");
-	    }
-	    item.save();
-	}
     }
 
     private Bill checkBillExists(int month, int year, Customer customer) {

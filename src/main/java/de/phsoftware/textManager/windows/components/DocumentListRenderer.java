@@ -15,7 +15,7 @@
  *   See the GNU General Public License for more details. You should have received a copy of the GNU
  *   General Public License along with textManager. If not, see <http://www.gnu.org/licenses/>.
  */
-package de.phsoftware.textManager.windows.helper;
+package de.phsoftware.textManager.windows.components;
 
 import static de.phsoftware.textManager.utils.I18N.getCaption;
 
@@ -43,6 +43,7 @@ import javax.swing.table.TableCellRenderer;
 import net.miginfocom.swing.MigLayout;
 import de.phsoftware.textManager.entities.Document;
 import de.phsoftware.textManager.utils.ImageRegistry;
+import de.phsoftware.textManager.windows.helper.DocXFileChooser;
 
 public class DocumentListRenderer implements TableCellRenderer, TableCellEditor {
 
