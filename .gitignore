@@ -3,3 +3,5 @@
 .settings/
 bin/
 target/
+win/*.exe
+template/signum.jpg

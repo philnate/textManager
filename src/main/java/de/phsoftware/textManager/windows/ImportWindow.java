@@ -20,20 +20,35 @@ package de.phsoftware.textManager.windows;
 import static de.phsoftware.textManager.utils.I18N.getCaption;
 
 import java.awt.EventQueue;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.text.NumberFormat;
+import java.text.ParseException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
 
 import net.miginfocom.swing.MigLayout;
+
+import com.google.common.base.Optional;
+
+import de.phsoftware.textManager.entities.BillingItem;
+import de.phsoftware.textManager.utils.I18N;
 import de.phsoftware.textManager.windows.components.BillingItemTable;
 
 public class ImportWindow extends WindowAdapter {
     private JFrame frame;
     private static boolean debug = false;
+
+    private JTextArea input;
+    private JTextField regex;
 
     @Override
     public void windowClosing(WindowEvent evt) {
@@ -84,14 +99,87 @@ public class ImportWindow extends WindowAdapter {
 	frame.getContentPane().add(read, "cell 0 1");
 	frame.getContentPane().add(imprt, "cell 0 1");
 
-	JTextArea input = new JTextArea();
+	regex = new JTextField(
+		"[0-9]+\\s+(?<title>Texterstellung ID [0-9]+)\\s+Datum:.*(?<sum>[0-9]+,[0-9]+)$");
+	frame.getContentPane().add(regex, "cell 0 1,growx");
+
+	input = new JTextArea();
 	input.setRows(20);
 	frame.getContentPane().add(input, "flowx,cell 0 0,growx");
 
 	JScrollPane pane = new JScrollPane();
-	BillingItemTable table = new BillingItemTable(frame);
+	final BillingItemTable table = new BillingItemTable(frame);
 	table.setContextMenuEnabled(false);
 	pane.setViewportView(table);
 	frame.getContentPane().add(pane, "growy, cell 0 2,growx");
+
+	read.addMouseListener(new MouseAdapter() {
+	    @Override
+	    public void mouseClicked(MouseEvent e) {
+		table.flushRows();
+		String[] lines = input.getText().split("\\r?\\n");
+		Pattern pattern = Pattern.compile(regex.getText());
+		for (String line : lines) {
+		    Optional<BillingItem> item = parseLine(line, pattern);
+		    if (item.isPresent()) {
+			table.addRow(item.get());
+		    }
+		}
+	    }
+	});
+    }
+
+    public Optional<BillingItem> parseLine(String line, Pattern pattern) {
+	BillingItem item = new BillingItem();
+	Matcher matcher = pattern.matcher(line);
+	if (matcher.matches()) {
+	    item.setTitle(getItemString(matcher, "title").or(""));
+	    item.setTotal(getItemDouble(matcher, "sum").or(0d));
+	    item.setWordCount(getItemInt(matcher, "wordCount").or(0));
+	    Double pricePerWord = getItemDouble(matcher, "wordPrice").or(0d);
+	    item.setFixedPrice(pricePerWord == 0);
+	    item.setCentPerWord(pricePerWord);
+	} else {
+	    System.out.println(String.format(
+		    "Could not parse line '%s' with regex '%s'", line,
+		    pattern.pattern()));
+	    return Optional.absent();
+	}
+	return Optional.of(item);
+    }
+
+    private Optional<String> getItemString(Matcher matcher, String group) {
+	try {
+	    return Optional.of(matcher.group(group));
+	} catch (IllegalArgumentException e) {
+	    return Optional.absent();
+	}
+    }
+
+    private Optional<Integer> getItemInt(Matcher matcher, String group) {
+	try {
+	    return Optional.of(Integer.parseInt(matcher.group(group)));
+	} catch (IllegalArgumentException e) {
+	    if (NumberFormatException.class.isInstance(e)) {
+		// TODO should be rather an alertbox
+		System.out.println(String.format(
+			"Could not parse %s to integer", matcher.group(group)));
+	    }
+	    return Optional.absent();
+	}
+    }
+
+    private Optional<Double> getItemDouble(Matcher matcher, String group) {
+	try {
+	    return Optional.of(NumberFormat.getNumberInstance(I18N.getLocale())
+		    .parse(matcher.group(group)).doubleValue());
+	} catch (IllegalArgumentException | ParseException e) {
+	    if (ParseException.class.isInstance(e)) {
+		// TODO should be rather an alertbox
+		System.out.println(String.format(
+			"Could not parse %s to double", matcher.group(group)));
+	    }
+	    return Optional.absent();
+	}
     }
 }

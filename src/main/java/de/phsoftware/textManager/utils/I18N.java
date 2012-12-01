@@ -28,10 +28,17 @@ import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
 import java.util.ResourceBundle.Control;
 
-public class I18N {
-    static ResourceBundle captions = ResourceBundle
+import de.phsoftware.textManager.entities.Setting;
 
-    .getBundle("captions", new Locale("de", "DE"), new UTF8Control());
+public class I18N {
+
+    static ResourceBundle captions;
+    static final Locale locale;
+    static {
+	locale = new Locale(Setting.find("locale", "de").getValue());
+	captions = ResourceBundle.getBundle("captions", locale,
+		new UTF8Control());
+    }
 
     public static String getCaption(String key) {
 	try {
@@ -91,5 +98,16 @@ public class I18N {
 	    }
 	    return bundle;
 	}
+    }
+
+    /**
+     * returns the locale found within the settings, this locale is used
+     * throughout the system to prepare the presentation of floats as well as
+     * the language used for Labels
+     * 
+     * @return
+     */
+    public static Locale getLocale() {
+	return locale;
     }
 }
