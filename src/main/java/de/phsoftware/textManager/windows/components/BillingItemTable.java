@@ -128,6 +128,12 @@ public class BillingItemTable extends JTable {
 	model.addRow(new Object[] { item });
     }
 
+    public void addRows(List<BillingItem> items) {
+	for (BillingItem item : items) {
+	    addRow(item);
+	}
+    }
+
     /**
      * per default this menu is activated
      * 

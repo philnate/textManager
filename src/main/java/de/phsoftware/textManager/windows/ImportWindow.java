@@ -26,6 +26,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.text.NumberFormat;
 import java.text.ParseException;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -38,6 +39,7 @@ import javax.swing.JTextField;
 import net.miginfocom.swing.MigLayout;
 
 import com.google.common.base.Optional;
+import com.google.common.collect.Lists;
 
 import de.phsoftware.textManager.entities.BillingItem;
 import de.phsoftware.textManager.utils.I18N;
@@ -49,6 +51,24 @@ public class ImportWindow extends WindowAdapter {
 
     private JTextArea input;
     private JTextField regex;
+    private final ImportListener listener;
+
+    /**
+     * Allows it to get notified if a import was initialized
+     * 
+     * @author user
+     * 
+     */
+    protected interface ImportListener {
+	/**
+	 * will be called as soon as the actual import was started
+	 * 
+	 * @param items
+	 *            list of imported items, read items do not contain any
+	 *            relationship to customer, year, month...
+	 */
+	public void entriesImported(List<BillingItem> items);
+    }
 
     @Override
     public void windowClosing(WindowEvent evt) {
@@ -68,7 +88,7 @@ public class ImportWindow extends WindowAdapter {
 	    public void run() {
 		try {
 		    debug = true;
-		    new ImportWindow();
+		    new ImportWindow(null);
 		} catch (Exception e) {
 		    e.printStackTrace();
 		}
@@ -79,9 +99,10 @@ public class ImportWindow extends WindowAdapter {
     /**
      * Create the window.
      */
-    public ImportWindow() {
+    public ImportWindow(ImportListener listener) {
 	initialize();
 	frame.setVisible(true);
+	this.listener = listener;
     }
 
     /**
@@ -117,26 +138,42 @@ public class ImportWindow extends WindowAdapter {
 	    @Override
 	    public void mouseClicked(MouseEvent e) {
 		table.flushRows();
-		String[] lines = input.getText().split("\\r?\\n");
-		Pattern pattern = Pattern.compile(regex.getText());
-		for (String line : lines) {
-		    Optional<BillingItem> item = parseLine(line, pattern);
-		    if (item.isPresent()) {
-			table.addRow(item.get());
-		    }
+		table.addRows(readItems(input.getText().split("\\r?\\n"),
+			regex.getText()));
+	    }
+	});
+
+	imprt.addMouseListener(new MouseAdapter() {
+	    @Override
+	    public void mouseClicked(MouseEvent e) {
+		if (listener != null) {
+		    listener.entriesImported(readItems(
+			    input.getText().split("\\r?\\n"), regex.getText()));
 		}
 	    }
 	});
     }
 
-    public Optional<BillingItem> parseLine(String line, Pattern pattern) {
+    private List<BillingItem> readItems(String[] lines, String regex) {
+	Pattern pattern = Pattern.compile(regex);
+	List<BillingItem> items = Lists.newArrayListWithCapacity(lines.length);
+	for (String line : lines) {
+	    Optional<BillingItem> item = parseLine(line, pattern);
+	    if (item.isPresent()) {
+		items.add(item.get());
+	    }
+	}
+	return items;
+    }
+
+    private Optional<BillingItem> parseLine(String line, Pattern pattern) {
 	BillingItem item = new BillingItem();
 	Matcher matcher = pattern.matcher(line);
 	if (matcher.matches()) {
-	    item.setTitle(getItemString(matcher, "title").or(""));
-	    item.setTotal(getItemDouble(matcher, "sum").or(0d));
-	    item.setWordCount(getItemInt(matcher, "wordCount").or(0));
-	    Double pricePerWord = getItemDouble(matcher, "wordPrice").or(0d);
+	    item.setTitle(getString(matcher, "title").or(""));
+	    item.setTotal(getDouble(matcher, "sum").or(0d));
+	    item.setWordCount(getInt(matcher, "wordCount").or(0));
+	    Double pricePerWord = getDouble(matcher, "wordPrice").or(0d);
 	    item.setFixedPrice(pricePerWord == 0);
 	    item.setCentPerWord(pricePerWord);
 	} else {
@@ -148,7 +185,7 @@ public class ImportWindow extends WindowAdapter {
 	return Optional.of(item);
     }
 
-    private Optional<String> getItemString(Matcher matcher, String group) {
+    private Optional<String> getString(Matcher matcher, String group) {
 	try {
 	    return Optional.of(matcher.group(group));
 	} catch (IllegalArgumentException e) {
@@ -156,7 +193,7 @@ public class ImportWindow extends WindowAdapter {
 	}
     }
 
-    private Optional<Integer> getItemInt(Matcher matcher, String group) {
+    private Optional<Integer> getInt(Matcher matcher, String group) {
 	try {
 	    return Optional.of(Integer.parseInt(matcher.group(group)));
 	} catch (IllegalArgumentException e) {
@@ -169,7 +206,7 @@ public class ImportWindow extends WindowAdapter {
 	}
     }
 
-    private Optional<Double> getItemDouble(Matcher matcher, String group) {
+    private Optional<Double> getDouble(Matcher matcher, String group) {
 	try {
 	    return Optional.of(NumberFormat.getNumberInstance(I18N.getLocale())
 		    .parse(matcher.group(group)).doubleValue());

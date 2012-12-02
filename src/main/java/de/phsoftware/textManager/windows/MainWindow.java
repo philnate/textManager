@@ -64,6 +64,7 @@ import de.phsoftware.textManager.utils.ImageRegistry;
 import de.phsoftware.textManager.utils.NotifyingThread;
 import de.phsoftware.textManager.utils.PDFCreator;
 import de.phsoftware.textManager.utils.ThreadCompleteListener;
+import de.phsoftware.textManager.windows.ImportWindow.ImportListener;
 import de.phsoftware.textManager.windows.components.BillingItemTable;
 import de.phsoftware.textManager.windows.components.CustomerComboBox;
 import de.phsoftware.textManager.windows.helper.DocXFileChooser;
@@ -355,12 +356,25 @@ public class MainWindow {
 	});
 	menu.add(itemSetting);
 
-	JMenuItem itemImport = new JMenu(getCaption("mw.menu.edit.import"));
+	JMenuItem itemImport = new JMenuItem(getCaption("mw.menu.edit.import"));
 	itemImport.addActionListener(new ActionListener() {
 
 	    @Override
 	    public void actionPerformed(ActionEvent arg0) {
-		new ImportWindow();
+		new ImportWindow(new ImportListener() {
+
+		    @Override
+		    public void entriesImported(List<BillingItem> items) {
+			for (BillingItem item : items) {
+			    item.setCustomerId(
+				    customers.getSelectedCustomer().getId())
+				    .setMonth(monthChooser.getMonth())
+				    .setYear(yearChooser.getYear());
+			    item.save();
+			    billLines.addRow(item);
+			}
+		    }
+		});
 	    }
 	});
 	menu.add(itemImport);
