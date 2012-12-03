@@ -24,13 +24,16 @@ import org.bson.types.ObjectId;
 import com.google.code.morphia.annotations.Entity;
 import com.google.code.morphia.annotations.Id;
 import com.google.code.morphia.annotations.Index;
-import com.google.code.morphia.annotations.Indexed;
 import com.google.code.morphia.annotations.Indexes;
 import com.google.code.morphia.query.Query;
 import com.mongodb.WriteConcern;
 
 @Entity(noClassnameStored = true)
-@Indexes(@Index(value = "customerId, year, month", unique = true))
+@Indexes({ @Index(value = "customerId, year, month", unique = true),
+// #41 Index needs to be sparse else it's not possible to have multiple Bills
+// stored without a BillNo, which is actually totally legal (can't be created
+// anyway, user may not be sure of the order at this time)
+	@Index(value = "billNo", unique = true, sparse = true) })
 public class Bill extends Entry {
 
     @Id
@@ -38,7 +41,7 @@ public class Bill extends Entry {
     private ObjectId customerId;
     private int year;
     private int month;
-    @Indexed(unique = true)
+    // @Indexed(unique = true)
     private String billNo;
 
     public ObjectId getId() {

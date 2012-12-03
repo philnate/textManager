@@ -36,7 +36,7 @@ public class DB {
 
     static {
 	Morphia store = new Morphia();
-	store.mapPackage("de.phsoftware.textManager.entities");
+	store.mapPackage("me.philnate.textmanager.entities");
 	ds = store.createDatastore("textManager");
 	ds.ensureIndexes();
 
