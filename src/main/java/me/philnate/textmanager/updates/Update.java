@@ -24,8 +24,7 @@ package me.philnate.textmanager.updates;
  * @author philnate
  * 
  */
-public abstract class Update {
-    protected static int versionToUpdate;
+public interface Update {
 
     /**
      * Performs preChecks verifying that an update is needed

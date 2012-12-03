@@ -68,12 +68,10 @@ import com.mongodb.MongoException.DuplicateKey;
 import com.toedter.calendar.JMonthChooser;
 import com.toedter.calendar.JYearChooser;
 
-
 public class MainWindow {
 
     private JFrame frame;
     private BillingItemTable billLines;
-    // private DefaultTableModel model;
     private JScrollPane jScrollPane;
     private JMonthChooser monthChooser;
     private JYearChooser yearChooser;

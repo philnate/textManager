@@ -18,13 +18,19 @@
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
-			<version>11.0.1</version>
+			<version>13.0.1</version>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>4.10</version>
 			<scope>test</scope>
+		</dependency>
+		<!-- Allows it to scan for given Annotations, no manual housekeeping for updates -->
+		<dependency>
+			<groupId>eu.infomas</groupId>
+			<artifactId>annotation-detector</artifactId>
+			<version>3.0.1</version>
 		</dependency>
 		<!-- Layout Requirements -->
 		<dependency>
@@ -88,7 +94,7 @@
 				<configuration>
 					<header>licenseHeader.tpl</header>
 					<excludes>
-						<exclude>**/de/phsoftware/textManager/utils/FileDrop.java</exclude>
+						<exclude>**/me/philnate/textmanager/utils/FileDrop.java</exclude>
 					</excludes>
 					<includes>
 						<include>**/*.java</include>
@@ -112,7 +118,7 @@
 							<archive>
 								<manifest>
 									<addClasspath>true</addClasspath>
-									<mainClass>de.phsoftware.textManager.windows.MainWindow</mainClass>
+									<mainClass>me.philnate.textmanager.windows.MainWindow</mainClass>
 								</manifest>
 							</archive>
 							<descriptorRefs>

@@ -29,7 +29,6 @@ import me.philnate.textmanager.entities.Setting;
 
 import com.google.common.collect.Maps;
 
-
 public class Updater {
     private static final File installPath = getInstallPath();
     private static final int version = 1;
@@ -52,7 +51,25 @@ public class Updater {
     }
 
     private static void createUpdateList() {
-	updates.put(1, Update1.class);
+	// final MethodReporter reporter = new MethodReporter() {
+	//
+	// @SuppressWarnings("unchecked")
+	// @Override
+	// public Class<? extends Annotation>[] annotations() {
+	// return new Class[] { Test.class };
+	// }
+	//
+	// @Override
+	// public void reportMethodAnnotation(
+	// Class<? extends Annotation> annotation, String className,
+	// String methodName) {
+	// // do something
+	// }
+	//
+	// };
+	// final AnnotationDetector cf = new AnnotationDetector(reporter);
+	// cf.detect();
+	// updates.put(1, Update1.class);
     }
 
     /**
