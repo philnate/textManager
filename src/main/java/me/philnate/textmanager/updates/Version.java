@@ -92,6 +92,14 @@ public class Version implements Comparable<Version> {
 	return patch;
     }
 
+    /**
+     * returns the version information in major.minor.patch format
+     */
+    @Override
+    public String toString() {
+	return String.format("%s.%s.%s", major, minor, patch);
+    }
+
     @Override
     public int compareTo(Version o) {
 	if (o == this) {

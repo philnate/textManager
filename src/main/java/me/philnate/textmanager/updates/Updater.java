@@ -24,7 +24,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.lang.annotation.Annotation;
 import java.net.URLDecoder;
-import java.util.Map;
+import java.util.TreeMap;
 
 import me.philnate.textmanager.entities.Setting;
 
@@ -35,26 +35,29 @@ import eu.infomas.annotation.AnnotationDetector.TypeReporter;
 
 public class Updater {
     private static final File installPath = getInstallPath();
-    private static final int version = 1;
-    private static Map<Version, Class<? extends Update>> updates = Maps
-	    .newTreeMap();
+    private static final Version startVersion = new Version("1");
+    private static final String packageName = "me.philnate.textmanager.updates";
 
     /**
      * checks what the actual db version is, if an old version is encountered
      * appropriate updates are performed to get the db to the latest version
      */
     public static void checkUpdateNeeded() {
-	createUpdateList();
+	TreeMap<Version, Class<? extends Update>> updates = createUpdateList(packageName);
 	Setting v = Setting.find("version");
 	if (null == v) {
-	    v = new Setting("version", "1");
+	    v = new Setting("version", startVersion.toString());
 	    ds.save(v);
 	}
 	backUp();
 	rollback();
     }
 
-    private static void createUpdateList() {
+    static TreeMap<Version, Class<? extends Update>> createUpdateList(
+	    String packageName) {
+	final TreeMap<Version, Class<? extends Update>> updates = Maps
+		.newTreeMap();
+
 	final TypeReporter reporter = new TypeReporter() {
 
 	    @SuppressWarnings("unchecked")
@@ -84,10 +87,11 @@ public class Updater {
 	final AnnotationDetector cf = new AnnotationDetector(reporter);
 	try {
 	    // load updates
-	    cf.detect("me.philnate.textmanager");
+	    cf.detect(packageName);
 	} catch (IOException e) {
 	    e.printStackTrace();
 	}
+	return updates;
     }
 
     /**
