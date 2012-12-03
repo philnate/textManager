@@ -17,7 +17,7 @@
  */
 package me.philnate.textmanager.updates;
 
-@UpdateScript(UpdatesVersion = 1)
+@UpdateScript(UpdatesVersion = "12.12")
 public class Update1 implements Update {
 
     @Override

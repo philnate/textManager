@@ -22,6 +22,7 @@ import static me.philnate.textmanager.utils.DB.ds;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.lang.annotation.Annotation;
 import java.net.URLDecoder;
 import java.util.Map;
 
@@ -29,10 +30,13 @@ import me.philnate.textmanager.entities.Setting;
 
 import com.google.common.collect.Maps;
 
+import eu.infomas.annotation.AnnotationDetector;
+import eu.infomas.annotation.AnnotationDetector.TypeReporter;
+
 public class Updater {
     private static final File installPath = getInstallPath();
     private static final int version = 1;
-    private static Map<Integer, Class<? extends Update>> updates = Maps
+    private static Map<Version, Class<? extends Update>> updates = Maps
 	    .newTreeMap();
 
     /**
@@ -51,25 +55,39 @@ public class Updater {
     }
 
     private static void createUpdateList() {
-	// final MethodReporter reporter = new MethodReporter() {
-	//
-	// @SuppressWarnings("unchecked")
-	// @Override
-	// public Class<? extends Annotation>[] annotations() {
-	// return new Class[] { Test.class };
-	// }
-	//
-	// @Override
-	// public void reportMethodAnnotation(
-	// Class<? extends Annotation> annotation, String className,
-	// String methodName) {
-	// // do something
-	// }
-	//
-	// };
-	// final AnnotationDetector cf = new AnnotationDetector(reporter);
-	// cf.detect();
-	// updates.put(1, Update1.class);
+	final TypeReporter reporter = new TypeReporter() {
+
+	    @SuppressWarnings("unchecked")
+	    @Override
+	    public Class<? extends Annotation>[] annotations() {
+		return new Class[] { UpdateScript.class };
+	    }
+
+	    @Override
+	    public void reportTypeAnnotation(
+		    Class<? extends Annotation> annotation, String className) {
+		Class<? extends Update> clazz;
+		try {
+		    clazz = (Class<? extends Update>) Updater.class
+			    .getClassLoader().loadClass(className);
+		    updates.put(
+			    new Version(clazz.getAnnotation(UpdateScript.class)
+				    .UpdatesVersion()), clazz);
+		} catch (ClassNotFoundException e) {
+		    System.out
+			    .println("Found annotated class, but could not load it "
+				    + className);
+		}
+	    }
+
+	};
+	final AnnotationDetector cf = new AnnotationDetector(reporter);
+	try {
+	    // load updates
+	    cf.detect("me.philnate.textmanager");
+	} catch (IOException e) {
+	    e.printStackTrace();
+	}
     }
 
     /**
