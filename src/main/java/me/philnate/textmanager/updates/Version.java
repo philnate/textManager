@@ -21,6 +21,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.google.common.base.Objects;
+import com.google.common.collect.ComparisonChain;
 import com.google.common.primitives.Ints;
 
 public class Version implements Comparable<Version> {
@@ -105,24 +106,8 @@ public class Version implements Comparable<Version> {
 	if (o == this) {
 	    return EQUAL;
 	}
-	if (this.major > o.major) {
-	    return AFTER;
-	} else if (this.major < o.major) {
-	    return BEFORE;
-	} else {
-	    if (this.minor > o.minor) {
-		return AFTER;
-	    } else if (this.minor < o.minor) {
-		return BEFORE;
-	    } else {
-		if (this.patch > o.patch) {
-		    return AFTER;
-		} else if (this.patch < o.patch) {
-		    return BEFORE;
-		} else {
-		    return EQUAL;
-		}
-	    }
-	}
+	return ComparisonChain.start().compare(this.major, o.major)
+		.compare(this.minor, o.minor).compare(this.patch, o.patch)
+		.result();
     }
 }
