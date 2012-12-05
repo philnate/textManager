@@ -109,6 +109,8 @@ public class ImportWindow extends WindowAdapter {
      */
     private void initialize() {
 	frame = new JFrame();
+	frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+	frame.addWindowListener(this);
 	frame.setBounds(100, 100, 1000, 800);
 	frame.getContentPane().setLayout(
 		new MigLayout("", "[grow]", "[][][grow]"));
@@ -150,6 +152,9 @@ public class ImportWindow extends WindowAdapter {
 		    listener.entriesImported(readItems(
 			    input.getText().split("\\r?\\n"), regex.getText()));
 		}
+		// close window after import
+		frame.dispatchEvent(new WindowEvent(frame,
+			WindowEvent.WINDOW_CLOSING));
 	    }
 	});
     }
