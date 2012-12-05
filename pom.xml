@@ -26,7 +26,8 @@
 			<version>4.10</version>
 			<scope>test</scope>
 		</dependency>
-		<!-- Allows it to scan for given Annotations, no manual housekeeping for updates -->
+		<!-- Allows it to scan for given Annotations, no manual housekeeping for 
+			updates -->
 		<dependency>
 			<groupId>eu.infomas</groupId>
 			<artifactId>annotation-detector</artifactId>
@@ -88,6 +89,15 @@
 	<build>
 		<plugins>
 			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.0</version>
+				<configuration>
+					<source>1.7</source>
+					<target>1.7</target>
+				</configuration>
+			</plugin>
+			<plugin>
 				<groupId>com.google.code.maven-license-plugin</groupId>
 				<artifactId>maven-license-plugin</artifactId>
 				<version>1.4.0</version>
@@ -143,6 +153,16 @@
 						</goals>
 					</execution>
 				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.12.4</version>
+				<configuration>
+					<includes>
+						<include>**/_*.java</include>
+					</includes>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>
