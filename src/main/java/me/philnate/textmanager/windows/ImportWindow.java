@@ -44,7 +44,6 @@ import net.miginfocom.swing.MigLayout;
 import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 
-
 public class ImportWindow extends WindowAdapter {
     private JFrame frame;
     private static boolean debug = false;
@@ -112,7 +111,7 @@ public class ImportWindow extends WindowAdapter {
 	frame = new JFrame();
 	frame.setBounds(100, 100, 1000, 800);
 	frame.getContentPane().setLayout(
-		new MigLayout("", "[grow]", "[grow][][grow]"));
+		new MigLayout("", "[grow]", "[][][grow]"));
 
 	JButton read = new JButton(getCaption("iw.tooltip.button.read"));
 	JButton imprt = new JButton(getCaption("iw.tooltip.button.import"));
@@ -126,7 +125,8 @@ public class ImportWindow extends WindowAdapter {
 
 	input = new JTextArea();
 	input.setRows(20);
-	frame.getContentPane().add(input, "flowx,cell 0 0,growx");
+	frame.getContentPane().add(new JScrollPane(input),
+		"h 340px, cell 0 0, growx");
 
 	JScrollPane pane = new JScrollPane();
 	final BillingItemTable table = new BillingItemTable(frame);
