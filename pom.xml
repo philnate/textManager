@@ -134,6 +134,8 @@
 							<descriptorRefs>
 								<descriptorRef>jar-with-dependencies</descriptorRef>
 							</descriptorRefs>
+							<finalName>textManager</finalName>
+							<appendAssemblyId>false</appendAssemblyId>
 						</configuration>
 						<phase>package</phase>
 						<goals>
@@ -146,6 +148,8 @@
 							<descriptors>
 								<descriptor>src/main/assembly/zip.xml</descriptor>
 							</descriptors>
+							<finalName>textManager</finalName>
+							<appendAssemblyId>false</appendAssemblyId>
 						</configuration>
 						<phase>package</phase>
 						<goals>
