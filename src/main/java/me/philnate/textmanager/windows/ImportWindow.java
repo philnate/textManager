@@ -124,7 +124,7 @@ public class ImportWindow extends WindowAdapter {
 	frame.getContentPane().add(imprt, "cell 0 1");
 
 	regex = new JTextField(
-		"[0-9]+\\s+(?<title>Texterstellung ID [0-9]+)\\s+Datum:.*(?<sum>[0-9]+,[0-9]+)$");
+		"[0-9]+\\s+(?<title>Texterstellung ID [0-9]+)\\s+Datum:.*(?<sum>[0-9]+,[0-9]+)\\s+\\k<sum>$");
 	frame.getContentPane().add(regex, "cell 0 1,growx");
 
 	input = new JTextArea();

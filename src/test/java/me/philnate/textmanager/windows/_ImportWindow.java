@@ -40,21 +40,26 @@ public class _ImportWindow {
     @Test
     public void testAbbyImport() throws IOException {
 	Pattern pattern = Pattern
-		.compile("[0-9]+\\s+(?<title>Texterstellung ID [0-9]+)\\s+Datum:.*(?<sum>[0-9]+,[0-9]+)$");// (?<sum>[0-9]+,[0-9]+)$
+		.compile("[0-9]+\\s+(?<title>Texterstellung ID [0-9]+)\\s+Datum:.*(?<sum>[0-9]+,[0-9]+)\\s+\\k<sum>$");
 	BufferedReader reader = new BufferedReader(new InputStreamReader(this
 		.getClass().getClassLoader()
 		.getResourceAsStream(path + "abby.txt"), Charsets.UTF_8));
-	String line;
-	while ((line = reader.readLine()) != null) {
-	    System.out.println(line);
-	    Matcher matcher = pattern.matcher(line);
-	    matcher.matches();
-	    System.out.print("Read: ");
-	    System.out.print(matcher.group("title") + " ");
-	    System.out.println(matcher.group("sum"));
-	    Assert.assertTrue(matcher.group("title").contains(
-		    "Texterstellung ID"));
-	    Assert.assertTrue(matcher.group("sum").contains(","));
-	}
+
+	assertAbby(reader, pattern, "Texterstellung ID 2359311", "7,50");
+	// initial regex ignored leading number
+	assertAbby(reader, pattern, "Texterstellung ID 2358181", "120,00");
+    }
+
+    private void assertAbby(BufferedReader reader, Pattern pattern,
+	    String title, String sum) throws IOException {
+	String line = reader.readLine();
+	System.out.println(line);
+	Matcher matcher = pattern.matcher(line);
+	matcher.matches();
+	System.out.print("Read: ");
+	System.out.print(matcher.group("title") + " ");
+	System.out.println(matcher.group("sum"));
+	Assert.assertTrue(matcher.group("title").equals(title));
+	Assert.assertTrue(matcher.group("sum").equals(sum));
     }
 }
