@@ -20,6 +20,7 @@ package me.philnate.textmanager.windows.components;
 import static me.philnate.textmanager.utils.I18N.getCaption;
 
 import java.awt.Component;
+import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.EventObject;
@@ -29,7 +30,6 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTable;
@@ -48,15 +48,14 @@ import net.miginfocom.swing.MigLayout;
 public class DocumentListRenderer implements TableCellRenderer, TableCellEditor {
 
     CellEditorListener listener = null;
-    JFrame parentWindow;
-    // MainWindow window;
+    Container parent;
     private Object selectedFile;
 
-    public DocumentListRenderer(JFrame parentWindow/* , MainWindow window */) {
-	this.parentWindow = parentWindow;
-	// this.window = window;
+    public DocumentListRenderer(Container parent) {
+	this.parent = parent;
     }
 
+    @Override
     public void addCellEditorListener(CellEditorListener arg0) {
 	if (null == listener) {
 	    listener = arg0;
@@ -65,40 +64,47 @@ public class DocumentListRenderer implements TableCellRenderer, TableCellEditor 
 	}
     }
 
+    @Override
     public void cancelCellEditing() {
 	// TODO Auto-generated method stub
 
     }
 
+    @Override
     public Object getCellEditorValue() {
-	// TODO Auto-generated method stub
 	return selectedFile;
     }
 
+    @Override
     public boolean isCellEditable(EventObject arg0) {
 	// TODO Auto-generated method stub
 	return true;
     }
 
+    @Override
     public void removeCellEditorListener(CellEditorListener arg0) {
 	listener = null;
     }
 
+    @Override
     public boolean shouldSelectCell(EventObject arg0) {
 	// TODO Auto-generated method stub
 	return false;
     }
 
+    @Override
     public boolean stopCellEditing() {
 	// TODO Auto-generated method stub
 	return false;
     }
 
+    @Override
     public Component getTableCellEditorComponent(JTable table, Object value,
 	    boolean isSelected, int row, int column) {
 	return getTableCell(value);
     }
 
+    @Override
     public Component getTableCellRendererComponent(JTable table, Object value,
 	    boolean isSelected, boolean hasFocus, int row, int column) {
 	return getTableCell(value);
@@ -112,15 +118,18 @@ public class DocumentListRenderer implements TableCellRenderer, TableCellEditor 
 	final JComboBox attachedDocs = new JComboBox();
 	attachedDocs.addPopupMenuListener(new PopupMenuListener() {
 
+	    @Override
 	    public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
 		// TODO Auto-generated method stub
 	    }
 
+	    @Override
 	    public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
 		// TODO Auto-generated method stub
 		that.fireEditingStopped();
 	    }
 
+	    @Override
 	    public void popupMenuCanceled(PopupMenuEvent e) {
 		// TODO Auto-generated method stub
 	    }
@@ -132,9 +141,10 @@ public class DocumentListRenderer implements TableCellRenderer, TableCellEditor 
 	upload.setToolTipText(getCaption("mw.tooltip.cell.add"));
 
 	upload.addActionListener(new ActionListener() {
+	    @Override
 	    public void actionPerformed(ActionEvent e) {
 		JFileChooser file = new DocXFileChooser();
-		switch (file.showOpenDialog(parentWindow)) {
+		switch (file.showOpenDialog(parent)) {
 		case JFileChooser.APPROVE_OPTION:
 		    selectedFile = file.getSelectedFiles();
 		    break;
@@ -152,6 +162,7 @@ public class DocumentListRenderer implements TableCellRenderer, TableCellEditor 
 	remove.setToolTipText(getCaption("mw.tooltip.cell.remove"));
 	remove.addActionListener(new ActionListener() {
 
+	    @Override
 	    public void actionPerformed(ActionEvent e) {
 		switch (JOptionPane
 			.showConfirmDialog(

@@ -20,12 +20,12 @@ package me.philnate.textmanager.windows.components;
 import static me.philnate.textmanager.utils.I18N.getCaption;
 import static me.philnate.textmanager.utils.I18N.getCaptions;
 
+import java.awt.Container;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.List;
 import java.util.Vector;
 
-import javax.swing.JFrame;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
@@ -33,7 +33,6 @@ import javax.swing.JTable;
 
 import me.philnate.textmanager.entities.BillingItem;
 import me.philnate.textmanager.entities.Customer;
-
 
 /**
  * JTable adapted to match the needs which arise if BillingItems need to be
@@ -49,12 +48,12 @@ public class BillingItemTable extends JTable {
 
     private boolean contextMenuEnabled = true;
 
-    public BillingItemTable(final JFrame frame) {
+    public BillingItemTable(final Container container) {
 	super();
 	setRowHeight(24);
 	// set some default Renderer and Editor to properly display a list of
 	// Documents
-	DocumentListRenderer docList = new DocumentListRenderer(frame);
+	DocumentListRenderer docList = new DocumentListRenderer(container);
 	setDefaultRenderer(List.class, docList);
 	setDefaultEditor(List.class, docList);
 
@@ -78,7 +77,7 @@ public class BillingItemTable extends JTable {
 
 			@Override
 			public void mousePressed(MouseEvent e) {
-			    if (JOptionPane.showConfirmDialog(frame,
+			    if (JOptionPane.showConfirmDialog(container,
 				    getCaption("mw.dialog.itemdelete.title")) == JOptionPane.YES_OPTION) {
 				System.out.println("delete");
 				int row = rowAtPoint(e.getPoint());

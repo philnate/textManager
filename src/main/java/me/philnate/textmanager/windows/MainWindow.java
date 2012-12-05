@@ -372,7 +372,7 @@ public class MainWindow {
 			    billLines.addRow(item);
 			}
 		    }
-		});
+		}, frame);
 	    }
 	});
 	menu.add(itemImport);

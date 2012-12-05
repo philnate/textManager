@@ -31,6 +31,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -45,7 +46,7 @@ import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 
 public class ImportWindow extends WindowAdapter {
-    private JFrame frame;
+    private JDialog frame;
     private static boolean debug = false;
 
     private JTextArea input;
@@ -87,7 +88,7 @@ public class ImportWindow extends WindowAdapter {
 	    public void run() {
 		try {
 		    debug = true;
-		    new ImportWindow(null);
+		    new ImportWindow(null, null);
 		} catch (Exception e) {
 		    e.printStackTrace();
 		}
@@ -98,8 +99,8 @@ public class ImportWindow extends WindowAdapter {
     /**
      * Create the window.
      */
-    public ImportWindow(ImportListener listener) {
-	initialize();
+    public ImportWindow(ImportListener listener, JFrame parent) {
+	initialize(parent);
 	frame.setVisible(true);
 	this.listener = listener;
     }
@@ -107,8 +108,9 @@ public class ImportWindow extends WindowAdapter {
     /**
      * Initialize the contents of the frame.
      */
-    private void initialize() {
-	frame = new JFrame();
+    private void initialize(JFrame parent) {
+	frame = new JDialog(parent);
+	frame.setModal(true);
 	frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 	frame.addWindowListener(this);
 	frame.setBounds(100, 100, 1000, 800);
