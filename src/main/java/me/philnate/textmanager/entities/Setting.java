@@ -55,6 +55,18 @@ public class Setting extends Entry {
 	setValue(value);
     }
 
+    /**
+     * Creates a new Setting with the given key and the objects toString value
+     * as key
+     * 
+     * @param key
+     * @param value
+     */
+    public Setting(String key, Object value) {
+	setKey(key);
+	setValue(value.toString());
+    }
+
     public String getKey() {
 	return key;
     }

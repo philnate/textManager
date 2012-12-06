@@ -37,6 +37,9 @@ public interface Update {
 
     /**
      * performs actual upgrade
+     * 
+     * @throws Exception
+     *             any exception which may be raised during updating
      */
     public abstract void upgrade();
 

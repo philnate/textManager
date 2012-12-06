@@ -17,6 +17,8 @@
  */
 package me.philnate.textmanager.utils;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Set;
 
 import com.google.common.collect.Sets;
@@ -57,4 +59,65 @@ public abstract class NotifyingThread extends Thread {
 
     protected abstract void doRun();
 
+    /**
+     * takes a Process, starts it and waits for its completion. While it's
+     * running all output will be printed to commandline
+     * 
+     * @param builder
+     * @return
+     * @throws IOException
+     */
+    protected int printOutputStream(ProcessBuilder builder) throws IOException {
+	Process proc = builder.start();
+	InputStream is = proc.getInputStream();
+	try {
+	    Thread writer = new WriteStream(is);
+	    writer.start();
+	    int rc = proc.waitFor();
+	    if (writer.isAlive()) {
+		Thread.sleep(1000);
+		writer.interrupt();
+	    }
+	    System.out.println("Return code:" + rc);
+	    return rc;
+	} catch (InterruptedException e) {
+	    return -1;
+	} finally {
+	    proc.destroy();
+	    is.close();
+	}
+    }
+
+    class WriteStream extends Thread {
+	private final InputStream is;
+
+	public WriteStream(InputStream is) {
+	    this.is = is;
+	}
+
+	@Override
+	public void run() {
+	    while (true) {
+		try {
+		    for (int i = 0; i < is.available(); i++) {
+			int c = is.read();
+			if (c == -1) {
+			    return;
+			}
+			System.out.print((char) c);
+		    }
+		    Thread.sleep(10);
+		    if (isInterrupted()) {
+			return;
+		    }
+		} catch (IOException e) {
+		    e.printStackTrace();
+		    return;
+		} catch (InterruptedException e) {
+		    e.printStackTrace();
+		    return;
+		}
+	    }
+	}
+    }
 }

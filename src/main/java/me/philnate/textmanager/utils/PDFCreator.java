@@ -24,7 +24,6 @@ import static me.philnate.textmanager.utils.DB.tex;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.StringWriter;
 import java.text.DateFormatSymbols;
 import java.text.NumberFormat;
@@ -39,6 +38,7 @@ import me.philnate.textmanager.entities.Setting;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
+import org.apache.commons.lang.SystemUtils;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
 import org.apache.velocity.tools.generic.MathTool;
@@ -47,7 +47,6 @@ import org.bson.types.ObjectId;
 import com.google.common.base.Throwables;
 import com.mongodb.QueryBuilder;
 import com.mongodb.gridfs.GridFSFile;
-
 
 public class PDFCreator extends NotifyingThread {
     private final Bill bill;
@@ -78,7 +77,7 @@ public class PDFCreator extends NotifyingThread {
     @SuppressWarnings("deprecation")
     private void preparePDF() {
 	try {
-	    File path = new File(System.getProperty("user.dir"), "template");
+	    File path = new File(SystemUtils.getUserDir(), "template");
 	    File template = new File(path, Setting.find("template").getValue());
 
 	    Velocity.setProperty("file.resource.loader.path",
@@ -125,7 +124,7 @@ public class PDFCreator extends NotifyingThread {
 	    pdfLatex.directory(path);
 	    String pdfPath = filledTemplate.toString()
 		    .replaceAll("tex$", "pdf");
-	    if (0 == printOutputStream(pdfLatex.start())) {
+	    if (0 == printOutputStream(pdfLatex)) {
 		// display Bill in DocumentViewer
 		new ProcessBuilder(Setting.find("pdfViewer").getValue(),
 			pdfPath).start().waitFor();
@@ -155,64 +154,9 @@ public class PDFCreator extends NotifyingThread {
 	}
     }
 
-    private int printOutputStream(Process proc) throws IOException {
-	InputStream is = proc.getInputStream();
-	try {
-	    Thread writer = new WriteStream(is);
-	    writer.start();
-	    int rc = proc.waitFor();
-	    if (writer.isAlive()) {
-		Thread.sleep(1000);
-		writer.interrupt();
-	    }
-	    System.out.println("Return code:" + rc);
-	    return rc;
-	} catch (InterruptedException e) {
-	    return -1;
-	} finally {
-	    proc.destroy();
-	    System.out.println("creation interrupted");
-	    is.close();
-	}
-    }
-
     @Override
     protected void doRun() {
 	Thread.currentThread().setName("Pdf Creator:" + bill.getBillNo());
 	preparePDF();
-    }
-
-    private class WriteStream extends Thread {
-	private final InputStream is;
-
-	public WriteStream(InputStream is) {
-	    this.is = is;
-	}
-
-	@Override
-	public void run() {
-	    while (true) {
-		try {
-		    for (int i = 0; i < is.available(); i++) {
-			int c = is.read();
-			if (c == -1) {
-			    return;
-			}
-			System.out.print((char) c);
-		    }
-		    Thread.sleep(10);
-		    if (isInterrupted()) {
-			return;
-		    }
-		} catch (IOException e) {
-		    e.printStackTrace();
-		    return;
-		} catch (InterruptedException e) {
-		    e.printStackTrace();
-		    return;
-		}
-	    }
-	}
-
     }
 }

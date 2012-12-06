@@ -21,20 +21,23 @@ import static me.philnate.textmanager.utils.DB.ds;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.lang.annotation.Annotation;
-import java.net.URLDecoder;
 import java.util.TreeMap;
 
 import me.philnate.textmanager.entities.Setting;
+import me.philnate.textmanager.utils.NotifyingThread;
 
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.SystemUtils;
+
+import com.google.common.base.Throwables;
 import com.google.common.collect.Maps;
 
 import eu.infomas.annotation.AnnotationDetector;
 import eu.infomas.annotation.AnnotationDetector.TypeReporter;
 
 public class Updater {
-    private static final File installPath = getInstallPath();
+    private static final File installPath = SystemUtils.getUserDir();
     private static final Version startVersion = new Version("1");
     private static final String packageName = "me.philnate.textmanager.updates";
 
@@ -45,12 +48,37 @@ public class Updater {
     public static void checkUpdateNeeded() {
 	TreeMap<Version, Class<? extends Update>> updates = createUpdateList(packageName);
 	Setting v = Setting.find("version");
-	if (null == v) {
-	    v = new Setting("version", startVersion.toString());
+	// check that an version is set, if none was found set it to 1
+	if (StringUtils.isBlank(v.getValue())) {
+	    v = new Setting("version", startVersion);
 	    ds.save(v);
 	}
-	backUp();
-	rollback();
+	for (Version vers : updates.keySet()) {
+	    if (vers.compareTo(new Version(v.getValue())) < vers.AFTER) {
+		// if version is smaller than actual db version we have nothing
+		// todo here
+		continue;
+	    }
+	    try {
+		backUp();
+		// create new Instance
+		Update up = updates.get(vers).newInstance();
+		// verify that everything is met for this update
+		up.preCheck();
+		// do the actual update
+		up.upgrade();
+		// verify that everything is as expected
+		up.postCheck();
+		// update the version
+		v.setValue(vers.toString()).save();
+	    } catch (Exception e) {
+		// in case of an exception stop further rollback and stop
+		// further updates
+		e.printStackTrace();
+		rollback();
+		return;
+	    }
+	}
     }
 
     static TreeMap<Version, Class<? extends Update>> createUpdateList(
@@ -95,50 +123,60 @@ public class Updater {
     }
 
     /**
-     * backups database in order some unexpected error occurs
+     * backups database in order some unexpected error occurs while update
+     * happens
      */
     public static void backUp() {
-	ProcessBuilder dump = new ProcessBuilder(new File(installPath,
-		"mongodump").toString(), "-h localhost", "--port 27017",
-		"-o db.backUp");
+	final ProcessBuilder dump = new ProcessBuilder(new File(installPath,
+		getProgram("win/mongodump")).toString(), "-h",
+		"localhost:27017", "-o", "db.backUp", "--db", "textManager");
 	dump.directory(installPath);
-	try {
-	    dump.start();
-	} catch (IOException e) {
-	    // TODO Auto-generated catch block
-	    e.printStackTrace();
-	}
+	// try {
+	new NotifyingThread() {
+
+	    @Override
+	    protected void doRun() {
+		try {
+		    printOutputStream(dump);
+		} catch (IOException e) {
+		    Throwables.propagate(e);
+		}
+	    }
+	}.run();
     }
 
     /**
      * rolls back any made backups as something in the upgrade went wrong
      */
     private static void rollback() {
-	// ProcessBuilder restore = new ProcessBuilder(new File(installPath,
-	// "mongorestore").toString(), "--drop", "-h localhost",
-	// "--port 27017", "-o db.backUp");
-	// restore.directory(installPath);
-	// try {
-	// if (0==restore.start().exitValue()) {
-	// } catch (IOException e) {
-	// // TODO Auto-generated catch block
-	// e.printStackTrace();
-	// }
+	final ProcessBuilder restore = new ProcessBuilder(new File(installPath,
+		getProgram("win/mongorestore")).toString(), "--drop", "-h",
+		"localhost:27017", "--db", "textManager", "db.backUp");
+	restore.directory(installPath);
+	new NotifyingThread() {
+
+	    @Override
+	    protected void doRun() {
+		try {
+		    printOutputStream(restore);
+		} catch (IOException e) {
+		    Throwables.propagate(e);
+		}
+	    }
+	};
     }
 
-    private static File getInstallPath() {
-	String path = Update.class.getProtectionDomain().getCodeSource()
-		.getLocation().getPath();
-	try {
-	    String decodedPath = URLDecoder.decode(path, "UTF-8");
-	    if (decodedPath.endsWith(".jar")) {
-		return new File(new File(decodedPath).getParent(), "mongo");
-	    } else {
-		return new File("/usr/bin/");
-	    }
-	} catch (UnsupportedEncodingException e) {
-	    e.printStackTrace();
-	    return null;
+    /**
+     * checks which operation system is in use and based on that the appropriate
+     * application name is returned. So for windows it will add the .exe suffix
+     * 
+     * @param appName
+     * @return
+     */
+    private static String getProgram(String appName) {
+	if (SystemUtils.IS_OS_WINDOWS) {
+	    return appName + ".exe";
 	}
+	return appName;
     }
 }
