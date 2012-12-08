@@ -27,6 +27,7 @@ import java.util.TreeMap;
 import me.philnate.textmanager.entities.Setting;
 import me.philnate.textmanager.utils.NotifyingThread;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
 
@@ -38,6 +39,7 @@ import eu.infomas.annotation.AnnotationDetector.TypeReporter;
 
 public class Updater {
     private static final File installPath = SystemUtils.getUserDir();
+    private static final File backUpPath = new File(installPath, "db.backUp");
     private static final Version startVersion = new Version("1");
     private static final String packageName = "me.philnate.textmanager.updates";
 
@@ -77,6 +79,14 @@ public class Updater {
 		e.printStackTrace();
 		rollback();
 		return;
+	    } finally {
+		// finally drop backup directory to avoid to get conflicting
+		// data versions
+		try {
+		    FileUtils.deleteDirectory(backUpPath);
+		} catch (IOException e) {
+		    e.printStackTrace();
+		}
 	    }
 	}
     }
@@ -129,7 +139,8 @@ public class Updater {
     public static void backUp() {
 	final ProcessBuilder dump = new ProcessBuilder(new File(installPath,
 		getProgram("win/mongodump")).toString(), "-h",
-		"localhost:27017", "-o", "db.backUp", "--db", "textManager");
+		"localhost:27017", "-o", backUpPath.getAbsolutePath(), "--db",
+		"textManager");
 	dump.directory(installPath);
 	// try {
 	new NotifyingThread() {
@@ -151,7 +162,8 @@ public class Updater {
     private static void rollback() {
 	final ProcessBuilder restore = new ProcessBuilder(new File(installPath,
 		getProgram("win/mongorestore")).toString(), "--drop", "-h",
-		"localhost:27017", "--db", "textManager", "db.backUp");
+		"localhost:27017", "--db", "textManager",
+		backUpPath.getAbsolutePath());
 	restore.directory(installPath);
 	new NotifyingThread() {
 
