@@ -30,7 +30,7 @@ public class ImageRegistry {
     public static ImageIcon getImage(String name) {
 	if (!icons.containsKey(name)) {
 	    icons.put(name, new ImageIcon(ImageRegistry.class.getClassLoader()
-		    .getResource(name)));
+		    .getResource("icons/" + name)));
 	}
 	return icons.get(name);
     }
