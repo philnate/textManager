@@ -5,3 +5,4 @@ bin/
 target/
 win/*.exe
 template/signum.jpg
+db.backUp
