@@ -79,7 +79,6 @@ public class BillingItemTable extends JTable {
 			public void mousePressed(MouseEvent e) {
 			    if (JOptionPane.showConfirmDialog(container,
 				    getCaption("mw.dialog.itemdelete.title")) == JOptionPane.YES_OPTION) {
-				System.out.println("delete");
 				int row = rowAtPoint(e.getPoint());
 				((BillingItem) ((Vector) model.getDataVector()
 					.get(row)).get(0)).delete();

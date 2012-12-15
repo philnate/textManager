@@ -17,6 +17,8 @@
  */
 package me.philnate.textmanager.utils;
 
+import static java.lang.String.format;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -30,11 +32,16 @@ import java.util.ResourceBundle.Control;
 
 import me.philnate.textmanager.entities.Setting;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class I18N {
 
     static ResourceBundle captions;
     static final Locale locale;
+
+    private static Logger LOG = LoggerFactory.getLogger(I18N.class);
+
     static {
 	locale = new Locale(Setting.find("locale", "de").getValue());
 	captions = ResourceBundle.getBundle("captions", locale,
@@ -45,6 +52,7 @@ public class I18N {
 	try {
 	    return captions.getString(key);
 	} catch (MissingResourceException e) {
+	    LOG.debug(format("Did not find locale for key '%s'", key));
 	    return key;
 	}
 

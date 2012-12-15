@@ -17,6 +17,7 @@
  */
 package me.philnate.textmanager.updates;
 
+import static java.lang.String.format;
 import static me.philnate.textmanager.utils.DB.ds;
 
 import java.io.File;
@@ -30,6 +31,8 @@ import me.philnate.textmanager.utils.NotifyingThread;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Throwables;
 import com.google.common.collect.Maps;
@@ -43,6 +46,8 @@ public class Updater {
     private static final Version startVersion = new Version("1");
     private static final String packageName = "me.philnate.textmanager.updates";
 
+    private static Logger LOG = LoggerFactory.getLogger(Updater.class);
+
     /**
      * checks what the actual db version is, if an old version is encountered
      * appropriate updates are performed to get the db to the latest version
@@ -51,17 +56,23 @@ public class Updater {
 	TreeMap<Version, Class<? extends Update>> updates = createUpdateList(packageName);
 	Setting v = Setting.find("version");
 	// check that an version is set, if none was found set it to 1
+	LOG.info(format("Database version is %s", v.getValue()));
 	if (StringUtils.isBlank(v.getValue())) {
+	    LOG.debug("No Version set, assuming 1");
 	    v = new Setting("version", startVersion);
 	    ds.save(v);
 	}
+	LOG.info(format("Found these Database upgrades: '%s'", updates.keySet()));
 	for (Version vers : updates.keySet()) {
 	    if (vers.compareTo(new Version(v.getValue())) < vers.AFTER) {
 		// if version is smaller than actual db version we have nothing
 		// todo here
+		LOG.debug(format("Database is already newer than '%s'", vers));
 		continue;
 	    }
 	    try {
+		LOG.info(format("Going to update Database to version '%s'",
+			vers));
 		backUp();
 		// create new Instance
 		Update up = updates.get(vers).newInstance();
@@ -76,7 +87,9 @@ public class Updater {
 	    } catch (Exception e) {
 		// in case of an exception stop further rollback and stop
 		// further updates
-		e.printStackTrace();
+		LOG.error(
+			"Update process caused an exception going to rollback",
+			e);
 		rollback();
 		return;
 	    } finally {
@@ -85,7 +98,7 @@ public class Updater {
 		try {
 		    FileUtils.deleteDirectory(backUpPath);
 		} catch (IOException e) {
-		    e.printStackTrace();
+		    LOG.error("Could not remove file", e);
 		}
 	    }
 	}
@@ -115,9 +128,8 @@ public class Updater {
 			    new Version(clazz.getAnnotation(UpdateScript.class)
 				    .UpdatesVersion()), clazz);
 		} catch (ClassNotFoundException e) {
-		    System.out
-			    .println("Found annotated class, but could not load it "
-				    + className);
+		    LOG.error("Found annotated class, but could not load it "
+			    + className, e);
 		}
 	    }
 
@@ -127,7 +139,7 @@ public class Updater {
 	    // load updates
 	    cf.detect(packageName);
 	} catch (IOException e) {
-	    e.printStackTrace();
+	    LOG.error("An error occured while collecting Updates", e);
 	}
 	return updates;
     }
@@ -150,6 +162,7 @@ public class Updater {
 		try {
 		    printOutputStream(dump);
 		} catch (IOException e) {
+		    LOG.error("Error while doing backup of db files", e);
 		    Throwables.propagate(e);
 		}
 	    }
@@ -172,6 +185,7 @@ public class Updater {
 		try {
 		    printOutputStream(restore);
 		} catch (IOException e) {
+		    LOG.error("Error while doing rollback of db files", e);
 		    Throwables.propagate(e);
 		}
 	    }

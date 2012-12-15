@@ -37,6 +37,9 @@ public abstract class Entry {
 	ds.save(this);
     }
 
+    /**
+     * Returns the String representation of this Entry
+     */
     @Override
     public String toString() {
 	return ToStringBuilder.reflectionToString(this);
@@ -46,4 +49,5 @@ public abstract class Entry {
      * deletes the current entry and all linked documents if existent
      */
     public abstract void delete();
+
 }

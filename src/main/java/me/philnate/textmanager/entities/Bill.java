@@ -17,9 +17,12 @@
  */
 package me.philnate.textmanager.entities;
 
+import static java.lang.String.format;
 import static me.philnate.textmanager.utils.DB.ds;
 
 import org.bson.types.ObjectId;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.code.morphia.annotations.Entity;
 import com.google.code.morphia.annotations.Id;
@@ -41,8 +44,9 @@ public class Bill extends Entry {
     private ObjectId customerId;
     private int year;
     private int month;
-    // @Indexed(unique = true)
     private String billNo;
+
+    private static Logger LOG = LoggerFactory.getLogger(Bill.class);
 
     public ObjectId getId() {
 	return id;
@@ -94,15 +98,26 @@ public class Bill extends Entry {
     }
 
     public static Bill find(ObjectId customer, int year, int month) {
-	return find().filter("customerId", customer).filter("year", year)
+	LOG.debug(format(
+		"Lookup of Bill with customer '%s', year '%d' and month '%d'",
+		customer, year, month));
+	Bill res = find().filter("customerId", customer).filter("year", year)
 		.filter("month", month).get();
+	if (res != null) {
+	    LOG.debug(format("Found Bill %s", res));
+	} else {
+	    LOG.debug("Found no Bill");
+	}
+	return res;
     }
 
     @Override
     public void delete() {
+	LOG.debug(format("Deleting Bill %s, items", this));
 	for (BillingItem item : BillingItem.find(getCustomer(), year, month)) {
 	    item.delete();
 	}
+	LOG.debug("Deleted all BillingItems, deleting Bill itself");
 	ds.delete(this, WriteConcern.SAFE);
     }
 }

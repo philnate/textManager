@@ -17,10 +17,13 @@
  */
 package me.philnate.textmanager.entities;
 
+import static java.lang.String.format;
 import static me.philnate.textmanager.utils.DB.ds;
 import static me.philnate.textmanager.utils.I18N.getCaption;
 
 import org.bson.types.ObjectId;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.code.morphia.annotations.Entity;
 import com.google.code.morphia.annotations.Id;
@@ -46,6 +49,8 @@ public class Customer extends Entry {
     private boolean male;
     // TODO split contact name into first and lastname
     private String contactName;
+
+    private static Logger LOG = LoggerFactory.getLogger(Customer.class);
 
     public String getFirstName() {
 	return contactName.split(" ")[0];
@@ -146,9 +151,11 @@ public class Customer extends Entry {
 
     @Override
     public void delete() {
+	LOG.debug(format("Deleting customer Bills for %s", this));
 	for (Bill bill : Bill.find().filter("customerId", id).asList()) {
 	    bill.delete();
 	}
+	LOG.debug("Deleting customer itself");
 	ds.delete(this, WriteConcern.SAFE);
     }
 }

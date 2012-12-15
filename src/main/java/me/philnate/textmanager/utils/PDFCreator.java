@@ -61,6 +61,7 @@ public class PDFCreator extends NotifyingThread {
      * @throws IOException
      * @throws InterruptedException
      */
+    @Deprecated
     public static void main(String[] args) throws IOException,
 	    InterruptedException {
 	new PDFCreator(new Bill().setBillNo("unique").setMonth(4).setYear(2012)
@@ -128,7 +129,6 @@ public class PDFCreator extends NotifyingThread {
 		// display Bill in DocumentViewer
 		new ProcessBuilder(Setting.find("pdfViewer").getValue(),
 			pdfPath).start().waitFor();
-		System.out.println(pdfPath);
 		GridFSFile pdfFile = pdf.createFile(new File(pdfPath));
 		pdfFile.put("month", month);
 		pdfFile.put("year", year);

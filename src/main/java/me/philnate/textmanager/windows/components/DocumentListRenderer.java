@@ -164,11 +164,10 @@ public class DocumentListRenderer implements TableCellRenderer, TableCellEditor 
 
 	    @Override
 	    public void actionPerformed(ActionEvent e) {
-		switch (JOptionPane
-			.showConfirmDialog(
-				null,
-				"Das Dokument wird aus dem System gelöscht, wenn sie keine Kopie besitzen wird das Dokument unwiderruflich gelöscht.\nSoll dieses Dokument wirklich gelöscht werden?",
-				"Dokument löschen", JOptionPane.YES_NO_OPTION)) {
+		switch (JOptionPane.showConfirmDialog(null,
+			getCaption("dlr.delete.msg"),
+			getCaption("dlr.delete.title"),
+			JOptionPane.YES_NO_OPTION)) {
 		case JOptionPane.NO_OPTION:
 		    selectedFile = null;
 		    break;

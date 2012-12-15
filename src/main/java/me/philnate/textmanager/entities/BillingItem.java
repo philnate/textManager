@@ -17,12 +17,15 @@
  */
 package me.philnate.textmanager.entities;
 
+import static java.lang.String.format;
 import static me.philnate.textmanager.utils.DB.ds;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.bson.types.ObjectId;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.code.morphia.annotations.Entity;
 import com.google.code.morphia.annotations.Id;
@@ -49,6 +52,8 @@ public class BillingItem extends Entry {
     private int year;
     private ObjectId customerId;
     private List<Document> documents = null;
+
+    private static Logger LOG = LoggerFactory.getLogger(BillingItem.class);
 
     public ObjectId getId() {
 	return id;
@@ -189,9 +194,11 @@ public class BillingItem extends Entry {
 
     @Override
     public void delete() {
+	LOG.debug(format("Deleting BillingItem documents for %s", this));
 	for (Document doc : documents) {
 	    doc.delete();
 	}
+	LOG.debug("Deleting BillingItem itself");
 	ds.delete(this, WriteConcern.SAFE);
     }
 }

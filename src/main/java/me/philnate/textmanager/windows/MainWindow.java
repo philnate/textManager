@@ -17,6 +17,7 @@
  */
 package me.philnate.textmanager.windows;
 
+import static java.lang.String.format;
 import static me.philnate.textmanager.utils.DB.pdf;
 import static me.philnate.textmanager.utils.I18N.getCaption;
 
@@ -63,6 +64,8 @@ import net.miginfocom.swing.MigLayout;
 
 import org.apache.commons.lang.StringUtils;
 import org.bson.types.ObjectId;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.mongodb.MongoException.DuplicateKey;
 import com.toedter.calendar.JMonthChooser;
@@ -83,6 +86,8 @@ public class MainWindow {
     private JButton build;
     private JButton view;
     private Thread runningThread;
+
+    private static Logger LOG = LoggerFactory.getLogger(MainWindow.class);
 
     /**
      * on value change load different bill into table
@@ -261,13 +266,13 @@ public class MainWindow {
 			} catch (DuplicateKey e) {
 			    // unset the internal value as this is already used
 			    bill.setBillNo("");
-			    JOptionPane.showMessageDialog(
-				    frame,
-				    String.format(
-					    getCaption("mw.error.billNoUsed.msg"),
-					    billNo.getText()),
-				    getCaption("mw.dialog.error.billNoBlank.title"),
-				    JOptionPane.ERROR_MESSAGE);
+			    JOptionPane
+				    .showMessageDialog(
+					    frame,
+					    format(getCaption("mw.error.billNoUsed.msg"),
+						    billNo.getText()),
+					    getCaption("mw.dialog.error.billNoBlank.title"),
+					    JOptionPane.ERROR_MESSAGE);
 			    return;
 			}
 			PDFCreator pdf = new PDFCreator(bill);
@@ -312,18 +317,16 @@ public class MainWindow {
 	view.addActionListener(new ActionListener() {
 	    @Override
 	    public void actionPerformed(ActionEvent e) {
-		File file = new File(System.getProperty("user.dir"), String
-			.format("template/%s.tmp.pdf", billNo.getText()));
+		File file = new File(System.getProperty("user.dir"), format(
+			"template/%s.tmp.pdf", billNo.getText()));
 		try {
 		    pdf.findOne(billNo.getText() + ".pdf").writeTo(file);
 		    new ProcessBuilder(Setting.find("pdfViewer").getValue(),
 			    file.getAbsolutePath()).start().waitFor();
 		    file.delete();
-		} catch (IOException e1) {
+		} catch (IOException | InterruptedException e1) {
 		    // TODO Auto-generated catch block
-		    e1.printStackTrace();
-		} catch (InterruptedException e1) {
-		    e1.printStackTrace();
+		    LOG.warn("Error while building PDF", e1);
 		}
 	    }
 	});

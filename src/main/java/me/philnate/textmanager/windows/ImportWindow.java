@@ -17,6 +17,7 @@
  */
 package me.philnate.textmanager.windows;
 
+import static java.lang.String.format;
 import static me.philnate.textmanager.utils.I18N.getCaption;
 
 import java.awt.EventQueue;
@@ -42,6 +43,9 @@ import me.philnate.textmanager.utils.I18N;
 import me.philnate.textmanager.windows.components.BillingItemTable;
 import net.miginfocom.swing.MigLayout;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 
@@ -52,6 +56,8 @@ public class ImportWindow extends WindowAdapter {
     private JTextArea input;
     private JTextField regex;
     private final ImportListener listener;
+
+    private static Logger LOG = LoggerFactory.getLogger(ImportWindow.class);
 
     /**
      * Allows it to get notified if a import was initialized
@@ -184,8 +190,7 @@ public class ImportWindow extends WindowAdapter {
 	    item.setFixedPrice(pricePerWord == 0);
 	    item.setCentPerWord(pricePerWord);
 	} else {
-	    System.out.println(String.format(
-		    "Could not parse line '%s' with regex '%s'", line,
+	    LOG.warn(format("Could not parse line '%s' with regex '%s'", line,
 		    pattern.pattern()));
 	    return Optional.absent();
 	}
@@ -206,8 +211,8 @@ public class ImportWindow extends WindowAdapter {
 	} catch (IllegalArgumentException e) {
 	    if (NumberFormatException.class.isInstance(e)) {
 		// TODO should be rather an alertbox
-		System.out.println(String.format(
-			"Could not parse %s to integer", matcher.group(group)));
+		LOG.warn(format("Could not parse %s to integer",
+			matcher.group(group)));
 	    }
 	    return Optional.absent();
 	}
@@ -220,8 +225,8 @@ public class ImportWindow extends WindowAdapter {
 	} catch (IllegalArgumentException | ParseException e) {
 	    if (ParseException.class.isInstance(e)) {
 		// TODO should be rather an alertbox
-		System.out.println(String.format(
-			"Could not parse %s to double", matcher.group(group)));
+		LOG.warn(format("Could not parse %s to double",
+			matcher.group(group)));
 	    }
 	    return Optional.absent();
 	}

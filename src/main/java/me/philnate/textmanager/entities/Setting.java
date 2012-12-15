@@ -17,11 +17,15 @@
  */
 package me.philnate.textmanager.entities;
 
+import static java.lang.String.format;
 import static me.philnate.textmanager.utils.DB.ds;
 
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.code.morphia.annotations.Entity;
 import com.google.code.morphia.annotations.Id;
@@ -42,6 +46,8 @@ public class Setting extends Entry {
     private String key;
     private String value;
     private static final Map<String, String> defaults = Maps.newHashMap();
+
+    private static Logger LOG = LoggerFactory.getLogger(Setting.class);
 
     static {
 	defaults.put("locale", Locale.getDefault().getLanguage());
@@ -102,6 +108,7 @@ public class Setting extends Entry {
      * @return
      */
     public static Setting find(String key, String def) {
+	LOG.debug(format("Searching for setting '%s' with def '%s'", key, def));
 	List<Setting> list = ds.find(Setting.class).filter("key =", key)
 		.limit(1).asList();
 	if (list.size() == 1) {

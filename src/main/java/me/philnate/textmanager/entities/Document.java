@@ -17,6 +17,7 @@
  */
 package me.philnate.textmanager.entities;
 
+import static java.lang.String.format;
 import static me.philnate.textmanager.utils.DB.docs;
 import static me.philnate.textmanager.utils.DB.ds;
 
@@ -31,11 +32,12 @@ import org.apache.poi.hwpf.extractor.WordExtractor;
 import org.apache.poi.xwpf.extractor.XWPFWordExtractor;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.bson.types.ObjectId;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.code.morphia.annotations.Id;
 import com.google.code.morphia.query.Query;
 import com.mongodb.gridfs.GridFSInputFile;
-
 
 public class Document {
     @Id
@@ -44,6 +46,8 @@ public class Document {
     private long wordCount;
     private String title;
     private ObjectId billingItemId;
+
+    private static Logger LOG = LoggerFactory.getLogger(Document.class);
 
     public ObjectId getId() {
 	return id;
@@ -95,6 +99,8 @@ public class Document {
 	try {
 	    gFile = docs.createFile(file);
 	    gFile.save();
+	    LOG.debug(format("Reading file  '%s' for new Document",
+		    file.getAbsolutePath()));
 	    FileInputStream fis = new FileInputStream(file.getAbsolutePath());
 	    Document doc = new Document();
 	    doc.setDocument((ObjectId) gFile.getId()).setTitle(file.getName());
@@ -118,6 +124,7 @@ public class Document {
     }
 
     public void delete() {
+	LOG.debug(format("deleting document '%s'", document));
 	docs.remove(document);
     }
 
@@ -126,6 +133,7 @@ public class Document {
     }
 
     public static Document find(ObjectId id) {
+	LOG.debug(format("Searching for Document with ObjectId '%s'", id));
 	return ds.get(Document.class, id);
     }
 }
