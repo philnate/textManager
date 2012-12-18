@@ -28,6 +28,7 @@ import java.util.TreeMap;
 import me.philnate.textmanager.entities.Setting;
 import me.philnate.textmanager.utils.NotifyingThread;
 
+import org.apache.commons.collections.ComparatorUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
@@ -58,8 +59,11 @@ public class Updater {
 	// check that an version is set, if none was found set it to 1
 	LOG.info(format("Database version is %s", v.getValue()));
 	if (StringUtils.isBlank(v.getValue())) {
-	    LOG.debug("No Version set, assuming 1");
-	    v = new Setting("version", startVersion);
+	    Version db = (Version) ComparatorUtils.min(startVersion,
+		    updates.lastKey(), null);
+	    LOG.debug(String.format("No Version set, assuming []",
+		    db.toString()));
+	    v = new Setting("version", db);
 	    ds.save(v);
 	}
 	LOG.info(format("Found these Database upgrades: '%s'", updates.keySet()));
