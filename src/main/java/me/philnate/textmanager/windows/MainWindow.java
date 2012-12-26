@@ -153,7 +153,7 @@ public class MainWindow {
 	frame.getContentPane().add(customers, "flowx,cell 0 0,growx");
 
 	jScrollPane = new JScrollPane();
-	billLines = new BillingItemTable(frame);
+	billLines = new BillingItemTable(frame, true);
 
 	jScrollPane.setViewportView(billLines);
 	frame.getContentPane().add(jScrollPane, "cell 0 1,grow");

@@ -48,21 +48,28 @@ public class BillingItemTable extends JTable {
 
     private boolean contextMenuEnabled = true;
 
-    public BillingItemTable(final Container container) {
+    public BillingItemTable(final Container container, boolean showDocsField) {
 	super();
 	setRowHeight(24);
+	// set model and adjust column Model
+	if (showDocsField) {
+	    model = new BillingItemTableModel(getCaptions("bit.header",
+		    "title", "wc", "cw", "fixPrice", "total", "documents"));
+	} else {
+	    model = new BillingItemTableModel(getCaptions("bit.header",
+		    "title", "wc", "cw", "fixPrice", "total"));
+	}
+	setModel(model);
+
 	// set some default Renderer and Editor to properly display a list of
 	// Documents
-	DocumentListRenderer docList = new DocumentListRenderer(container);
-	setDefaultRenderer(List.class, docList);
-	setDefaultEditor(List.class, docList);
-
-	// set model and adjust column Model
-	model = new BillingItemTableModel(getCaptions("bit.header", "title",
-		"wc", "cw", "fixPrice", "total", "documents"));
-	setModel(model);
+	if (showDocsField) {
+	    DocumentListRenderer docList = new DocumentListRenderer(container);
+	    setDefaultRenderer(List.class, docList);
+	    setDefaultEditor(List.class, docList);
+	    getColumnModel().getColumn(5).setPreferredWidth(400);
+	}
 	getColumnModel().getColumn(0).setPreferredWidth(400);
-	getColumnModel().getColumn(5).setPreferredWidth(400);
 	setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
 	// Menu for Row actions, e.g. delete row

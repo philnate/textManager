@@ -139,7 +139,7 @@ public class ImportWindow extends WindowAdapter {
 		"h 340px, cell 0 0, growx");
 
 	JScrollPane pane = new JScrollPane();
-	final BillingItemTable table = new BillingItemTable(frame);
+	final BillingItemTable table = new BillingItemTable(frame, false);
 	table.setContextMenuEnabled(false);
 	pane.setViewportView(table);
 	frame.getContentPane().add(pane, "growy, cell 0 2,growx");
