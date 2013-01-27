@@ -17,8 +17,6 @@
  */
 package me.philnate.textmanager.utils;
 
-import static java.lang.String.format;
-
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Properties;
@@ -53,26 +51,21 @@ public class DB {
     static {
 	Morphia store = new Morphia();
 	Mongo mg;
-	Properties props;
 	try {
 	    // set a default Profile which is production, so testcases have the
 	    // possibility to set a activeprofile to override production profile
 	    System.setProperty("spring.profiles.default", "production");
 	    AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext(
 		    cfgProduction.class, cfgTesting.class);
-	    props = (Properties) ctx.getAutowireCapableBeanFactory().getBean(
-		    "mongoProps");
+	    mg = ctx.getAutowireCapableBeanFactory().getBean(Mongo.class);
 
-	    LOG.info(format("Read properties '%s'", props));
-	    mg = new Mongo(props.getProperty("mongodb.host"),
-		    Integer.valueOf(props.getProperty("mongodb.port")));
 	    store.mapPackage("me.philnate.textmanager.entities");
 
-	} catch (MongoException | IOException e) {
+	} catch (MongoException e) {
 	    LOG.error("Error while loading mongodb configuration", e);
 	    throw Throwables.propagate(e);
 	}
-	ds = store.createDatastore(mg, props.getProperty("mongodb.db"));
+	ds = store.createDatastore(mg, "textManager");
 	ds.ensureIndexes();
 	docs = new GridFS(ds.getDB(), "doc");
 	pdf = new GridFS(ds.getDB(), "pdf");

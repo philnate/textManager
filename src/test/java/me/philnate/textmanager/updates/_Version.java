@@ -75,6 +75,8 @@ public class _Version {
 
     @Test
     public void testComparation() {
+	Version v = new Version("1.1.1");
+	assertEquals(EQUAL, v.compareTo(v));
 	assertEquals(EQUAL,
 		new Version("1.1.1").compareTo(new Version("1.1.1")));
 	assertEquals(EQUAL, new Version("1.1").compareTo(new Version("1.1")));
@@ -89,6 +91,12 @@ public class _Version {
 	assertEquals(BEFORE, new Version("2.1").compareTo(new Version("2.2")));
 	assertEquals(BEFORE,
 		new Version("2.2.1").compareTo(new Version("2.2.2")));
+    }
 
+    @Test
+    public void testToString() {
+	assertEquals("1.0.0", new Version("1").toString());
+	assertEquals("1.2.0", new Version("1.2").toString());
+	assertEquals("1.2.3", new Version("1.2.3").toString());
     }
 }

@@ -26,8 +26,8 @@ public class _Updater {
     @Test
     public void testUpdateFind() {
 	Version oldV = null;
-	for (Version vers : Updater.createUpdateList(
-		_Updater.class.getCanonicalName()).keySet()) {
+	for (Version vers : Updater.createUpdateList(_Updater.class.getName())
+		.keySet()) {
 	    if (oldV == null) {
 		oldV = vers;
 		continue;
@@ -38,7 +38,7 @@ public class _Updater {
     }
 
     @UpdateScript(UpdatesVersion = "1")
-    private class Update1 implements Update {
+    public static class Update1 implements Update {
 
 	@Override
 	public void preCheck() {
@@ -55,7 +55,7 @@ public class _Updater {
     }
 
     @UpdateScript(UpdatesVersion = "2")
-    private class Update2 implements Update {
+    public static class Update2 implements Update {
 
 	@Override
 	public void preCheck() {

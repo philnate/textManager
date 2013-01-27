@@ -17,22 +17,30 @@
  */
 package me.philnate.textmanager.config;
 
-import java.util.Properties;
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+
+import com.foursquare.fongo.Fongo;
+import com.mongodb.DB;
+import com.mongodb.Mongo;
 
 @Configuration
 @Profile("test")
 public class cfgTesting {
 
     @Bean
-    public Properties mongoProps() {
-	Properties props = new Properties();
-	props.put("mongodb.db", "testManager");
-	props.put("mongodb.port", "27018");
-	props.put("mongodb.host", "localhost");
-	return props;
+    public Mongo mongo() {
+	return fongo().getMongo();
+    }
+
+    @Bean
+    public Fongo fongo() {
+	return new Fongo("testManager");
+    }
+
+    @Bean
+    public DB db() {
+	return fongo().getDB("textManager");
     }
 }

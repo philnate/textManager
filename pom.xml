@@ -31,6 +31,11 @@
 			<artifactId>spring-context</artifactId>
 			<version>3.2.0.RELEASE</version>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+			<version>3.2.0.RELEASE</version>
+		</dependency>
 		<!-- Logging -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
@@ -49,9 +54,9 @@
 		</dependency>
 		<!-- MongoDB Test dependency -->
 		<dependency>
-			<groupId>de.flapdoodle.embed</groupId>
-			<artifactId>de.flapdoodle.embed.mongo</artifactId>
-			<version>1.27</version>
+			<groupId>com.foursquare</groupId>
+			<artifactId>fongo</artifactId>
+			<version>1.0.3</version>
 		</dependency>
 		<!-- Allows it to scan for given Annotations, no manual housekeeping for 
 			updates -->
@@ -61,14 +66,14 @@
 			<version>3.0.1</version>
 		</dependency>
 		<!-- Layout Requirements -->
-		<dependency>
+<!-- 		<dependency>
 			<groupId>org.uispec4j</groupId>
 			<artifactId>uispec4j</artifactId>
 			<version>2.4</version>
 			<classifier>jdk16</classifier>
 			<type>jar</type>
 			<scope>test</scope>
-		</dependency>
+		</dependency> -->
 		<dependency>
 			<groupId>com.miglayout</groupId>
 			<artifactId>miglayout-swing</artifactId>
