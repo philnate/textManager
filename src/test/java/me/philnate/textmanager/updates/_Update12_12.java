@@ -19,6 +19,8 @@ package me.philnate.textmanager.updates;
 
 import static me.philnate.textmanager.utils.DB.ds;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import me.philnate.textmanager.entities.Bill;
 import me.philnate.textmanager.entities.BillingItem;
 import me.philnate.textmanager.entities.Setting;
@@ -84,7 +86,23 @@ public class _Update12_12 extends UpdateTestBase {
 	// verify that names are split correctly
     }
 
-    public void testWrongPreconditions() {
-
+    @Test
+    public void testUpdateFailed() {
+	DBObject billingItem = morphia.toDBObject(new BillingItem()
+		.setCustomerId(new ObjectId()).setMonth(11));
+	billingItem.put("className", BillingItem.class.getName());
+	ds.getCollection(BillingItem.class).save(billingItem);
+	Update update = new Update12_12();
+	// update procedure
+	update.preCheck();
+	// update.upgrade(); We want no real update, just wanna check that
+	// postCheck is doing right
+	try {
+	    update.postCheck();
+	    fail("positCheck should discover that something went wrong");
+	} catch (IllegalArgumentException e) {
+	    assertTrue(e.getMessage().contains(
+		    "Found className attribute within a record of class"));
+	}
     }
 }
