@@ -44,7 +44,8 @@ import net.miginfocom.swing.MigLayout;
 public class CustomerWindow extends WindowAdapter {
 
     private JFrame frame;
-    private JTextField textContact;
+    private JTextField textFirstName;
+    private JTextField textLastName;
     private JTextField textStreet;
     private JTextField textZip;
     private JTextField textCity;
@@ -187,10 +188,21 @@ public class CustomerWindow extends WindowAdapter {
 	JLabel lblContact = new JLabel(getCaption("cw.label.contact"));
 	frame.getContentPane().add(lblContact, "cell 0 4,alignx trailing");
 
-	textContact = new JTextField();
-	textContact.addMouseListener(RIGHT_CLICK_MENU);
-	frame.getContentPane().add(textContact, "cell 2 4,growx");
-	textContact.setColumns(10);
+	JLabel lblFirstname = new JLabel(getCaption("cw.label.firstname"));
+	frame.getContentPane().add(lblFirstname, "cell 2 4,alignx left");
+
+	textFirstName = new JTextField();
+	textFirstName.addMouseListener(RIGHT_CLICK_MENU);
+	frame.getContentPane().add(textFirstName, "cell 3 4,growx");
+	textFirstName.setColumns(15);
+
+	JLabel lblLastname = new JLabel(getCaption("cw.label.lastname"));
+	frame.getContentPane().add(lblLastname, "cell 3 4,alignx left");
+
+	textLastName = new JTextField();
+	textLastName.addMouseListener(RIGHT_CLICK_MENU);
+	frame.getContentPane().add(textLastName, "cell 3 4,grow");
+	textLastName.setColumns(25);
 
 	btnSave = new JButton();
 	btnSave.setIcon(ImageRegistry.getImage("save.gif"));
@@ -216,7 +228,8 @@ public class CustomerWindow extends WindowAdapter {
 		    }
 		    textCity.setText(c.getCity());
 		    feMale.setSelectedIndex(c.isMale() ? 0 : 1);
-		    textContact.setText(c.getContactName());
+		    textFirstName.setText(c.getFirstName());
+		    textLastName.setText(c.getLastName());
 		    textCompanyName.setText(c.getCompanyName());
 		    textStreet.setText(c.getStreet());
 		    textNr.setText(c.getStreetNo());
@@ -236,7 +249,8 @@ public class CustomerWindow extends WindowAdapter {
 		// clear fields
 		textCity.setText(empty);
 		feMale.setSelectedIndex(0);
-		textContact.setText(empty);
+		textFirstName.setText(empty);
+		textLastName.setText(empty);
 		textCompanyName.setText(empty);
 		textStreet.setText(empty);
 		textNr.setText(empty);
@@ -267,8 +281,9 @@ public class CustomerWindow extends WindowAdapter {
      *         (false)
      */
     private boolean save() {
+	// firstname may be empty, important is only lastName
 	if (0 == textCompanyName.getText().trim().length()
-		|| 0 == textContact.getText().trim().length()
+		|| 0 == textLastName.getText().trim().length()
 		|| 0 == textStreet.getText().trim().length()
 		|| 0 == textNr.getText().trim().length()
 		|| 0 == textZip.getText().trim().length()
@@ -281,7 +296,8 @@ public class CustomerWindow extends WindowAdapter {
 	    return false;
 	}
 	new Customer().setCompanyName(textCompanyName.getText())
-		.setContactName(textContact.getText())
+		.setFirstName(textFirstName.getText())
+		.setLastName(textLastName.getText())
 		.setMale(feMale.getSelectedIndex() == 0 ? true : false)
 		.setStreet(textStreet.getText()).setStreetNo(textNr.getText())
 		.setZip(textZip.getText()).setCity(textCity.getText()).save();
@@ -297,7 +313,8 @@ public class CustomerWindow extends WindowAdapter {
      */
     private void setEnabled(boolean enabled) {
 	textCity.setEnabled(enabled);
-	textContact.setEnabled(enabled);
+	textFirstName.setEnabled(enabled);
+	textLastName.setEnabled(enabled);
 	textCompanyName.setEnabled(enabled);
 	textNr.setEnabled(enabled);
 	textStreet.setEnabled(enabled);

@@ -17,6 +17,7 @@
  */
 package me.philnate.textmanager.updates;
 
+import org.junit.BeforeClass;
 
 /**
  * Base Class for updating Tests
@@ -25,4 +26,9 @@ package me.philnate.textmanager.updates;
  * 
  */
 public class UpdateTestBase {
+
+    @BeforeClass
+    public static void once() {
+	System.setProperty("spring.profiles.active", "test");
+    }
 }

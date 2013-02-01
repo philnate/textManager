@@ -25,9 +25,9 @@ import com.google.common.collect.ComparisonChain;
 import com.google.common.primitives.Ints;
 
 public class Version implements Comparable<Version> {
-    private int major;
-    private int minor;
-    private int patch;
+    private int major = 0;
+    private int minor = 0;
+    private int patch = 0;
 
     protected static final int BEFORE = -1;
     protected static final int EQUAL = 0;

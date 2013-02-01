@@ -17,21 +17,27 @@
  */
 package me.philnate.textmanager.config;
 
-import java.util.Properties;
+import java.net.UnknownHostException;
 
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
 
+import com.mongodb.DB;
+import com.mongodb.Mongo;
+import com.mongodb.MongoException;
+
 @Configurable
 @Profile("production")
 public class cfgProduction {
+
     @Bean
-    public Properties mongoProps() {
-	Properties props = new Properties();
-	props.put("mongodb.db", "textManager");
-	props.put("mongodb.port", "27017");
-	props.put("mongodb.host", "localhost");
-	return props;
+    public Mongo mongo() throws UnknownHostException, MongoException {
+	return new Mongo("localhost", 27017);
+    }
+
+    @Bean
+    public DB db() throws UnknownHostException, MongoException {
+	return mongo().getDB("textManager");
     }
 }

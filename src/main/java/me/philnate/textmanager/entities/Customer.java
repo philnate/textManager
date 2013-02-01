@@ -47,22 +47,27 @@ public class Customer extends Entry {
     private String streetNo;
     private String city;
     private boolean male;
-    // TODO split contact name into first and lastname
-    private String contactName;
+    private String firstName;
+    private String lastName;
 
     private static Logger LOG = LoggerFactory.getLogger(Customer.class);
 
     public String getFirstName() {
-	return contactName.split(" ")[0];
+	return firstName;
+    }
+
+    public Customer setFirstName(String firstName) {
+	this.firstName = firstName;
+	return this;
     }
 
     public String getLastName() {
-	String[] lastName = contactName.split(" ");
-	if (1 == lastName.length) {
-	    return lastName[0];
-	} else {
-	    return lastName[1];
-	}
+	return lastName;
+    }
+
+    public Customer setLastName(String lastName) {
+	this.lastName = lastName;
+	return this;
     }
 
     public ObjectId getId() {
@@ -118,18 +123,9 @@ public class Customer extends Entry {
 	return (male) ? getCaption("gender.male") : getCaption("gender.female");
     }
 
-    public String getContactName() {
-	return contactName;
-    }
-
-    public Customer setContactName(String contactName) {
-	this.contactName = contactName;
-	return this;
-    }
-
     @Override
     public String toString() {
-	return companyName + "|" + contactName;
+	return companyName + "|" + lastName;
     }
 
     public String getCity() {
