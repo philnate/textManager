@@ -83,7 +83,6 @@
 			<groupId>com.foursquare</groupId>
 			<artifactId>fongo</artifactId>
 			<version>1.0.3</version>
-			<scope>test</scope>
 			<exclusions>
 				<exclusion>
 					<artifactId>hamcrest-core</artifactId>
