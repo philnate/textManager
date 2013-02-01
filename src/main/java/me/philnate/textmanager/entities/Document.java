@@ -22,15 +22,10 @@ import static me.philnate.textmanager.utils.DB.docs;
 import static me.philnate.textmanager.utils.DB.ds;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 
 import me.philnate.textmanager.utils.WordCount;
 
-import org.apache.poi.hwpf.HWPFDocument;
-import org.apache.poi.hwpf.extractor.WordExtractor;
-import org.apache.poi.xwpf.extractor.XWPFWordExtractor;
-import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.bson.types.ObjectId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -101,23 +96,9 @@ public class Document {
 	    gFile.save();
 	    LOG.debug(format("Reading file  '%s' for new Document",
 		    file.getAbsolutePath()));
-	    FileInputStream fis = new FileInputStream(file.getAbsolutePath());
 	    Document doc = new Document();
 	    doc.setDocument((ObjectId) gFile.getId()).setTitle(file.getName());
-	    if (file.getName().endsWith(".docx")) {
-		XWPFDocument document = new XWPFDocument(fis);
-		XWPFWordExtractor extractor = new XWPFWordExtractor(document);
-		return doc
-			.setWordCount(WordCount.linecount(extractor.getText()));
-	    } else if (file.getName().endsWith(".doc")) {
-		HWPFDocument document = new HWPFDocument(fis);
-		WordExtractor extractor = new WordExtractor(document);
-		return doc
-			.setWordCount(WordCount.linecount(extractor.getText()));
-	    } else {
-		throw new IllegalArgumentException(
-			"Can't handle non doc(X) files");
-	    }
+	    return doc.setWordCount(WordCount.countFile(file));
 	} catch (IOException e1) {
 	    return null;
 	}

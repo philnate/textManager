@@ -17,10 +17,18 @@
  */
 package me.philnate.textmanager.utils;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
+import org.apache.poi.hwpf.HWPFDocument;
+import org.apache.poi.hwpf.extractor.WordExtractor;
+import org.apache.poi.xwpf.extractor.XWPFWordExtractor;
+import org.apache.poi.xwpf.usermodel.XWPFDocument;
+
 /**
- * WordCounting functionality based on:
+ * WordCounting (lineCount and wordCount methods) functionality based on:
  * http://www.roseindia.net/java/beginners/java-word-count.shtml
  * 
  * @author philnate
@@ -58,6 +66,33 @@ public class WordCount {
 	    prevWhiteSpace = currWhiteSpace;
 	}
 	return numWords;
+    }
+
+    /**
+     * opens the given file, if it's a .doc or .docx file and returns the number
+     * of words within the document
+     * 
+     * @param file
+     * @return
+     * @throws FileNotFoundException
+     * @throws IOException
+     */
+    public static long countFile(File file) throws FileNotFoundException,
+	    IOException {
+	try (FileInputStream fis = new FileInputStream(file.getAbsolutePath())) {
+	    if (file.getName().endsWith(".docx")) {
+		XWPFDocument document = new XWPFDocument(fis);
+		XWPFWordExtractor extractor = new XWPFWordExtractor(document);
+		return linecount(extractor.getText());
+	    } else if (file.getName().endsWith(".doc")) {
+		HWPFDocument document = new HWPFDocument(fis);
+		WordExtractor extractor = new WordExtractor(document);
+		return WordCount.linecount(extractor.getText());
+	    } else {
+		throw new IllegalArgumentException(
+			"Can't handle non doc(X) files");
+	    }
+	}
     }
 
 }
