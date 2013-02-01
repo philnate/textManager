@@ -23,8 +23,34 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.10</version>
+			<version>4.11</version>
 			<scope>test</scope>
+		</dependency>
+		<!-- Matchers -->
+		<dependency>
+			<groupId>org.hamcrest</groupId>
+			<artifactId>hamcrest-library</artifactId>
+			<version>1.3</version>
+			<scope>test</scope>
+			<exclusions>
+				<exclusion>
+					<artifactId>hamcrest-core</artifactId>
+					<groupId>org.hamcrest</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<!-- Collection filtering lib -->
+		<dependency>
+			<groupId>com.googlecode.lambdaj</groupId>
+			<artifactId>lambdaj</artifactId>
+			<version>2.3.3</version>
+			<scope>test</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>org.hamcrest</groupId>
+					<artifactId>hamcrest-all</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -57,6 +83,13 @@
 			<groupId>com.foursquare</groupId>
 			<artifactId>fongo</artifactId>
 			<version>1.0.3</version>
+			<scope>test</scope>
+			<exclusions>
+				<exclusion>
+					<artifactId>hamcrest-core</artifactId>
+					<groupId>org.hamcrest</groupId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<!-- Allows it to scan for given Annotations, no manual housekeeping for 
 			updates -->
@@ -66,14 +99,9 @@
 			<version>3.0.1</version>
 		</dependency>
 		<!-- Layout Requirements -->
-<!-- 		<dependency>
-			<groupId>org.uispec4j</groupId>
-			<artifactId>uispec4j</artifactId>
-			<version>2.4</version>
-			<classifier>jdk16</classifier>
-			<type>jar</type>
-			<scope>test</scope>
-		</dependency> -->
+		<!-- <dependency> <groupId>org.uispec4j</groupId> <artifactId>uispec4j</artifactId> 
+			<version>2.4</version> <classifier>jdk16</classifier> <type>jar</type> <scope>test</scope> 
+			</dependency> -->
 		<dependency>
 			<groupId>com.miglayout</groupId>
 			<artifactId>miglayout-swing</artifactId>
