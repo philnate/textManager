@@ -30,6 +30,7 @@ import org.slf4j.LoggerFactory;
 import com.google.code.morphia.annotations.Entity;
 import com.google.code.morphia.annotations.Id;
 import com.google.code.morphia.query.Query;
+import com.google.common.collect.Lists;
 import com.mongodb.WriteConcern;
 
 /**
@@ -51,7 +52,7 @@ public class BillingItem extends Entry {
     private int month;
     private int year;
     private ObjectId customerId;
-    private List<Document> documents = null;
+    private List<Document> documents = Lists.newArrayList();
 
     private static Logger LOG = LoggerFactory.getLogger(BillingItem.class);
 
@@ -151,7 +152,7 @@ public class BillingItem extends Entry {
     }
 
     public BillingItem addDocument(Document document) {
-	if (null == this.documents) {
+	if (documents.size() == 0) {
 	    documents = new ArrayList<Document>();
 	    title = document.getTitle();
 	}
