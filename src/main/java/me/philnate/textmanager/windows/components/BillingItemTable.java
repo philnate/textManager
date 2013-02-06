@@ -23,6 +23,8 @@ import static me.philnate.textmanager.utils.I18N.getCaptions;
 import java.awt.Container;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Vector;
 
@@ -33,6 +35,11 @@ import javax.swing.JTable;
 
 import me.philnate.textmanager.entities.BillingItem;
 import me.philnate.textmanager.entities.Customer;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.common.primitives.Ints;
 
 /**
  * JTable adapted to match the needs which arise if BillingItems need to be
@@ -47,6 +54,7 @@ public class BillingItemTable extends JTable {
     private final BillingItemTableModel model;
 
     private boolean contextMenuEnabled = true;
+    private static Logger LOG = LoggerFactory.getLogger(BillingItemTable.class);
 
     public BillingItemTable(final Container container, boolean showDocsField) {
 	super();
@@ -86,10 +94,19 @@ public class BillingItemTable extends JTable {
 			public void mousePressed(MouseEvent e) {
 			    if (JOptionPane.showConfirmDialog(container,
 				    getCaption("mw.dialog.itemdelete.title")) == JOptionPane.YES_OPTION) {
-				int row = rowAtPoint(e.getPoint());
-				((BillingItem) ((Vector) model.getDataVector()
-					.get(row)).get(0)).delete();
-				model.removeRow(row);
+				int[] rows = getSelectedRows();
+				// we need to sort the rows descending, else we
+				// could run into AIOOBE or remove the wrong
+				// items
+				Collections.reverse(Ints.asList(rows));
+				LOG.debug("Going to remove rows: "
+					+ Arrays.toString(rows));
+				for (int row : rows) {
+				    ((BillingItem) ((Vector) model
+					    .getDataVector().get(row)).get(0))
+					    .delete();
+				    model.removeRow(row);
+				}
 			    }
 			}
 		    });
