@@ -51,7 +51,6 @@ import me.philnate.textmanager.entities.BillingItem;
 import me.philnate.textmanager.entities.Customer;
 import me.philnate.textmanager.entities.Document;
 import me.philnate.textmanager.entities.Setting;
-import me.philnate.textmanager.updates.Updater;
 import me.philnate.textmanager.utils.DB;
 import me.philnate.textmanager.utils.FileDrop;
 import me.philnate.textmanager.utils.ImageRegistry;
@@ -74,7 +73,6 @@ import com.toedter.calendar.JMonthChooser;
 import com.toedter.calendar.JYearChooser;
 
 public class MainWindow {
-
     private JFrame frame;
     private BillingItemTable billLines;
     private JScrollPane jScrollPane;
@@ -133,7 +131,6 @@ public class MainWindow {
      * Create the window.
      */
     public MainWindow() {
-	Updater.checkUpdateNeeded();
 	initialize();
     }
 

@@ -20,6 +20,8 @@ package me.philnate.textmanager.windows;
 import java.awt.EventQueue;
 import java.io.IOException;
 
+import me.philnate.textmanager.updates.Updater;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,6 +47,9 @@ public class Starter {
     public static int port = 27017;
 
     private static MongodExecutable mongodExecutable;
+
+    private static final String packageName = "me.philnate.textmanager.updates";
+
     private static Logger LOG = LoggerFactory.getLogger(Starter.class);
 
     public static void main(String[] args) throws IOException {
@@ -67,6 +72,10 @@ public class Starter {
 	    mongodExecutable = runtime.prepare(mongodConfig);
 	    mongodExecutable.start();
 
+	    // check if updates are needed
+	    Updater.checkUpdateNeeded(packageName);
+
+	    // start MainWindow
 	    EventQueue.invokeLater(new Runnable() {
 		@Override
 		public void run() {

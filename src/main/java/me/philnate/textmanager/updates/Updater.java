@@ -17,6 +17,7 @@
  */
 package me.philnate.textmanager.updates;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
 import static me.philnate.textmanager.utils.DB.ds;
 
@@ -45,7 +46,6 @@ public class Updater {
     private static final File installPath = SystemUtils.getUserDir();
     private static final File backUpPath = new File(installPath, "db.backUp");
     private static final Version startVersion = new Version("1");
-    private static final String packageName = "me.philnate.textmanager.updates";
 
     private static Logger LOG = LoggerFactory.getLogger(Updater.class);
 
@@ -53,7 +53,9 @@ public class Updater {
      * checks what the actual db version is, if an old version is encountered
      * appropriate updates are performed to get the db to the latest version
      */
-    public static void checkUpdateNeeded() {
+    public static void checkUpdateNeeded(String packageName) {
+	checkArgument(StringUtils.isNotBlank(packageName),
+		"You must insert a packageName");
 	TreeMap<Version, Class<? extends Update>> updates = createUpdateList(packageName);
 	Setting v = Setting.find("version");
 	// check that an version is set, if none was found set it to 1
@@ -68,7 +70,7 @@ public class Updater {
 	}
 	LOG.info(format("Found these Database upgrades: '%s'", updates.keySet()));
 	for (Version vers : updates.keySet()) {
-	    if (vers.compareTo(new Version(v.getValue())) < vers.AFTER) {
+	    if (vers.compareTo(new Version(v.getValue())) < Version.AFTER) {
 		// if version is smaller than actual db version we have nothing
 		// todo here
 		LOG.debug(format("Database is already newer than '%s'", vers));
@@ -121,6 +123,7 @@ public class Updater {
 		return new Class[] { UpdateScript.class };
 	    }
 
+	    @SuppressWarnings("unchecked")
 	    @Override
 	    public void reportTypeAnnotation(
 		    Class<? extends Annotation> annotation, String className) {
