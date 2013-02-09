@@ -32,6 +32,12 @@
 			<version>4.11</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>com.github.cschoell</groupId>
+			<artifactId>junit-dynamicsuite</artifactId>
+			<version>0.2.1</version>
+			<scope>test</scope>
+		</dependency>
 		<!-- Matchers -->
 		<dependency>
 			<groupId>org.hamcrest</groupId>
@@ -83,18 +89,6 @@
 			<groupId>com.google.code.morphia</groupId>
 			<artifactId>morphia-logging-slf4j</artifactId>
 			<version>0.99</version>
-		</dependency>
-		<!-- MongoDB Test dependency -->
-		<dependency>
-			<groupId>com.foursquare</groupId>
-			<artifactId>fongo</artifactId>
-			<version>1.0.4</version>
-			<exclusions>
-				<exclusion>
-					<artifactId>hamcrest-core</artifactId>
-					<groupId>org.hamcrest</groupId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 		<!-- Allows it to scan for given Annotations, no manual housekeeping for 
 			updates -->
@@ -226,7 +220,7 @@
 				<version>2.12.4</version>
 				<configuration>
 					<includes>
-						<include>**/_*.java</include>
+						<include>**/*Suite.java</include>
 					</includes>
 				</configuration>
 			</plugin>

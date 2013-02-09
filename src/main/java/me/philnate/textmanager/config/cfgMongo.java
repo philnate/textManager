@@ -17,30 +17,47 @@
  */
 package me.philnate.textmanager.config;
 
+import java.net.UnknownHostException;
+
+import me.philnate.textmanager.config.cfgMongo.cfgProduction;
+import me.philnate.textmanager.config.cfgMongo.cfgTest;
+import me.philnate.textmanager.windows.Starter;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
+import org.springframework.context.annotation.Import;
 
-import com.foursquare.fongo.Fongo;
 import com.mongodb.DB;
 import com.mongodb.Mongo;
+import com.mongodb.MongoException;
 
 @Configuration
-@Profile("test")
-public class cfgTesting {
+@Import({ cfgProduction.class, cfgTest.class })
+public class cfgMongo {
 
-    @Bean
-    public Mongo mongo() {
-	return fongo().getMongo();
+    @Configuration
+    public static class cfgTest {
+	@Bean
+	public String dbName() {
+	    return "testManager";
+	}
+    }
+
+    @Configuration
+    public static class cfgProduction {
+	@Bean
+	public String dbName() {
+	    return "textManager";
+	}
     }
 
     @Bean
-    public Fongo fongo() {
-	return new Fongo("testManager");
+    public Mongo mongo() throws UnknownHostException, MongoException {
+	return new Mongo("localhost", Starter.port);
     }
 
     @Bean
-    public DB db() {
-	return fongo().getDB("textManager");
+    public DB db() throws UnknownHostException, MongoException {
+	return mongo().getDB("textManager");
     }
 }

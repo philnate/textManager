@@ -61,8 +61,27 @@ public class Starter {
 
     public static void main(String[] args) throws IOException {
 	start();
+
+	// check if updates are needed
+	Updater.checkUpdateNeeded(packageName);
+
+	// start MainWindow
+	EventQueue.invokeLater(new Runnable() {
+	    @Override
+	    public void run() {
+		try {
+		    new MainWindow().show();
+		} catch (Exception e) {
+		    e.printStackTrace();
+		}
+	    }
+	});
     }
 
+    /**
+     * Starts the application. Meaning that mongo executables are downloaded and
+     * extracted if needed
+     */
     public static void start() {
 	try {
 	    port = Network.getFreeServerPort();
@@ -95,24 +114,10 @@ public class Starter {
 		extractor.extract(dconfig, artifact, mongorestore,
 			Pattern.compile(Updater.getProgram(".*mongorestore")));
 	    }
-
-	    // check if updates are needed
-	    Updater.checkUpdateNeeded(packageName);
-
-	    // start MainWindow
-	    EventQueue.invokeLater(new Runnable() {
-		@Override
-		public void run() {
-		    try {
-			new MainWindow().show();
-		    } catch (Exception e) {
-			e.printStackTrace();
-		    }
-		}
-	    });
 	} catch (Exception e) {
 	    LOG.error("got exception from mongodb", e);
 	    shutdown();
+	    System.exit(-1);
 	}
     }
 

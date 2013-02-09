@@ -25,10 +25,12 @@ import static org.junit.Assert.fail;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
+import me.philnate.textmanager.TestBase;
+
 import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
 
-public class _WordCount {
+public class _WordCount extends TestBase {
 
     private static ClassLoader loader = _WordCount.class.getClassLoader();
 

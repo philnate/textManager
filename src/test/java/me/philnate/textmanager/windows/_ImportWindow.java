@@ -17,18 +17,21 @@
  */
 package me.philnate.textmanager.windows;
 
+import static org.junit.Assert.assertTrue;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.junit.Assert;
+import me.philnate.textmanager.TestBase;
+
 import org.junit.Test;
 
 import com.google.common.base.Charsets;
 
-public class _ImportWindow {
+public class _ImportWindow extends TestBase {
 
     private static String path = "importFiles/";
 
@@ -59,7 +62,7 @@ public class _ImportWindow {
 	System.out.print("Read: ");
 	System.out.print(matcher.group("title") + " ");
 	System.out.println(matcher.group("sum"));
-	Assert.assertTrue(matcher.group("title").equals(title));
-	Assert.assertTrue(matcher.group("sum").equals(sum));
+	assertTrue(matcher.group("title").equals(title));
+	assertTrue(matcher.group("sum").equals(sum));
     }
 }

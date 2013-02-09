@@ -17,12 +17,7 @@
  */
 package me.philnate.textmanager.utils;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.Properties;
-
-import me.philnate.textmanager.config.cfgProduction;
-import me.philnate.textmanager.config.cfgTesting;
+import me.philnate.textmanager.config.cfgMongo;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,27 +51,19 @@ public class DB {
 	    // possibility to set a activeprofile to override production profile
 	    System.setProperty("spring.profiles.default", "production");
 	    AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext(
-		    cfgProduction.class, cfgTesting.class);
+		    cfgMongo.class);
 	    mg = ctx.getAutowireCapableBeanFactory().getBean(Mongo.class);
 
 	    store.mapPackage("me.philnate.textmanager.entities");
+	    ds = store.createDatastore(mg, (String) ctx.getBean("dbName"));
 
 	} catch (MongoException e) {
 	    LOG.error("Error while loading mongodb configuration", e);
 	    throw Throwables.propagate(e);
 	}
-	ds = store.createDatastore(mg, "textManager");
 	ds.ensureIndexes();
 	docs = new GridFS(ds.getDB(), "doc");
 	pdf = new GridFS(ds.getDB(), "pdf");
 	tex = new GridFS(ds.getDB(), "tex");
-    }
-
-    private static Properties loadConfig() throws FileNotFoundException,
-	    IOException {
-	Properties props = new Properties();
-	props.load(DB.class.getClassLoader().getResourceAsStream(
-		"mongodb.properties"));
-	return props;
     }
 }

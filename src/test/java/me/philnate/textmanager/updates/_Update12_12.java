@@ -29,6 +29,7 @@ import static org.junit.Assert.fail;
 
 import java.util.List;
 
+import me.philnate.textmanager.TestBase;
 import me.philnate.textmanager.entities.Bill;
 import me.philnate.textmanager.entities.BillingItem;
 import me.philnate.textmanager.entities.Customer;
@@ -43,7 +44,7 @@ import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
 import com.mongodb.QueryBuilder;
 
-public class _Update12_12 extends UpdateTestBase {
+public class _Update12_12 extends TestBase {
 
     Morphia morphia = new Morphia();
 

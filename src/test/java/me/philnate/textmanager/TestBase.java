@@ -15,20 +15,16 @@
  *   See the GNU General Public License for more details. You should have received a copy of the GNU
  *   General Public License along with textManager. If not, see <http://www.gnu.org/licenses/>.
  */
-package me.philnate.textmanager.updates;
+package me.philnate.textmanager;
 
-import org.junit.BeforeClass;
+import org.springframework.test.context.ActiveProfiles;
 
 /**
- * Base Class for updating Tests
+ * Base Class for Tests requiring
  * 
  * @author philnate
  * 
  */
-public class UpdateTestBase {
-
-    @BeforeClass
-    public static void once() {
-	System.setProperty("spring.profiles.active", "test");
-    }
+@ActiveProfiles("test")
+public class TestBase {
 }

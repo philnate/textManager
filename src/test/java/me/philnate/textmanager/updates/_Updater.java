@@ -19,9 +19,17 @@ package me.philnate.textmanager.updates;
 
 import static org.junit.Assert.assertEquals;
 
+import me.philnate.textmanager.TestBase;
+
 import org.junit.Test;
 
-public class _Updater {
+/**
+ * Requires a mongod instance to run in order to successfully test this code
+ * 
+ * @author user
+ * 
+ */
+public class _Updater extends TestBase {
 
     @Test
     public void testUpdateFind() {

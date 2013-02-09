@@ -21,10 +21,11 @@ import static me.philnate.textmanager.updates.Version.AFTER;
 import static me.philnate.textmanager.updates.Version.BEFORE;
 import static me.philnate.textmanager.updates.Version.EQUAL;
 import static org.junit.Assert.assertEquals;
+import me.philnate.textmanager.TestBase;
 
 import org.junit.Test;
 
-public class _Version {
+public class _Version extends TestBase {
 
     @Test
     public void testValidVersionParsing() {
