@@ -3,7 +3,8 @@
 .settings/
 bin/
 target/
-win/mongo*
+win/
 template/signum.jpg
 db.backUp
 logs/
+db/

@@ -19,6 +19,8 @@ package me.philnate.textmanager.config;
 
 import java.net.UnknownHostException;
 
+import me.philnate.textmanager.windows.Starter;
+
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
@@ -33,7 +35,7 @@ public class cfgProduction {
 
     @Bean
     public Mongo mongo() throws UnknownHostException, MongoException {
-	return new Mongo("localhost", 27017);
+	return new Mongo("localhost", Starter.port);
     }
 
     @Bean

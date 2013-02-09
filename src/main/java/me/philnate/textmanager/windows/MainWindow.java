@@ -26,6 +26,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
@@ -135,6 +137,10 @@ public class MainWindow {
 	initialize();
     }
 
+    public void show() {
+	frame.setVisible(true);
+    }
+
     /**
      * Initialize the contents of the frame.
      */
@@ -142,6 +148,12 @@ public class MainWindow {
 	changeListener = new ChangeListener();
 
 	frame = new JFrame();
+	frame.addWindowListener(new WindowAdapter() {
+	    @Override
+	    public void windowClosing(WindowEvent e) {
+		Starter.shutdown();
+	    }
+	});
 	frame.setBounds(100, 100, 1197, 500);
 	frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	frame.getContentPane().setLayout(

@@ -5,6 +5,12 @@
 	<artifactId>textManager</artifactId>
 	<version>1.0.0-SNAPSHOT</version>
 	<dependencies>
+		<!-- MongoDB dependencies -->
+		<dependency>
+			<groupId>de.flapdoodle.embed</groupId>
+			<artifactId>de.flapdoodle.embed.mongo</artifactId>
+			<version>1.28</version>
+		</dependency>
 		<dependency>
 			<groupId>com.google.code.morphia</groupId>
 			<artifactId>morphia</artifactId>
@@ -98,9 +104,6 @@
 			<version>3.0.1</version>
 		</dependency>
 		<!-- Layout Requirements -->
-		<!-- <dependency> <groupId>org.uispec4j</groupId> <artifactId>uispec4j</artifactId> 
-			<version>2.4</version> <classifier>jdk16</classifier> <type>jar</type> <scope>test</scope> 
-			</dependency> -->
 		<dependency>
 			<groupId>com.miglayout</groupId>
 			<artifactId>miglayout-swing</artifactId>
@@ -187,7 +190,7 @@
 							<archive>
 								<manifest>
 									<addClasspath>true</addClasspath>
-									<mainClass>me.philnate.textmanager.windows.MainWindow</mainClass>
+									<mainClass>me.philnate.textmanager.windows.Starter</mainClass>
 								</manifest>
 							</archive>
 							<descriptorRefs>

@@ -9,17 +9,11 @@
 	<includeBaseDirectory>false</includeBaseDirectory>
 	<fileSets>
 		<fileSet>
-			<directory>${project.basedir}/win</directory>
+			<directory>${project.basedir}/scripts</directory>
 			<outputDirectory>/</outputDirectory>
 			<includes>
 				<include>start.bat</include>
-			</includes>
-		</fileSet>
-		<fileSet>
-			<directory>${project.basedir}/win</directory>
-			<outputDirectory>/mongo</outputDirectory>
-			<includes>
-				<include>*.exe</include>
+				<include>start.sh</include>
 			</includes>
 		</fileSet>
 		<fileSet>
