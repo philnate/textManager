@@ -18,7 +18,9 @@
 package me.philnate.textmanager.windows;
 
 import java.awt.EventQueue;
+import java.io.File;
 import java.io.IOException;
+import java.util.regex.Pattern;
 
 import me.philnate.textmanager.updates.Updater;
 
@@ -30,11 +32,16 @@ import de.flapdoodle.embed.mongo.MongodStarter;
 import de.flapdoodle.embed.mongo.config.AbstractMongoConfig.Net;
 import de.flapdoodle.embed.mongo.config.AbstractMongoConfig.Storage;
 import de.flapdoodle.embed.mongo.config.AbstractMongoConfig.Timeout;
+import de.flapdoodle.embed.mongo.config.DownloadConfig;
 import de.flapdoodle.embed.mongo.config.MongodConfig;
 import de.flapdoodle.embed.mongo.config.RuntimeConfig;
 import de.flapdoodle.embed.mongo.distribution.Version;
+import de.flapdoodle.embed.process.distribution.Distribution;
+import de.flapdoodle.embed.process.extract.Extractors;
+import de.flapdoodle.embed.process.extract.IExtractor;
 import de.flapdoodle.embed.process.io.directories.FixedPath;
 import de.flapdoodle.embed.process.runtime.Network;
+import de.flapdoodle.embed.process.store.LocalArtifactStore;
 
 /**
  * Class used to start and stop application, only used in production
@@ -65,12 +72,29 @@ public class Starter {
 
 	    RuntimeConfig runtimeConfig = new RuntimeConfig();
 	    runtimeConfig.setTempDirFactory(new FixedPath("./bin/"));
-	    runtimeConfig.getDownloadConfig().setArtifactStorePathNaming(
-		    new FixedPath("./bin/"));
+	    DownloadConfig dconfig = runtimeConfig.getDownloadConfig();
+	    dconfig.setArtifactStorePathNaming(new FixedPath("./bin/"));
 	    MongodStarter runtime = MongodStarter.getInstance(runtimeConfig);
 
 	    mongodExecutable = runtime.prepare(mongodConfig);
 	    mongodExecutable.start();
+
+	    Distribution dist = Distribution.detectFor(mongodConfig
+		    .getVersion());
+	    File artifact = LocalArtifactStore.getArtifact(dconfig, dist);
+	    IExtractor extractor = Extractors.getExtractor(dconfig
+		    .getPackageResolver().getArchiveType(dist));
+	    File mongoimport = new File(Updater.getProgram("./bin/mongoimport"));
+	    File mongorestore = new File(
+		    Updater.getProgram("./bin/mongorestore"));
+	    if (!mongoimport.exists()) {
+		extractor.extract(dconfig, artifact, mongoimport,
+			Pattern.compile(Updater.getProgram(".*mongoimport")));
+	    }
+	    if (!mongorestore.exists()) {
+		extractor.extract(dconfig, artifact, mongorestore,
+			Pattern.compile(Updater.getProgram(".*mongorestore")));
+	    }
 
 	    // check if updates are needed
 	    Updater.checkUpdateNeeded(packageName);

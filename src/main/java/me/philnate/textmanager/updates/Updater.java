@@ -43,8 +43,8 @@ import eu.infomas.annotation.AnnotationDetector;
 import eu.infomas.annotation.AnnotationDetector.TypeReporter;
 
 public class Updater {
-    private static final File installPath = SystemUtils.getUserDir();
-    private static final File backUpPath = new File(installPath, "db.backUp");
+    public static final File installPath = SystemUtils.getUserDir();
+    public static final File backUpPath = new File(installPath, "db.backUp");
     private static final Version startVersion = new Version("1");
 
     private static Logger LOG = LoggerFactory.getLogger(Updater.class);
@@ -206,7 +206,7 @@ public class Updater {
      * @param appName
      * @return
      */
-    private static String getProgram(String appName) {
+    public static String getProgram(String appName) {
 	if (SystemUtils.IS_OS_WINDOWS) {
 	    return appName + ".exe";
 	}
