@@ -154,7 +154,7 @@ public class Updater {
      */
     public static void backUp() {
 	final ProcessBuilder dump = new ProcessBuilder(new File(installPath,
-		getProgram("win/mongodump")).toString(), "-h",
+		getProgram("bin/mongodump")).toString(), "-h",
 		"localhost:27017", "-o", backUpPath.getAbsolutePath(), "--db",
 		"textManager");
 	dump.directory(installPath);
@@ -178,7 +178,7 @@ public class Updater {
      */
     private static void rollback() {
 	final ProcessBuilder restore = new ProcessBuilder(new File(installPath,
-		getProgram("win/mongorestore")).toString(), "--drop", "-h",
+		getProgram("bin/mongorestore")).toString(), "--drop", "-h",
 		"localhost:27017", "--db", "textManager",
 		backUpPath.getAbsolutePath());
 	restore.directory(installPath);

@@ -15,25 +15,24 @@
  *   See the GNU General Public License for more details. You should have received a copy of the GNU
  *   General Public License along with textManager. If not, see <http://www.gnu.org/licenses/>.
  */
-package me.philnate.textmanager.updates;
+package me.philnate.textmanager.updates.testUpdates;
 
-import static org.junit.Assert.assertEquals;
+import me.philnate.textmanager.updates.Update;
+import me.philnate.textmanager.updates.UpdateScript;
 
-import org.junit.Test;
+@UpdateScript(UpdatesVersion = "1")
+public class Update1 implements Update {
 
-public class _Updater {
-
-    @Test
-    public void testUpdateFind() {
-	Version oldV = null;
-	for (Version vers : Updater.createUpdateList(
-		"me.philnate.textmanager.updates.testUpdates").keySet()) {
-	    if (oldV == null) {
-		oldV = vers;
-		continue;
-	    }
-	    assertEquals(Version.BEFORE, oldV.compareTo(vers));
-	    oldV = vers;
-	}
+    @Override
+    public void preCheck() {
     }
+
+    @Override
+    public void upgrade() {
+    }
+
+    @Override
+    public void postCheck() {
+    }
+
 }
