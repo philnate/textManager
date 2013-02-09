@@ -1,7 +1,7 @@
 /**
  *   textManager, a GUI for managing bills for texter jobs
  *
- *   Copyright (C) 2012- philnate
+ *   Copyright (C) 2013 philnate
  *
  *   This file is part of textManager.
  *
