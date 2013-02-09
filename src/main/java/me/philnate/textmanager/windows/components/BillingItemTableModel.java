@@ -28,7 +28,6 @@ import me.philnate.textmanager.entities.Document;
 
 import org.bson.types.ObjectId;
 
-
 /**
  * Table model used to display BillingItems
  * 
@@ -57,8 +56,9 @@ class BillingItemTableModel extends DefaultTableModel {
 	    return Double.class;
 	case 5:
 	    return List.class;
+	default:
+	    throw new IllegalAccessError("Got columnIndex out of bounds");
 	}
-	return getValueAt(0, columnIndex).getClass();
     }
 
     @Override
@@ -130,5 +130,28 @@ class BillingItemTableModel extends DefaultTableModel {
 	    throw new IllegalArgumentException("Got columnIndex out of bounds");
 	}
 	item.save();
+    }
+
+    public void addRow(BillingItem item) {
+	super.addRow(new Object[] { item });
+    }
+
+    /**
+     * use {@link BillingItemTableModel#addRow(BillingItem)} instead. Throws
+     * exception
+     */
+    @Override
+    @Deprecated
+    public void addRow(Object[] rowData) {
+	throw new IllegalAccessError("This method isn't supposed to be used");
+    }
+
+    /**
+     * use {@link BillingItemTableModel#addRow(BillingItem)} instead.
+     */
+    @Override
+    @Deprecated
+    public void addRow(Vector rowData) {
+	super.addRow(rowData);
     }
 }

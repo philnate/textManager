@@ -398,9 +398,20 @@ public class MainWindow {
 	// new DefaultCellEditor(new JFormattedTextField(df)));
     }
 
+    /**
+     * Creates a new BillingItem and returns it. BillingItem is initialized with
+     * current selected customer, month and year.
+     * 
+     * @return BillingItem newly created BillingItem with basic Initialization
+     */
     private BillingItem addNewBillingItem() {
-	return billLines.addNewBillingItem(customers.getSelectedCustomer(),
-		monthChooser.getMonth(), yearChooser.getYear());
+	BillingItem item = new BillingItem()
+		.setCustomerId(customers.getSelectedCustomer().getId())
+		.setMonth(monthChooser.getMonth())
+		.setYear(yearChooser.getYear());
+	billLines.addRow(item);
+	item.save();
+	return item;
     }
 
     private BillingItem addNewBillingItem(Document document) {

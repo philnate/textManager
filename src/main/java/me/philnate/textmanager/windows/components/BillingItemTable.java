@@ -34,7 +34,6 @@ import javax.swing.JPopupMenu;
 import javax.swing.JTable;
 
 import me.philnate.textmanager.entities.BillingItem;
-import me.philnate.textmanager.entities.Customer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -127,20 +126,6 @@ public class BillingItemTable extends JTable {
     }
 
     /**
-     * Creates a new BillingItem and returns it. BillingItem is initialized with
-     * current selected customer, month and year.
-     * 
-     * @return BillingItem newly created BillingItem with basic Initialization
-     */
-    public BillingItem addNewBillingItem(Customer customer, int month, int year) {
-	BillingItem item = new BillingItem().setCustomerId(customer.getId())
-		.setMonth(month).setYear(year);
-	model.addRow(new Object[] { item });
-	item.save();
-	return item;
-    }
-
-    /**
      * removes all currently set rows within the table
      */
     public void flushRows() {
@@ -148,7 +133,7 @@ public class BillingItemTable extends JTable {
     }
 
     public void addRow(BillingItem item) {
-	model.addRow(new Object[] { item });
+	model.addRow(item);
     }
 
     public void addRows(List<BillingItem> items) {
