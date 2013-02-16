@@ -167,8 +167,9 @@ Bitte überweisen Sie den folgenden Rechnungsbetrag innerhalb von 14 Tagen auf da
 Leistung                                           & Wortzahl  & Cent/Word & Preis in \texteuro \\\hline
 #set ($total = 0)
 #foreach ($item in $allItems)
+#set ($centPerWord = $item.centPerWord * 100)
 #set($total =$math.add($total, $math.roundTo(2,$item.total)))
-#if ($velocityCount%2 ==0) \rowcolor[gray]{0.9} #else#end $item.title &  #if ($item.wordCount == 0) - #else $item.wordCount #end	& #if ($item.fixedPrice) - #else $number.format($item.centPerWord) #end		& $number.format($math.roundTo(2,$item.total))  \\
+#if ($velocityCount%2 ==0) \rowcolor[gray]{0.9} #else#end $item.title &  #if ($item.wordCount == 0) - #else $item.wordCount #end	& #if ($item.fixedPrice) - #else $number.format($centPerWord) #end		& $number.format($math.roundTo(2,$item.total))  \\
 #end
  \hline\hline
  \multicolumn{3}{r}{Gesamtsumme} & $number.format($total)\\

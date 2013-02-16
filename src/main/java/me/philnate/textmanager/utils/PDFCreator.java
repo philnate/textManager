@@ -91,9 +91,13 @@ public class PDFCreator extends NotifyingThread {
 		ctx.put(setting.getKey(), setting.getValue());
 	    }
 
-	    ctx.put("number",
-		    NumberFormat.getNumberInstance(new Locale(Setting.find(
-			    "locale").getValue())));
+	    NumberFormat format = NumberFormat.getNumberInstance(new Locale(
+		    Setting.find("locale").getValue()));
+	    // #60 always show 2 digits for fraction no matter if right most(s)
+	    // are zero
+	    format.setMinimumFractionDigits(2);
+	    format.setMaximumFractionDigits(2);
+	    ctx.put("number", format);
 	    // TODO update schema to have separate first and lastname
 	    // Customer data
 	    ctx.put("customer", customer);
