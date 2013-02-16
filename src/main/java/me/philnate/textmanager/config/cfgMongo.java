@@ -33,6 +33,7 @@ import org.springframework.core.io.ClassPathResource;
 
 import com.mongodb.DB;
 import com.mongodb.Mongo;
+import com.mongodb.MongoClient;
 import com.mongodb.MongoException;
 
 @Configuration
@@ -57,7 +58,7 @@ public class cfgMongo {
 
     @Bean
     public Mongo mongo() throws UnknownHostException, MongoException {
-	return new Mongo("localhost", Starter.port);
+	return new MongoClient("localhost", Starter.port);
     }
 
     @Bean
