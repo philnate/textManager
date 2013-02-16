@@ -1,1 +1,12 @@
+.classpath
+.project
+.settings/
+bin/
+target/
+win/
+template/signum.jpg
+db.backUp
+logs/
+db/
 velocity.log
+src/main/resources/git.properties

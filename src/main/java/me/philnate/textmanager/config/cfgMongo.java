@@ -17,15 +17,19 @@
  */
 package me.philnate.textmanager.config;
 
+import java.io.IOException;
 import java.net.UnknownHostException;
 
 import me.philnate.textmanager.config.cfgMongo.cfgProduction;
 import me.philnate.textmanager.config.cfgMongo.cfgTest;
+import me.philnate.textmanager.utils.GitRepositoryState;
 import me.philnate.textmanager.windows.Starter;
 
+import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.core.io.ClassPathResource;
 
 import com.mongodb.DB;
 import com.mongodb.Mongo;
@@ -59,5 +63,17 @@ public class cfgMongo {
     @Bean
     public DB db() throws UnknownHostException, MongoException {
 	return mongo().getDB("textManager");
+    }
+
+    @Bean
+    public GitRepositoryState gitRepositoryState() throws IOException {
+	return new GitRepositoryState();
+    }
+
+    @Bean
+    public PropertyPlaceholderConfigurer propertyPlaceholderConfigurer() {
+	PropertyPlaceholderConfigurer config = new PropertyPlaceholderConfigurer();
+	config.setLocation(new ClassPathResource("git.properties"));
+	return config;
     }
 }
