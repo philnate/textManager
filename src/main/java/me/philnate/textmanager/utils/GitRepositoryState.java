@@ -6,14 +6,14 @@
  *   This file is part of textManager.
  *
  *   textManager is free software: you can redistribute it and/or modify it under the terms of the
- *   GNU General Public License as published by the Free Software Foundation, either version 3 of the
+ *   GNU General  License as published by the Free Software Foundation, either version 3 of the
  *   License, or (at your option) any later version.
  *
  *   textManager is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
  *   without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- *   See the GNU General Public License for more details. You should have received a copy of the GNU
- *   General Public License along with textManager. If not, see <http://www.gnu.org/licenses/>.
+ *   See the GNU General  License for more details. You should have received a copy of the GNU
+ *   General  License along with textManager. If not, see <http://www.gnu.org/licenses/>.
  */
 package me.philnate.textmanager.utils;
 
@@ -29,38 +29,90 @@ import org.springframework.beans.factory.annotation.Value;
 public class GitRepositoryState {
 
     @Value("${git.branch}")
-    public String branch;
+    String branch;
 
     @Value("${git.commit.id}")
-    public String commitId;
+    String commitId;
+
+    @Value("${git.commit.id.describe}")
+    String commitIdDescribe;
 
     @Value("${git.commit.id.abbrev}")
-    public String commitIdAbbrev;
+    String commitIdAbbrev;
 
     @Value("${git.build.user.name}")
-    public String buildUserName;
+    String buildUserName;
 
     @Value("${git.build.user.email}")
-    public String buildUserEmail;
+    String buildUserEmail;
 
     @Value("${git.build.time}")
-    public String buildTime;
+    String buildTime;
 
     @Value("${git.commit.user.name}")
-    public String commitUserName;
+    String commitUserName;
 
     @Value("${git.commit.user.email}")
-    public String commitUserEmail;
+    String commitUserEmail;
 
     @Value("${git.commit.message.full}")
-    public String commitMessageFull;
+    String commitMessageFull;
 
     @Value("${git.commit.message.short}")
-    public String commitMessageShort;
+    String commitMessageShort;
 
     @Value("${git.commit.time}")
-    public String commitTime;
+    String commitTime;
+
     // TODO doesn't work in the moment
     // @Value("${maven.project.version}")
-    // public String mavenProjectVersion;
+    // String mavenProjectVersion;
+
+    public String getBranch() {
+	return branch;
+    }
+
+    public String getCommitId() {
+	return commitId;
+    }
+
+    public String getCommitIdAbbrev() {
+	return commitIdAbbrev;
+    }
+
+    public String getBuildUserName() {
+	return buildUserName;
+    }
+
+    public String getBuildUserEmail() {
+	return buildUserEmail;
+    }
+
+    public String getBuildTime() {
+	return buildTime;
+    }
+
+    public String getCommitUserName() {
+	return commitUserName;
+    }
+
+    public String getCommitUserEmail() {
+	return commitUserEmail;
+    }
+
+    public String getCommitMessageFull() {
+	return commitMessageFull;
+    }
+
+    public String getCommitMessageShort() {
+	return commitMessageShort;
+    }
+
+    public String getCommitTime() {
+	return commitTime;
+    }
+
+    public String getCommitIdDescribe() {
+	return commitIdDescribe;
+    }
 }

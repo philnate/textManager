@@ -34,15 +34,20 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+import javax.swing.border.BevelBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
@@ -53,6 +58,7 @@ import me.philnate.textmanager.entities.Document;
 import me.philnate.textmanager.entities.Setting;
 import me.philnate.textmanager.utils.DB;
 import me.philnate.textmanager.utils.FileDrop;
+import me.philnate.textmanager.utils.GitRepositoryState;
 import me.philnate.textmanager.utils.ImageRegistry;
 import me.philnate.textmanager.utils.NotifyingThread;
 import me.philnate.textmanager.utils.PDFCreator;
@@ -86,6 +92,7 @@ public class MainWindow {
     private JButton build;
     private JButton view;
     private Thread runningThread;
+    private JPanel statusBar;
 
     private static Logger LOG = LoggerFactory.getLogger(MainWindow.class);
 
@@ -154,7 +161,7 @@ public class MainWindow {
 	frame.setBounds(100, 100, 1197, 500);
 	frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	frame.getContentPane().setLayout(
-		new MigLayout("", "[grow]", "[][grow]"));
+		new MigLayout("", "[grow]", "[][grow][::16px]"));
 
 	customers = new CustomerComboBox();
 	customers.addItemListener(changeListener);
@@ -341,6 +348,17 @@ public class MainWindow {
 	});
 	frame.getContentPane().add(view, "cell 0 0");
 
+	statusBar = new JPanel();
+	statusBar.setBorder(new BevelBorder(BevelBorder.LOWERED));
+	statusBar.setLayout(new BoxLayout(statusBar, BoxLayout.X_AXIS));
+	GitRepositoryState state = DB.state;
+	JLabel statusLabel = new JLabel(String.format(
+		"textManager Version v%s build %s",
+		state.getCommitIdDescribe(), state.getBuildTime()));
+	statusLabel.setHorizontalAlignment(SwingConstants.LEFT);
+	statusBar.add(statusLabel);
+	frame.add(statusBar, "cell 0 2,growx");
+
 	JMenuBar menuBar = new JMenuBar();
 	frame.setJMenuBar(menuBar);
 
@@ -393,18 +411,6 @@ public class MainWindow {
 
 	customers.loadCustomer();
 	fillTableModel();
-
-	// DecimalFormat df = new DecimalFormat("#,##0.##"); // you shouldn't
-	// // need more "#"
-	// // to the left
-
-	// billLines.getColumnModel().getColumn(4)
-	// .setCellRenderer(NumberRenderer.getCurrencyRenderer());
-	// billLines
-	// .getColumnModel()
-	// .getColumn(4)
-	// .setCellEditor(
-	// new DefaultCellEditor(new JFormattedTextField(df)));
     }
 
     /**

@@ -41,6 +41,7 @@ public class DB {
     public static final GridFS docs;
     public static final GridFS pdf;
     public static final GridFS tex;
+    public static final GitRepositoryState state;
 
     private static Logger LOG = LoggerFactory.getLogger(DB.class);
     static {
@@ -53,6 +54,8 @@ public class DB {
 	    AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext(
 		    cfgMongo.class);
 	    mg = ctx.getAutowireCapableBeanFactory().getBean(Mongo.class);
+	    state = ctx.getAutowireCapableBeanFactory().getBean(
+		    GitRepositoryState.class);
 
 	    store.mapPackage("me.philnate.textmanager.entities");
 	    ds = store.createDatastore(mg, (String) ctx.getBean("dbName"));
