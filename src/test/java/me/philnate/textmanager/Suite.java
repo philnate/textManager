@@ -48,7 +48,6 @@ public class Suite implements TestClassFilter {
 
     @BeforeClass
     public static final void start() {
-	// System.setProperty("spring.profiles.active", "test");
 	Starter.start();
     }
 
