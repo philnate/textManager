@@ -30,5 +30,5 @@ import org.springframework.test.context.ContextConfiguration;
  */
 @ActiveProfiles("test")
 @ContextConfiguration(classes = cfgMongoDB.class)
-public class TestBase {
+public class MongoBase {
 }
