@@ -38,6 +38,9 @@ public class WebAppInitializer implements WebApplicationInitializer {
     public void onStartup(ServletContext servletContext)
 	    throws ServletException {
 
+	// set the Production profile to be active
+	System.setProperty("spring.profiles.active",
+		cfgMongoDB.PROFILE_PRODUCTION);
 	AnnotationConfigWebApplicationContext context = new AnnotationConfigWebApplicationContext();
 	context.setConfigLocation("me.philnate.textmanager.web.config");
 
