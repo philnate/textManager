@@ -191,12 +191,24 @@
 			<version>${org.springframework-version}</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.hamcrest</groupId>
+			<artifactId>hamcrest-library</artifactId>
+			<version>1.3</version>
+			<scope>test</scope>
+		</dependency>
 		<!-- Dynamically discover TestCases -->
-			<dependency>
+		<dependency>
 			<groupId>com.github.cschoell</groupId>
 			<artifactId>junit-dynamicsuite</artifactId>
 			<version>0.2.1</version>
 			<scope>test</scope>
+		</dependency>
+		<!-- MongoDB dependencies -->
+		<dependency>
+			<groupId>de.flapdoodle.embed</groupId>
+			<artifactId>de.flapdoodle.embed.mongo</artifactId>
+			<version>1.28</version>
 		</dependency>
 	</dependencies>
 	<build>
