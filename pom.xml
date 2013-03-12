@@ -88,14 +88,9 @@
 			<version>${org.springframework-version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-tx</artifactId>
-			<version>${org.springframework-version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-orm</artifactId>
-			<version>${org.springframework-version}</version>
+			<groupId>org.springframework.data</groupId>
+			<artifactId>spring-data-mongodb</artifactId>
+			<version>1.1.1.RELEASE</version>
 		</dependency>
 		<dependency>
 			<groupId>org.hibernate</groupId>
@@ -196,9 +191,36 @@
 			<version>${org.springframework-version}</version>
 			<scope>test</scope>
 		</dependency>
+		<!-- Dynamically discover TestCases -->
+			<dependency>
+			<groupId>com.github.cschoell</groupId>
+			<artifactId>junit-dynamicsuite</artifactId>
+			<version>0.2.1</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>
+			<plugin>
+				<groupId>com.google.code.maven-license-plugin</groupId>
+				<artifactId>maven-license-plugin</artifactId>
+				<version>1.4.0</version>
+				<configuration>
+					<header>licenseHeader.tpl</header>
+					<excludes>
+					</excludes>
+					<includes>
+						<include>**/*.java</include>
+					</includes>
+					<properties>
+						<project>
+							textManager
+						</project>
+						<year>2013</year>
+					</properties>
+					<encoding>UTF-8</encoding>
+				</configuration>
+			</plugin>
 			<plugin>
 				<groupId>org.eclipse.jetty</groupId>
 				<artifactId>jetty-maven-plugin</artifactId>
