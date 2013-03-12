@@ -17,14 +17,18 @@
  */
 package me.philnate.textmanager;
 
+import me.philnate.textmanager.web.config.cfgMongoDB;
+
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.ContextConfiguration;
 
 /**
- * Base Class for Tests requiring
+ * Base Class for Tests requiring MongoDB
  * 
  * @author philnate
  * 
  */
 @ActiveProfiles("test")
+@ContextConfiguration(classes = cfgMongoDB.class)
 public class TestBase {
 }

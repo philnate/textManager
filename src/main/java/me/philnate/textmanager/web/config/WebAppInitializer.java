@@ -39,7 +39,7 @@ public class WebAppInitializer implements WebApplicationInitializer {
 	    throws ServletException {
 
 	AnnotationConfigWebApplicationContext context = new AnnotationConfigWebApplicationContext();
-	context.setConfigLocation("me.philnate.config");
+	context.setConfigLocation("me.philnate.textmanager.web.config");
 
 	FilterRegistration.Dynamic characterEncodingFilter = servletContext
 		.addFilter("characterEncodingFilter",
