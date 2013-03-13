@@ -5,7 +5,6 @@ import java.net.UnknownHostException;
 
 import javax.annotation.PreDestroy;
 
-import me.philnate.textmanager.entities.EntityMongoConverter;
 import me.philnate.textmanager.web.config.cfgMongoDB.cfgProduction;
 import me.philnate.textmanager.web.config.cfgMongoDB.cfgTesting;
 
@@ -15,7 +14,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.SimpleMongoDbFactory;
 
 import com.mongodb.Mongo;
 
@@ -109,8 +107,7 @@ public class cfgMongoDB {
     @Bean
     public MongoTemplate mongoTemplate() throws UnknownHostException,
 	    IOException {
-	return new MongoTemplate(new SimpleMongoDbFactory(mongo(), dbName),
-		new EntityMongoConverter());
+	return new MongoTemplate(mongo(), dbName);
     }
 
     /**
