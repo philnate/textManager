@@ -35,7 +35,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ActiveProfiles(cfgMongoDB.PROFILE_TESTING)
 @ContextConfiguration(classes = cfgMongoDB.class)
-public class MongoBase {
+public abstract class MongoBase {
 
     @Autowired
     protected MongoTemplate mg;
