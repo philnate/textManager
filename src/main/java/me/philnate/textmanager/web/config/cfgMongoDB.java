@@ -5,13 +5,19 @@ import java.net.UnknownHostException;
 
 import javax.annotation.PreDestroy;
 
+import me.philnate.textmanager.entities.EntityMongoConverter;
 import me.philnate.textmanager.web.config.cfgMongoDB.cfgProduction;
 import me.philnate.textmanager.web.config.cfgMongoDB.cfgTesting;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.SimpleMongoDbFactory;
+
+import com.mongodb.Mongo;
 
 import de.flapdoodle.embed.mongo.MongodExecutable;
 import de.flapdoodle.embed.mongo.MongodStarter;
@@ -57,6 +63,9 @@ public class cfgMongoDB {
 	}
     }
 
+    @Autowired
+    private String dbName;
+
     @Bean
     public Integer mongoPort() throws IOException {
 	return Network.getFreeServerPort();
@@ -90,6 +99,18 @@ public class cfgMongoDB {
 	MongodExecutable exe = runtime.prepare(mongodConfig());
 	exe.start();
 	return exe;
+    }
+
+    @Bean
+    public Mongo mongo() throws UnknownHostException, IOException {
+	return new Mongo("localhost", mongoPort());
+    }
+
+    @Bean
+    public MongoTemplate mongoTemplate() throws UnknownHostException,
+	    IOException {
+	return new MongoTemplate(new SimpleMongoDbFactory(mongo(), dbName),
+		new EntityMongoConverter());
     }
 
     /**

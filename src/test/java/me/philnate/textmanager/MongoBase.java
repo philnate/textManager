@@ -19,8 +19,12 @@ package me.philnate.textmanager;
 
 import me.philnate.textmanager.web.config.cfgMongoDB;
 
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
  * Base Class for Tests requiring MongoDB
@@ -28,7 +32,11 @@ import org.springframework.test.context.ContextConfiguration;
  * @author philnate
  * 
  */
-@ActiveProfiles("test")
+@RunWith(SpringJUnit4ClassRunner.class)
+@ActiveProfiles(cfgMongoDB.PROFILE_TESTING)
 @ContextConfiguration(classes = cfgMongoDB.class)
 public class MongoBase {
+
+    @Autowired
+    protected MongoTemplate mg;
 }

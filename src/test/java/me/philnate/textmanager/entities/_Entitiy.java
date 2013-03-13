@@ -17,16 +17,28 @@
  */
 package me.philnate.textmanager.entities;
 
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import me.philnate.textmanager.MongoBase;
 
 import org.junit.Test;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-public class _Entitiy {
+public class _Entitiy extends MongoBase {
 
     @Test
     public void testDocumentAnnotationPrsent() {
-	assertTrue("Entity is missing @Document annotation", new Entity()
-		.getClass().isAnnotationPresent(Document.class));
+	assertTrue("Entity is missing @Document annotation",
+		Entity.class.isAnnotationPresent(Document.class));
+    }
+
+    @Test
+    public void testSaveEntity() {
+	assertNotNull(Entities.instantiate(Teste.class));
+	mg.save(Entities.instantiate(Entity.class));
+    }
+
+    public static interface Teste extends Entity {
+	public Teste setTest(String t);
     }
 }

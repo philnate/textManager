@@ -19,7 +19,13 @@ package me.philnate.textmanager.entities;
 
 import org.springframework.data.mongodb.core.mapping.Document;
 
+/**
+ * Basic Interface for documents containing common functionality for all records
+ * 
+ * @author philnate
+ * 
+ */
 @Document
-public class Entity {
+public interface Entity {
 
 }
