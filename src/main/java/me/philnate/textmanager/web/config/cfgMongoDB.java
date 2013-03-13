@@ -2,6 +2,7 @@ package me.philnate.textmanager.web.config;
 
 import java.io.IOException;
 import java.net.UnknownHostException;
+import java.util.UUID;
 
 import javax.annotation.PreDestroy;
 
@@ -42,27 +43,50 @@ public class cfgMongoDB {
     public static final String PROFILE_PRODUCTION = "production";
     public static final String PROFILE_TESTING = "testing";
 
+    private static interface MongoDBProfile {
+	public String dbName();
+
+	public String storagePath();
+    }
+
     @Configuration
     @Profile(PROFILE_PRODUCTION)
-    public static class cfgProduction {
+    public static class cfgProduction implements MongoDBProfile {
 
+	@Override
 	@Bean
 	public String dbName() {
 	    return "textManager";
+	}
+
+	@Override
+	@Bean
+	public String storagePath() {
+	    return "./db";
 	}
     }
 
     @Configuration
     @Profile(PROFILE_TESTING)
-    public static class cfgTesting {
+    public static class cfgTesting implements MongoDBProfile {
+	@Override
 	@Bean
 	public String dbName() {
 	    return "testManager";
+	}
+
+	@Override
+	@Bean
+	public String storagePath() {
+	    return "./target/" + UUID.randomUUID();
 	}
     }
 
     @Autowired
     private String dbName;
+
+    @Autowired
+    private String storagePath;
 
     @Bean
     public Integer mongoPort() throws IOException {
@@ -72,7 +96,7 @@ public class cfgMongoDB {
     @Bean
     public MongodConfig mongodConfig() throws UnknownHostException, IOException {
 	return new MongodConfig(Version.V2_0_7, new Net(mongoPort(),
-		Network.localhostIsIPv6()), new Storage("./db", null, 0),
+		Network.localhostIsIPv6()), new Storage(storagePath, null, 0),
 		new Timeout());
     }
 
