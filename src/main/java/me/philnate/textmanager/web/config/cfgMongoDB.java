@@ -31,9 +31,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
-import org.springframework.data.mongodb.core.MongoTemplate;
 
-import com.mongodb.Mongo;
+import com.mongodb.MongoClient;
 
 import de.flapdoodle.embed.mongo.MongodExecutable;
 import de.flapdoodle.embed.mongo.MongodStarter;
@@ -111,8 +110,13 @@ public class cfgMongoDB {
     }
 
     @Bean
+    public Version version() {
+	return Version.V2_2_1;
+    }
+
+    @Bean
     public MongodConfig mongodConfig() throws UnknownHostException, IOException {
-	return new MongodConfig(Version.V2_0_7, new Net(mongoPort(),
+	return new MongodConfig(version(), new Net(mongoPort(),
 		Network.localhostIsIPv6()), new Storage(storagePath, null, 0),
 		new Timeout());
     }
@@ -141,14 +145,8 @@ public class cfgMongoDB {
     }
 
     @Bean
-    public Mongo mongo() throws UnknownHostException, IOException {
-	return new Mongo("localhost", mongoPort());
-    }
-
-    @Bean
-    public MongoTemplate mongoTemplate() throws UnknownHostException,
-	    IOException {
-	return new MongoTemplate(mongo(), dbName);
+    public MongoClient mongo() throws UnknownHostException, IOException {
+	return new MongoClient("localhost", mongoPort());
     }
 
     /**

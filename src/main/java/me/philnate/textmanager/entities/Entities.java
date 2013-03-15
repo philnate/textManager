@@ -56,6 +56,6 @@ public class Entities {
      * @return new Instance of the given class
      */
     public static <T extends Entity> T instantiate(Class<T> clazz) {
-	return instantiate(clazz, new EntityInvocationHandler());
+	return instantiate(clazz, new EntityInvocationHandler(clazz));
     }
 }

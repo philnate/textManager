@@ -42,7 +42,8 @@ public class EntityInvocationHandler implements InvocationHandler {
     BasicDBObject container = new BasicDBObject();
 
     /**
-     * stores if the Object has changed or not
+     * stores if the Object has changed or not, so that only changed objects
+     * need to be changed
      */
     boolean hasChanged = false;
 
@@ -52,22 +53,36 @@ public class EntityInvocationHandler implements InvocationHandler {
      */
     BasicDBList oldVersions = new BasicDBList();
 
+    private boolean isVersioned = false;
+
+    public EntityInvocationHandler(Class<? extends Entity> clazz) {
+	if (clazz.getAnnotation(Versioned.class) != null) {
+	    isVersioned = true;
+	}
+    }
+
     @Override
     public Object invoke(Object proxy, Method method, Object[] args)
 	    throws Throwable {
 	String name = method.getName();
+	// freed method name from prefix (set/get)
 	String nameNoPrefix = Introspector.decapitalize(name.substring(3));
+
 	if (name.startsWith("set")) {
 	    checkNotNull(args, "Set method without any argument isn't valid");
 	    checkArgument(args.length == 1,
 		    "Set method is expected to only hold one argument");
+	    // only make any changes if the new value is different from the old
+	    // one
 	    if (!args[0].equals(container.get(nameNoPrefix))) {
-		if (!container.isEmpty()) {
+		// copy the old version of document only if it's not new (empty)
+		if (isVersioned && !container.isEmpty() && !hasChanged) {
 		    oldVersions.add(container.copy());
 		}
 		hasChanged = true;
 		container.put(nameNoPrefix, args[0]);
 	    }
+	    // if method has Class as return type return the proxy
 	    if (method.getReturnType().isInstance(proxy)) {
 		return proxy;
 	    }

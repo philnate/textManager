@@ -22,7 +22,6 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -35,7 +34,6 @@ import org.junit.Test;
 import org.mockito.Mockito;
 
 import com.mongodb.BasicDBObject;
-import com.mongodb.DBObject;
 
 public class _EntityProxying {
 
@@ -43,7 +41,6 @@ public class _EntityProxying {
 
     @Before
     public void setup() {
-	handler = new EntityInvocationHandler();
     }
 
     @Test
@@ -65,6 +62,7 @@ public class _EntityProxying {
     @Test
     public void testProxySet() {
 	BasicDBObject spy = Mockito.spy(new BasicDBObject());
+	handler = new EntityInvocationHandler(Valid.class);
 	handler.container = spy;
 
 	Valid obj = Entities.instantiate(Valid.class, handler).setType("me");
@@ -75,6 +73,7 @@ public class _EntityProxying {
     @Test
     public void testProxyGet() {
 	BasicDBObject spy = Mockito.spy(new BasicDBObject());
+	handler = new EntityInvocationHandler(Valid.class);
 	handler.container = spy;
 
 	when(spy.get("type")).thenReturn("me");
@@ -83,21 +82,42 @@ public class _EntityProxying {
     }
 
     @Test
-    public void testIsModifiedFlag() {
+    public void testIsModifiedFlagVersioned() {
+	handler = new EntityInvocationHandler(VersionedValid.class);
+	assertFalse(handler.hasChanged);
+
+	VersionedValid obj = Entities
+		.instantiate(VersionedValid.class, handler).setType("me");
+	assertTrue(handler.hasChanged);
+	assertEquals(0, handler.oldVersions.size());
+	handler.hasChanged = false;
+	obj.setType("me");
+	assertFalse(handler.hasChanged);
+	assertEquals(0, handler.oldVersions.size());
+	obj.setType("em");
+	assertTrue(handler.hasChanged);
+	assertEquals(1, handler.oldVersions.size());
+    }
+
+    @Test
+    public void testModifiedFlagEntity() {
+	handler = new EntityInvocationHandler(Valid.class);
 	assertFalse(handler.hasChanged);
 
 	Valid obj = Entities.instantiate(Valid.class, handler).setType("me");
 	assertTrue(handler.hasChanged);
-
-	handler.hasChanged = false;
+	assertEquals(0, handler.oldVersions.size());
 	obj.setType("me");
-	assertFalse(handler.hasChanged);
+	assertTrue(handler.hasChanged);
+	assertEquals(0, handler.oldVersions.size());
 	obj.setType("em");
 	assertTrue(handler.hasChanged);
+	assertEquals(0, handler.oldVersions.size());
     }
 
     @Test
     public void testToString() {
+	handler = new EntityInvocationHandler(Valid.class);
 	Valid obj = Entities.instantiate(Valid.class, handler).setType("me");
 	assertThat(obj.toString(), is("{ \"type\" : \"me\"}"));
     }
@@ -112,24 +132,6 @@ public class _EntityProxying {
 		    e.getMessage(),
 		    containsString("Set method without any argument isn't valid"));
 	}
-    }
-
-    @Test
-    public void testCopyOnChange() {
-	Valid obj = Entities.instantiate(Valid.class, handler);
-	assertNotNull(handler.oldVersions);
-	assertEquals(0, handler.oldVersions.size());
-	assertNull(handler.container.get("type"));
-
-	// for new objects we don't need to copy data over
-	obj.setType("me");
-	assertEquals(0, handler.oldVersions.size());
-	assertEquals("me", handler.container.get("type"));
-
-	obj.setType("em");
-	assertEquals(1, handler.oldVersions.size());
-	assertEquals("em", handler.container.get("type"));
-	assertEquals("me", ((DBObject) handler.oldVersions.get(0)).get("type"));
     }
 
     @Test
@@ -165,6 +167,11 @@ public class _EntityProxying {
 	public Defect setMultiParam(String arg1, String arg2);
 
 	public String getParam(String arg);
+    }
+
+    @Versioned
+    private static interface VersionedValid extends Entity {
+	public VersionedValid setType(String param);
     }
 
     private static interface Valid extends Entity {

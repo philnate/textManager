@@ -17,15 +17,14 @@
  */
 package me.philnate.textmanager.entities;
 
-import org.springframework.data.mongodb.core.mapping.Document;
-
 /**
- * Basic Interface for documents containing common functionality for all records
+ * Basic Interface for documents containing common functionality for all
+ * records. If the Document needs to be versioned one must add the Annotation
+ * {@link Versioned}
  * 
  * @author philnate
  * 
  */
-@Document
 public interface Entity {
 
 }

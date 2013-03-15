@@ -17,28 +17,21 @@
  */
 package me.philnate.textmanager.entities;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import me.philnate.textmanager.MongoBase;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-import org.junit.Test;
-import org.springframework.data.mongodb.core.mapping.Document;
-
-public class _Entitiy extends MongoBase {
-
-    @Test
-    public void testDocumentAnnotationPrsent() {
-	assertTrue("Entity is missing @Document annotation",
-		Entity.class.isAnnotationPresent(Document.class));
-    }
-
-    @Test
-    public void testSaveEntity() {
-	assertNotNull(Entities.instantiate(Teste.class));
-	mg.save(Entities.instantiate(Entity.class));
-    }
-
-    public static interface Teste extends Entity {
-	public Teste setTest(String t);
-    }
+/**
+ * Simple Marker Annotation to show that the given record is versioned and needs
+ * to keep old versions separated
+ * 
+ * @author philnate
+ * 
+ */
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+@Inherited
+public @interface Versioned {
 }
