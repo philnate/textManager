@@ -15,21 +15,21 @@
  *   See the GNU General Public License for more details. You should have received a copy of the GNU
  *   General Public License along with textManager. If not, see <http://www.gnu.org/licenses/>.
  */
-package me.philnate.textmanager.entities;
+package me.philnate.textmanager.entities.annotations;
 
-import me.philnate.textmanager.entities.annotations.Id;
-import me.philnate.textmanager.entities.annotations.Versioned;
-
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * Basic Interface for documents containing common functionality for all
- * records. If the Document needs to be versioned one must add the Annotation
- * {@link Versioned}. If there's a a setter/Getter method called setId/getId
- * will be used as Id for this document.
- * 
- * @author philnate
- * 
+ * Defines the name of this field, in case the Method name shall not match the
+ * MongoDB name
  */
-public interface Entity extends Id {
-    public void save();
+@Target(ElementType.METHOD)
+@Retention(RetentionPolicy.RUNTIME)
+@Inherited
+public @interface Named {
+    public String value();
 }

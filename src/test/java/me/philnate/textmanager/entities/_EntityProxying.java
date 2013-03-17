@@ -28,14 +28,18 @@ import static org.junit.Assert.fail;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static uk.co.datumedge.hamcrest.json.SameJSONAs.sameJSONAs;
+import me.philnate.textmanager.MongoBase;
+import me.philnate.textmanager.entities.annotations.Versioned;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
 import com.mongodb.BasicDBObject;
+import com.mongodb.DBCollection;
 
-public class _EntityProxying {
+public class _EntityProxying extends MongoBase {
 
     private EntityInvocationHandler handler;
 
@@ -156,6 +160,29 @@ public class _EntityProxying {
 		    e.getMessage(),
 		    containsString("Get method is expected to have no arguments"));
 	}
+    }
+
+    @Test
+    public void testSaveEntity() {
+	DBCollection col = getCollection(Valid.class);
+	assertEquals(0, col.count());
+	Entities.instantiate(Valid.class).setType("me").save();
+	assertEquals(1, col.count());
+	assertJson(col.findOne(), sameJSONAs("{type:\"me\"}")
+		.allowingExtraUnexpectedFields());
+	// TODO extend to read saved entry back
+    }
+
+    @Test
+    public void testSaveVersionedEntity() {
+	DBCollection col = getCollection(Valid.class);
+	assertEquals(0, col.count());
+	Entities.instantiate(Valid.class).setType("me").save();
+	assertEquals(1, col.count());
+	assertJson(col.findOne(), sameJSONAs("{type:\"me\"}")
+		.allowingExtraUnexpectedFields());
+	// TODO extend to save versioned information
+	// TODO extend to read saved entry back
     }
 
     private static abstract class InValid implements Entity {

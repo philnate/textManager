@@ -17,19 +17,18 @@
  */
 package me.philnate.textmanager.entities;
 
-import me.philnate.textmanager.entities.annotations.Id;
-import me.philnate.textmanager.entities.annotations.Versioned;
+import static org.junit.Assert.assertEquals;
 
+import org.junit.Test;
 
-/**
- * Basic Interface for documents containing common functionality for all
- * records. If the Document needs to be versioned one must add the Annotation
- * {@link Versioned}. If there's a a setter/Getter method called setId/getId
- * will be used as Id for this document.
- * 
- * @author philnate
- * 
- */
-public interface Entity extends Id {
-    public void save();
+public class _Entities {
+
+    @Test
+    public void testCollectionNameResolving() {
+	assertEquals("entity", Entities.getCollectionName(Entity.class));
+	assertEquals("camelCase", Entities.getCollectionName(CamelCase.class));
+    }
+
+    private static interface CamelCase extends Entity {
+    }
 }

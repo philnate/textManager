@@ -17,15 +17,27 @@
  */
 package me.philnate.textmanager;
 
+import static org.junit.Assert.assertThat;
+
+import java.util.List;
+
+import me.philnate.textmanager.entities.Entities;
+import me.philnate.textmanager.entities.Entity;
 import me.philnate.textmanager.web.config.cfgMongoDB;
 
+import org.hamcrest.Matcher;
+import org.junit.After;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.mongodb.MongoClient;
+import com.google.common.collect.Lists;
+import com.mongodb.DB;
+import com.mongodb.DBCollection;
+import com.mongodb.DBObject;
+import com.mongodb.util.JSON;
 
 /**
  * Base Class for Tests requiring MongoDB
@@ -39,5 +51,45 @@ import com.mongodb.MongoClient;
 public abstract class MongoBase {
 
     @Autowired
-    protected MongoClient mg;
+    private DB db;
+
+    List<DBCollection> collectionPurge = Lists.newArrayList();
+
+    /**
+     * retrieves DBCollection for given Entity based class and remembers it, so
+     * that on shutdown of the TC a cleanUp can be done
+     * 
+     * @param clazz
+     * @return
+     */
+    public DBCollection getCollection(Class<? extends Entity> clazz) {
+	// TODO lets make this unique per TestCase, so we can run tests in
+	// parallel
+	DBCollection col = db.getCollection(Entities.getCollectionName(clazz));
+	collectionPurge.add(col);
+	return col;
+    }
+
+    /**
+     * CleanUp all temporary collection data
+     */
+    @After
+    public final void collectionCleanup() {
+	for (DBCollection col : collectionPurge) {
+	    col.drop();
+	}
+    }
+
+    /**
+     * just some little tool method to avoid that JSONAssert requires the Test
+     * method to throw an exception
+     * 
+     * @param expected
+     * @param actual
+     * @param exception
+     * @return
+     */
+    public void assertJson(DBObject actual, Matcher<? super String> expected) {
+	assertThat(JSON.serialize(actual), expected);
+    }
 }

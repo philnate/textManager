@@ -19,13 +19,27 @@ package me.philnate.textmanager.entities;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static java.lang.String.format;
 
 import java.beans.Introspector;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.util.Map;
 
+import me.philnate.textmanager.entities.annotations.Id;
+import me.philnate.textmanager.entities.annotations.Named;
+import me.philnate.textmanager.entities.annotations.Versioned;
+
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.google.common.base.Objects;
+import com.google.common.base.Optional;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
+import com.mongodb.DB;
 
 /**
  * Handler which maps Interfaces to the underlying DBObject which is then stored
@@ -55,10 +69,58 @@ public class EntityInvocationHandler implements InvocationHandler {
 
     private boolean isVersioned = false;
 
+    private final Class<? extends Entity> clazz;
+
+    /**
+     * stores the name of the field which is used as Id
+     */
+    private final String idFieldName;
+
+    /**
+     * holds translations of Method names to properties in MongoDB
+     */
+    private final Map<String, String> mappings = Maps.newHashMap();
+
+    @Autowired
+    static DB db;
+
     public EntityInvocationHandler(Class<? extends Entity> clazz) {
 	if (clazz.getAnnotation(Versioned.class) != null) {
 	    isVersioned = true;
 	}
+	// detect if we have some explicitly named Id field (different from Id)
+	Optional<String> idFieldName = Optional.absent();
+	for (Method m : Lists.newArrayList(clazz.getMethods())) {
+	    // only check for annotations on set (eases life)
+	    if (!m.getName().startsWith("set")) {
+		continue;
+	    }
+	    String methodName = getPropertyNameFromMethod(m);
+	    if (m.isAnnotationPresent(Named.class)) {
+		// check if given properties are mapped differently
+		Named named = m.getAnnotation(Named.class);
+		checkArgument(
+			StringUtils.isNotEmpty(named.value()),
+			format("Name of field must be not empty or null. On method '%s'",
+				m.getName()));
+		mappings.put(methodName, named.value());
+	    }
+	    // check for Id field
+	    if (m.isAnnotationPresent(Id.class)) {
+		if (idFieldName.isPresent()
+			&& !idFieldName.get().equals(methodName)) {
+		    throw new IllegalArgumentException(
+			    format("You can only specify one @Id annotation per Document type, but found for '%s' [%s,%s]",
+				    clazz.getName(), idFieldName.get(),
+				    methodName));
+		}
+		idFieldName = Optional.of(methodName);
+	    }
+	}
+	// set Id field per default to Id (thus annotation on setId/getId not
+	// needed
+	this.idFieldName = idFieldName.isPresent() ? idFieldName.get() : "id";
+	this.clazz = clazz;
     }
 
     @Override
@@ -66,8 +128,15 @@ public class EntityInvocationHandler implements InvocationHandler {
 	    throws Throwable {
 	String name = method.getName();
 	// freed method name from prefix (set/get)
-	String nameNoPrefix = Introspector.decapitalize(name.substring(3));
-
+	String nameNoPrefix = getPropertyNameFromMethod(method);
+	// check if there's a different naming for this method
+	nameNoPrefix = Objects.firstNonNull(mappings.get(nameNoPrefix),
+		nameNoPrefix);
+	if (idFieldName.equals(nameNoPrefix)) {
+	    // check if the property is Id then we need to slightly rename it to
+	    // match mongodbs expectations
+	    nameNoPrefix = "_id";
+	}
 	if (name.startsWith("set")) {
 	    checkNotNull(args, "Set method without any argument isn't valid");
 	    checkArgument(args.length == 1,
@@ -90,10 +159,15 @@ public class EntityInvocationHandler implements InvocationHandler {
 	    checkArgument(args == null || args.length == 0,
 		    "Get method is expected to have no arguments");
 	    return container.get(nameNoPrefix);
+	} else if (name.equals("save")) {
+	    db.getCollection(Entities.getCollectionName(clazz)).save(container);
 	} else if (name.equals("toString")) {
 	    return container.toString();
 	}
 	return null;
     }
 
+    private static String getPropertyNameFromMethod(Method m) {
+	return Introspector.decapitalize(m.getName().substring(3));
+    }
 }

@@ -21,8 +21,9 @@ import java.io.IOException;
 import java.net.UnknownHostException;
 import java.util.UUID;
 
-import javax.annotation.PreDestroy;
-
+import me.philnate.textmanager.entities.Entity;
+import me.philnate.textmanager.entities.EntityInvocationHandler;
+import me.philnate.textmanager.entities.cfgProxying;
 import me.philnate.textmanager.web.config.cfgMongoDB.cfgProduction;
 import me.philnate.textmanager.web.config.cfgMongoDB.cfgTesting;
 
@@ -32,6 +33,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
 
+import com.mongodb.DB;
 import com.mongodb.MongoClient;
 
 import de.flapdoodle.embed.mongo.MongodExecutable;
@@ -53,7 +55,7 @@ import de.flapdoodle.embed.process.runtime.Network;
  * 
  */
 @Configuration
-@Import({ cfgProduction.class, cfgTesting.class })
+@Import({ cfgProduction.class, cfgTesting.class, cfgProxying.class })
 public class cfgMongoDB {
 
     public static final String PROFILE_PRODUCTION = "production";
@@ -149,15 +151,15 @@ public class cfgMongoDB {
 	return new MongoClient("localhost", mongoPort());
     }
 
-    /**
-     * Close MongoDB once the context is closed, which happens when app is going
-     * to be closed
-     * 
-     * @throws UnknownHostException
-     * @throws IOException
-     */
-    @PreDestroy
-    public void destroy() throws UnknownHostException, IOException {
-	mongodExecutable().stop();
+    @Bean
+    public DB db() throws UnknownHostException, IOException {
+	return mongo().getDB(dbName);
+    }
+
+    // ######################candidate for slicing out
+
+    @Bean
+    public EntityInvocationHandler entityInvocationHandler() {
+	return new EntityInvocationHandler(Entity.class);
     }
 }

@@ -15,21 +15,17 @@
  *   See the GNU General Public License for more details. You should have received a copy of the GNU
  *   General Public License along with textManager. If not, see <http://www.gnu.org/licenses/>.
  */
-package me.philnate.textmanager.entities;
+package me.philnate.textmanager;
 
-import me.philnate.textmanager.entities.annotations.Id;
-import me.philnate.textmanager.entities.annotations.Versioned;
-
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
 /**
- * Basic Interface for documents containing common functionality for all
- * records. If the Document needs to be versioned one must add the Annotation
- * {@link Versioned}. If there's a a setter/Getter method called setId/getId
- * will be used as Id for this document.
+ * Base Class for Simple Tests not requiring MongoDB access
  * 
  * @author philnate
  * 
  */
-public interface Entity extends Id {
-    public void save();
+@RunWith(JUnit4.class)
+public abstract class TestBase {
 }

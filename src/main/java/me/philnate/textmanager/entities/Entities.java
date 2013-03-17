@@ -17,7 +17,10 @@
  */
 package me.philnate.textmanager.entities;
 
+import java.beans.Introspector;
 import java.lang.reflect.Proxy;
+
+import me.philnate.textmanager.entities.annotations.Id;
 
 /**
  * Utility Class to instantiate Entity based Interfaces, which are wrapped into
@@ -40,7 +43,7 @@ public class Entities {
      * @return new Instance of the given class
      */
     @SuppressWarnings("unchecked")
-    static <T extends Entity> T instantiate(Class<T> clazz,
+    static <T extends Id> T instantiate(Class<T> clazz,
 	    EntityInvocationHandler handler) {
 	return (T) Proxy.newProxyInstance(
 		EntityInvocationHandler.class.getClassLoader(),
@@ -57,5 +60,9 @@ public class Entities {
      */
     public static <T extends Entity> T instantiate(Class<T> clazz) {
 	return instantiate(clazz, new EntityInvocationHandler(clazz));
+    }
+
+    public static String getCollectionName(Class<? extends Entity> clazz) {
+	return Introspector.decapitalize(clazz.getSimpleName());
     }
 }
