@@ -94,6 +94,18 @@ public class _Collection extends MongoBase {
 	// TODO should be possible to have Annotation just for declaring Indexes
     }
 
+    @Test
+    @Ignore
+    public void testSparseIndex() {
+
+    }
+
+    @Test
+    @Ignore
+    public void testUniqueIndex() {
+
+    }
+
     private static interface CamelCase extends Entity {
     }
 

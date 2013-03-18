@@ -25,6 +25,7 @@ import java.util.Set;
 import me.philnate.textmanager.TestBase;
 import me.philnate.textmanager.entities.annotations.Named;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class _EntityUtils extends TestBase {
@@ -35,6 +36,13 @@ public class _EntityUtils extends TestBase {
 	assertEquals(2, fields.size());
 	assertTrue("missing field 'field'", fields.contains("field"));
 	assertTrue("missing field 'value'", fields.contains("value"));
+    }
+
+    @Test
+    @Ignore
+    public void testParamNameFromMethod() {
+	// TODO tests retrieval of paramname
+	// TODO tets retrieval of paramname without Named
     }
 
     private static interface Fields extends Entity {

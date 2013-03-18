@@ -28,10 +28,7 @@ import java.lang.reflect.Method;
 import java.util.Map;
 
 import me.philnate.textmanager.entities.annotations.Id;
-import me.philnate.textmanager.entities.annotations.Named;
 import me.philnate.textmanager.entities.annotations.Versioned;
-
-import org.apache.commons.lang.StringUtils;
 
 import com.google.common.base.Objects;
 import com.google.common.base.Optional;
@@ -97,17 +94,9 @@ public class EntityInvocationHandler implements InvocationHandler {
 	    if (!m.getName().startsWith("set")) {
 		continue;
 	    }
-	    // TODO refactor so that getPropertyNameFromMethod can ignore @Named
+	    mappings.put(getPropertyNameFromMethod(m, true),
+		    getPropertyNameFromMethod(m));
 	    String methodName = getPropertyNameFromMethod(m);
-	    if (m.isAnnotationPresent(Named.class)) {
-		// check if given properties are mapped differently
-		Named named = m.getAnnotation(Named.class);
-		checkArgument(
-			StringUtils.isNotEmpty(named.value()),
-			format("Name of field must be not empty or null. On method '%s'",
-				m.getName()));
-		mappings.put(methodName, named.value());
-	    }
 	    // check for Id field
 	    if (m.isAnnotationPresent(Id.class)) {
 		if (idFieldName.isPresent()

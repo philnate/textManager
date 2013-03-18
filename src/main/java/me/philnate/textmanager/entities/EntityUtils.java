@@ -53,7 +53,23 @@ public class EntityUtils {
      * @return
      */
     public static String getPropertyNameFromMethod(Method m) {
-	Named named = m.getAnnotation(Named.class);
+	return getPropertyNameFromMethod(m, false);
+    }
+
+    /**
+     * Retrieves from a Method the name which is used within MongoDB. Presence
+     * of {@link Named} can be ignored or not.
+     * 
+     * @param m
+     *            method to retrieve Storage name from
+     * @param ignoreNamed
+     *            tells if declared {@link Named} should be used to retrieve
+     *            property name or not
+     * @return property name matching this method
+     */
+    public static String getPropertyNameFromMethod(Method m, boolean ignoreNamed) {
+	// if only the method Name shall be used for lookup ignore @Named
+	Named named = ignoreNamed ? null : m.getAnnotation(Named.class);
 	if (named != null) {
 	    // check if given properties are mapped differently
 	    checkArgument(
