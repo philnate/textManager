@@ -21,9 +21,7 @@ import java.io.IOException;
 import java.net.UnknownHostException;
 import java.util.UUID;
 
-import me.philnate.textmanager.entities.Entity;
-import me.philnate.textmanager.entities.EntityInvocationHandler;
-import me.philnate.textmanager.entities.cfgProxying;
+import me.philnate.textmanager.entities.Entities;
 import me.philnate.textmanager.web.config.cfgMongoDB.cfgProduction;
 import me.philnate.textmanager.web.config.cfgMongoDB.cfgTesting;
 
@@ -55,7 +53,7 @@ import de.flapdoodle.embed.process.runtime.Network;
  * 
  */
 @Configuration
-@Import({ cfgProduction.class, cfgTesting.class, cfgProxying.class })
+@Import({ cfgProduction.class, cfgTesting.class })
 public class cfgMongoDB {
 
     public static final String PROFILE_PRODUCTION = "production";
@@ -156,10 +154,8 @@ public class cfgMongoDB {
 	return mongo().getDB(dbName);
     }
 
-    // ######################candidate for slicing out
-
     @Bean
-    public EntityInvocationHandler entityInvocationHandler() {
-	return new EntityInvocationHandler(Entity.class);
+    public Entities entities() throws UnknownHostException, IOException {
+	return new Entities(db());
     }
 }

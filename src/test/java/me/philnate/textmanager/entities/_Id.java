@@ -23,10 +23,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
-import me.philnate.textmanager.TestBase;
-import me.philnate.textmanager.entities.Entities;
-import me.philnate.textmanager.entities.Entity;
-import me.philnate.textmanager.entities.EntityInvocationHandler;
+import me.philnate.textmanager.MongoBase;
 import me.philnate.textmanager.entities.annotations.Id;
 
 import org.junit.Test;
@@ -37,27 +34,27 @@ import org.junit.Test;
  * @author philnate
  * 
  */
-public class _Id extends TestBase {
+public class _Id extends MongoBase {
     private EntityInvocationHandler handler;
 
     @Test
     public void testIdResolution() {
-	handler = new EntityInvocationHandler(Ided.class);
-	Entities.instantiate(Ided.class, handler).setId("1234");
+	handler = newHandler(Ided.class);
+	entities.instantiate(Ided.class, handler).setId("1234");
 	assertEquals("1234", handler.container.get("_id"));
     }
 
     @Test
     public void testIdAnnotationResolution() {
-	handler = new EntityInvocationHandler(CustomId.class);
-	Entities.instantiate(CustomId.class, handler).setMyId("test");
+	handler = newHandler(CustomId.class);
+	entities.instantiate(CustomId.class, handler).setMyId("test");
 	assertEquals("test", handler.container.get("_id"));
     }
 
     @Test
     public void testNotAllowedMultipleIdAnnotations() {
 	try {
-	    new EntityInvocationHandler(MultiIdInValid.class);
+	    newHandler(MultiIdInValid.class);
 	    fail("should throw an IAE exception");
 	} catch (IllegalArgumentException e) {
 	    assertThat(
@@ -69,8 +66,8 @@ public class _Id extends TestBase {
 
     @Test
     public void testIgnoreIdOnGet() {
-	handler = new EntityInvocationHandler(IdOnGet.class);
-	Entities.instantiate(IdOnGet.class, handler).setMyId("id");
+	handler = newHandler(IdOnGet.class);
+	entities.instantiate(IdOnGet.class, handler).setMyId("id");
 	assertEquals("id", handler.container.get("myId"));
 	assertNull(handler.container.get("_id"));
     }

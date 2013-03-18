@@ -27,6 +27,8 @@ import me.philnate.textmanager.entities.annotations.Id;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.mongodb.DB;
+
 /**
  * Utility Class to instantiate Entity based Interfaces, which are wrapped into
  * proxies.
@@ -36,8 +38,14 @@ import org.apache.commons.lang.StringUtils;
  */
 public class Entities {
 
-    // Don't instantiate this
-    private Entities() {
+    private final DB db;
+
+    /**
+     * @param db
+     *            reference to db which is used for storage
+     */
+    public Entities(DB db) {
+	this.db = db;
     }
 
     /**
@@ -52,8 +60,7 @@ public class Entities {
      * @return new Instance of the given class
      */
     @SuppressWarnings("unchecked")
-    static <T extends Id> T instantiate(Class<T> clazz,
-	    EntityInvocationHandler handler) {
+    <T extends Id> T instantiate(Class<T> clazz, EntityInvocationHandler handler) {
 	return (T) Proxy.newProxyInstance(
 		EntityInvocationHandler.class.getClassLoader(),
 		new Class<?>[] { clazz }, handler);
@@ -67,8 +74,8 @@ public class Entities {
      *            {@link Entity} as supertype
      * @return new Instance of the given class
      */
-    public static <T extends Entity> T instantiate(Class<T> clazz) {
-	return instantiate(clazz, new EntityInvocationHandler(clazz));
+    public <T extends Entity> T instantiate(Class<T> clazz) {
+	return instantiate(clazz, new EntityInvocationHandler(clazz, db));
     }
 
     /**

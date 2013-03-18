@@ -22,7 +22,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
-import me.philnate.textmanager.TestBase;
+import me.philnate.textmanager.MongoBase;
 import me.philnate.textmanager.entities.annotations.Named;
 
 import org.junit.Ignore;
@@ -34,13 +34,13 @@ import org.junit.Test;
  * @author philnate
  * 
  */
-public class _Named extends TestBase {
+public class _Named extends MongoBase {
     private EntityInvocationHandler handler;
 
     @Test
     public void testNamedReplacesMethodname() {
-	handler = new EntityInvocationHandler(NamedClass.class);
-	Entities.instantiate(NamedClass.class, handler).setType("id");
+	handler = newHandler(NamedClass.class);
+	entities.instantiate(NamedClass.class, handler).setType("id");
 	assertEquals("id", handler.container.get("_id"));
 	assertNull(handler.container.get("type"));
     }
@@ -54,7 +54,7 @@ public class _Named extends TestBase {
     @Test
     public void testNamedValueSet() {
 	try {
-	    new EntityInvocationHandler(EmptyNamed.class);
+	    newHandler(EmptyNamed.class);
 	    fail("should throw an IAE");
 	} catch (IllegalArgumentException e) {
 	    assertThat(
@@ -65,8 +65,8 @@ public class _Named extends TestBase {
 
     @Test
     public void testIgnoreNamedOnGet() {
-	handler = new EntityInvocationHandler(NamedClass.class);
-	Entities.instantiate(NamedClass.class, handler).setValue("val");
+	handler = newHandler(NamedClass.class);
+	entities.instantiate(NamedClass.class, handler).setValue("val");
 	assertEquals("val", handler.container.get("value"));
 	assertNull(handler.container.get("val"));
     }

@@ -23,6 +23,7 @@ import java.util.List;
 
 import me.philnate.textmanager.entities.Entities;
 import me.philnate.textmanager.entities.Entity;
+import me.philnate.textmanager.entities.EntityInvocationHandler;
 import me.philnate.textmanager.web.config.cfgMongoDB;
 
 import org.hamcrest.Matcher;
@@ -53,7 +54,20 @@ public abstract class MongoBase {
     @Autowired
     private DB db;
 
+    @Autowired
+    protected Entities entities;
+
     List<DBCollection> collectionPurge = Lists.newArrayList();
+
+    /**
+     * CleanUp all temporary collection data
+     */
+    @After
+    public final void collectionCleanup() {
+	for (DBCollection col : collectionPurge) {
+	    col.drop();
+	}
+    }
 
     /**
      * retrieves DBCollection for given Entity based class and remembers it, so
@@ -70,14 +84,8 @@ public abstract class MongoBase {
 	return col;
     }
 
-    /**
-     * CleanUp all temporary collection data
-     */
-    @After
-    public final void collectionCleanup() {
-	for (DBCollection col : collectionPurge) {
-	    col.drop();
-	}
+    public EntityInvocationHandler newHandler(Class<? extends Entity> clazz) {
+	return new EntityInvocationHandler(clazz, db);
     }
 
     /**

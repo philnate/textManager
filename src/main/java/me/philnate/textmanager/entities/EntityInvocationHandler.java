@@ -31,7 +31,6 @@ import me.philnate.textmanager.entities.annotations.Named;
 import me.philnate.textmanager.entities.annotations.Versioned;
 
 import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import com.google.common.base.Objects;
 import com.google.common.base.Optional;
@@ -85,13 +84,7 @@ public class EntityInvocationHandler implements InvocationHandler {
      */
     private final DBCollection collection;
 
-    /**
-     * shared instance to the DB where data is being stored
-     */
-    @Autowired
-    static DB db;
-
-    public EntityInvocationHandler(Class<? extends Entity> clazz) {
+    public EntityInvocationHandler(Class<? extends Entity> clazz, DB db) {
 	collection = db.getCollection(Entities.getCollectionName(clazz));
 	if (clazz.getAnnotation(Versioned.class) != null) {
 	    isVersioned = true;

@@ -49,14 +49,14 @@ public class _EntityProxying extends MongoBase {
 
     @Test
     public void testInstantiationValidChain() {
-	Entities.instantiate(Entity.class);
-	Entities.instantiate(Valid.class);
+	entities.instantiate(Entity.class);
+	entities.instantiate(Valid.class);
     }
 
     @Test
     public void testInstatiateNonValid() {
 	try {
-	    Entities.instantiate(InValid.class);
+	    entities.instantiate(InValid.class);
 	    fail("Proxying only allowed for interfaces");
 	} catch (Exception e) {
 	    assertThat(e.getMessage(), containsString("is not an interface"));
@@ -66,10 +66,10 @@ public class _EntityProxying extends MongoBase {
     @Test
     public void testProxySet() {
 	BasicDBObject spy = Mockito.spy(new BasicDBObject());
-	handler = new EntityInvocationHandler(Valid.class);
+	handler = newHandler(Valid.class);
 	handler.container = spy;
 
-	Valid obj = Entities.instantiate(Valid.class, handler).setType("me");
+	Valid obj = entities.instantiate(Valid.class, handler).setType("me");
 	assertNotNull(obj);
 	verify(spy, times(1)).put("type", "me");
     }
@@ -77,20 +77,20 @@ public class _EntityProxying extends MongoBase {
     @Test
     public void testProxyGet() {
 	BasicDBObject spy = Mockito.spy(new BasicDBObject());
-	handler = new EntityInvocationHandler(Valid.class);
+	handler = newHandler(Valid.class);
 	handler.container = spy;
 
 	when(spy.get("type")).thenReturn("me");
-	Valid obj = Entities.instantiate(Valid.class, handler).setType("me");
+	Valid obj = entities.instantiate(Valid.class, handler).setType("me");
 	assertEquals("me", obj.getType());
     }
 
     @Test
     public void testIsModifiedFlagVersioned() {
-	handler = new EntityInvocationHandler(VersionedValid.class);
+	handler = newHandler(VersionedValid.class);
 	assertFalse(handler.hasChanged);
 
-	VersionedValid obj = Entities
+	VersionedValid obj = entities
 		.instantiate(VersionedValid.class, handler).setType("me");
 	assertTrue(handler.hasChanged);
 	assertEquals(0, handler.oldVersions.size());
@@ -105,10 +105,10 @@ public class _EntityProxying extends MongoBase {
 
     @Test
     public void testModifiedFlagEntity() {
-	handler = new EntityInvocationHandler(Valid.class);
+	handler = newHandler(Valid.class);
 	assertFalse(handler.hasChanged);
 
-	Valid obj = Entities.instantiate(Valid.class, handler).setType("me");
+	Valid obj = entities.instantiate(Valid.class, handler).setType("me");
 	assertTrue(handler.hasChanged);
 	assertEquals(0, handler.oldVersions.size());
 	obj.setType("me");
@@ -121,15 +121,15 @@ public class _EntityProxying extends MongoBase {
 
     @Test
     public void testToString() {
-	handler = new EntityInvocationHandler(Valid.class);
-	Valid obj = Entities.instantiate(Valid.class, handler).setType("me");
+	handler = newHandler(Valid.class);
+	Valid obj = entities.instantiate(Valid.class, handler).setType("me");
 	assertThat(obj.toString(), is("{ \"type\" : \"me\"}"));
     }
 
     @Test
     public void testSetIsMissingParam() {
 	try {
-	    Entities.instantiate(Defect.class).setNoParam();
+	    entities.instantiate(Defect.class).setNoParam();
 	    fail("Should throw an excpetion as set without param makes no sense");
 	} catch (NullPointerException e) {
 	    assertThat(
@@ -141,7 +141,7 @@ public class _EntityProxying extends MongoBase {
     @Test
     public void testSetHasTooManyParams() {
 	try {
-	    Entities.instantiate(Defect.class).setMultiParam("one", "two");
+	    entities.instantiate(Defect.class).setMultiParam("one", "two");
 	    fail("Should fail as multiple params don't make any sense today");
 	} catch (IllegalArgumentException e) {
 	    assertThat(
@@ -153,7 +153,7 @@ public class _EntityProxying extends MongoBase {
     @Test
     public void testGetNoParams() {
 	try {
-	    Entities.instantiate(Defect.class).getParam("one");
+	    entities.instantiate(Defect.class).getParam("one");
 	    fail("should throw an exception as gets don't take arguments");
 	} catch (IllegalArgumentException e) {
 	    assertThat(
@@ -168,7 +168,7 @@ public class _EntityProxying extends MongoBase {
     public void testSaveEntity() {
 	DBCollection col = getCollection(Valid.class);
 	assertEquals(0, col.count());
-	Entities.instantiate(Valid.class).setType("me").save();
+	entities.instantiate(Valid.class).setType("me").save();
 	assertEquals(1, col.count());
 	assertJson(col.findOne(), sameJSONAs("{type:\"me\"}")
 		.allowingExtraUnexpectedFields());
@@ -179,7 +179,7 @@ public class _EntityProxying extends MongoBase {
     public void testSaveVersionedEntity() {
 	DBCollection col = getCollection(Valid.class);
 	assertEquals(0, col.count());
-	Entities.instantiate(Valid.class).setType("me").save();
+	entities.instantiate(Valid.class).setType("me").save();
 	assertEquals(1, col.count());
 	assertJson(col.findOne(), sameJSONAs("{type:\"me\"}")
 		.allowingExtraUnexpectedFields());
