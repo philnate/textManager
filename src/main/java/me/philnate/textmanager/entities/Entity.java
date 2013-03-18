@@ -17,9 +17,7 @@
  */
 package me.philnate.textmanager.entities;
 
-import me.philnate.textmanager.entities.annotations.Id;
 import me.philnate.textmanager.entities.annotations.Versioned;
-
 
 /**
  * Basic Interface for documents containing common functionality for all
@@ -30,6 +28,6 @@ import me.philnate.textmanager.entities.annotations.Versioned;
  * @author philnate
  * 
  */
-public interface Entity extends Id {
+public interface Entity {
     public void save();
 }

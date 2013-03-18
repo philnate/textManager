@@ -17,27 +17,30 @@
  */
 package me.philnate.textmanager.entities;
 
-import javax.annotation.PostConstruct;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Configuration;
+import java.util.Set;
 
-import com.mongodb.DB;
+import me.philnate.textmanager.TestBase;
+import me.philnate.textmanager.entities.annotations.Named;
 
-/**
- * Does the needed configuration for Proxying
- * 
- * @author philnate
- * 
- */
-@Configuration
-public class cfgProxying {
+import org.junit.Test;
 
-    @Autowired
-    private DB db;
+public class _EntityUtils extends TestBase {
 
-    @PostConstruct
-    public void postConstruct() {
-	EntityInvocationHandler.db = db;
+    @Test
+    public void testFieldReading() {
+	Set<String> fields = EntityUtils.getFields(Fields.class);
+	assertEquals(2, fields.size());
+	assertTrue("missing field 'field'", fields.contains("field"));
+	assertTrue("missing field 'value'", fields.contains("value"));
+    }
+
+    private static interface Fields extends Entity {
+	public Fields setField(String field);
+
+	@Named("value")
+	public Fields setVal(String value);
     }
 }

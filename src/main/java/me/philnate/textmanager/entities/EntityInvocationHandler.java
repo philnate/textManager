@@ -20,8 +20,9 @@ package me.philnate.textmanager.entities;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.format;
+import static me.philnate.textmanager.entities.EntityUtils.getCollectionName;
+import static me.philnate.textmanager.entities.EntityUtils.getPropertyNameFromMethod;
 
-import java.beans.Introspector;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.Map;
@@ -85,7 +86,7 @@ public class EntityInvocationHandler implements InvocationHandler {
     private final DBCollection collection;
 
     public EntityInvocationHandler(Class<? extends Entity> clazz, DB db) {
-	collection = db.getCollection(Entities.getCollectionName(clazz));
+	collection = db.getCollection(getCollectionName(clazz));
 	if (clazz.getAnnotation(Versioned.class) != null) {
 	    isVersioned = true;
 	}
@@ -96,6 +97,7 @@ public class EntityInvocationHandler implements InvocationHandler {
 	    if (!m.getName().startsWith("set")) {
 		continue;
 	    }
+	    // TODO refactor so that getPropertyNameFromMethod can ignore @Named
 	    String methodName = getPropertyNameFromMethod(m);
 	    if (m.isAnnotationPresent(Named.class)) {
 		// check if given properties are mapped differently
@@ -165,9 +167,5 @@ public class EntityInvocationHandler implements InvocationHandler {
 	    return container.toString();
 	}
 	return null;
-    }
-
-    private static String getPropertyNameFromMethod(Method m) {
-	return Introspector.decapitalize(m.getName().substring(3));
     }
 }

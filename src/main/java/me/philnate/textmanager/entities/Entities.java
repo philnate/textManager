@@ -18,16 +18,22 @@
 package me.philnate.textmanager.entities;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static java.lang.String.format;
+import static me.philnate.textmanager.entities.EntityUtils.getCollectionName;
+import static me.philnate.textmanager.entities.EntityUtils.getFields;
 
-import java.beans.Introspector;
 import java.lang.reflect.Proxy;
+import java.util.Set;
 
 import me.philnate.textmanager.entities.annotations.Collection;
-import me.philnate.textmanager.entities.annotations.Id;
+import me.philnate.textmanager.entities.annotations.Index;
+import me.philnate.textmanager.entities.annotations.IndexField;
+import me.philnate.textmanager.entities.annotations.IndexField.Ordering;
 
-import org.apache.commons.lang.StringUtils;
-
+import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
+import com.mongodb.DBCollection;
+import com.mongodb.DBObject;
 
 /**
  * Utility Class to instantiate Entity based Interfaces, which are wrapped into
@@ -60,7 +66,8 @@ public class Entities {
      * @return new Instance of the given class
      */
     @SuppressWarnings("unchecked")
-    <T extends Id> T instantiate(Class<T> clazz, EntityInvocationHandler handler) {
+    <T extends Entity> T instantiate(Class<T> clazz,
+	    EntityInvocationHandler handler) {
 	return (T) Proxy.newProxyInstance(
 		EntityInvocationHandler.class.getClassLoader(),
 		new Class<?>[] { clazz }, handler);
@@ -79,27 +86,6 @@ public class Entities {
     }
 
     /**
-     * Returns the collection name of a given Entity. If there's no
-     * {@link Collection} annotation the Interface name is being used. If a
-     * {@link Collection} annotation is present the supplied name will be
-     * returned (trimmed to remove possible whitespaces around it)
-     * 
-     * @param clazz
-     *            from which the collection name shall be retrieved
-     * @return name of the entity to use for MongoDB
-     */
-    public static String getCollectionName(Class<? extends Entity> clazz) {
-	Collection col = clazz.getAnnotation(Collection.class);
-	if (col != null) {
-	    // if we have a custom annotation we want to use this name instead
-	    checkArgument(StringUtils.isNotBlank(col.name()),
-		    "You must insert a collection name");
-	    return col.name().trim();
-	}
-	return Introspector.decapitalize(clazz.getSimpleName());
-    }
-
-    /**
      * Searches classpath for all Occurences of a {@link Entity}(or only classes
      * extending a given class) extending interfaces and creates indexes for
      * these classes. This method is normally called on System startup to ensure
@@ -110,17 +96,58 @@ public class Entities {
      */
     public static void addIndexes(Class<? extends Entity> clazz,
 	    IndexOperationType type) {
+    }
 
+    /**
+     * Executes the specified index operation for the given Class(creating all
+     * Indexes)
+     * 
+     * @param clazz
+     *            for which the indexes shall be created
+     * @param type
+     *            type of the index creation on CREATE it will fail if the index
+     *            already exists
+     */
+    // TODO make this package private once addIndexes is filled with life
+    public void addIndex(Class<? extends Entity> clazz, IndexOperationType type) {
+
+	Collection col = clazz.getAnnotation(Collection.class);
+	Set<String> fields = getFields(clazz);
+	// iterate through all Indexes and create index
+	if (col != null && col.indexes() != null) {
+	    for (Index idx : col.indexes()) {
+		DBObject index = new BasicDBObject();
+		for (IndexField field : idx.value()) {
+		    checkArgument(
+			    fields.contains(field.field()),
+			    format("Indexes can only be created on existing fields. Got '%s' but isn't in known fields %s",
+				    field.field(), fields));
+		    index.put(field.field(), field.order() == Ordering.ASC ? 1
+			    : -1);
+		}
+		_addIndex(clazz, index, type);
+	    }
+	}
+    }
+
+    /**
+     * Helper method creating the performing the actual Index operation
+     */
+    private void _addIndex(Class<? extends Entity> clazz, DBObject index,
+	    IndexOperationType type) {
+	DBCollection collection = db.getCollection(getCollectionName(clazz));
+
+	switch (type) {
+	case CREATE:
+	    collection.createIndex(index);
+	    break;
+	}
     }
 
     public static enum IndexOperationType {
 	/**
-	 * create Indexes, fails if Index exist
+	 * create Indexes
 	 */
-	CREATE,
-	/**
-	 * create Indexes, doesn't fail if Index alredy exist
-	 */
-	ENSURE
+	CREATE
     }
 }

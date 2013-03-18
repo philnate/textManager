@@ -56,6 +56,7 @@ import de.flapdoodle.embed.process.runtime.Network;
 @Import({ cfgProduction.class, cfgTesting.class })
 public class cfgMongoDB {
 
+    // TODO instantiate a Entities class to avoid to have this awkward DB wiring
     public static final String PROFILE_PRODUCTION = "production";
     public static final String PROFILE_TESTING = "testing";
 

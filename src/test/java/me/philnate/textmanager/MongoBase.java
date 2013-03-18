@@ -17,6 +17,7 @@
  */
 package me.philnate.textmanager;
 
+import static me.philnate.textmanager.entities.EntityUtils.getCollectionName;
 import static org.junit.Assert.assertThat;
 
 import java.util.List;
@@ -79,7 +80,7 @@ public abstract class MongoBase {
     public DBCollection getCollection(Class<? extends Entity> clazz) {
 	// TODO lets make this unique per TestCase, so we can run tests in
 	// parallel
-	DBCollection col = db.getCollection(Entities.getCollectionName(clazz));
+	DBCollection col = db.getCollection(getCollectionName(clazz));
 	collectionPurge.add(col);
 	return col;
     }

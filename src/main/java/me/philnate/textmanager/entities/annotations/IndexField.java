@@ -33,5 +33,15 @@ public @interface IndexField {
     /**
      * Ordering of the Field (ascending=true, descending=false)
      */
-    public boolean order() default true;
+    public Ordering order() default Ordering.ASC;
+
+    /**
+     * Ordering information for Indexed field
+     * 
+     * @author philnate
+     * 
+     */
+    public static enum Ordering {
+	ASC, DESC
+    }
 }
