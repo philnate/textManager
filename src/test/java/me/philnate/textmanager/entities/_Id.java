@@ -50,7 +50,7 @@ public class _Id extends TestBase {
     @Test
     public void testIdAnnotationResolution() {
 	handler = new EntityInvocationHandler(CustomId.class);
-	Entities.instantiate(CustomId.class, handler).setMyId("test").save();
+	Entities.instantiate(CustomId.class, handler).setMyId("test");
 	assertEquals("test", handler.container.get("_id"));
     }
 
