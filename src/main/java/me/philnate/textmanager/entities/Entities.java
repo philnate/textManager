@@ -17,10 +17,15 @@
  */
 package me.philnate.textmanager.entities;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
 import java.beans.Introspector;
 import java.lang.reflect.Proxy;
 
+import me.philnate.textmanager.entities.annotations.Collection;
 import me.philnate.textmanager.entities.annotations.Id;
+
+import org.apache.commons.lang.StringUtils;
 
 /**
  * Utility Class to instantiate Entity based Interfaces, which are wrapped into
@@ -30,6 +35,10 @@ import me.philnate.textmanager.entities.annotations.Id;
  * 
  */
 public class Entities {
+
+    // Don't instantiate this
+    private Entities() {
+    }
 
     /**
      * Creates a new instance of the supplied Class with the given
@@ -62,7 +71,49 @@ public class Entities {
 	return instantiate(clazz, new EntityInvocationHandler(clazz));
     }
 
+    /**
+     * Returns the collection name of a given Entity. If there's no
+     * {@link Collection} annotation the Interface name is being used. If a
+     * {@link Collection} annotation is present the supplied name will be
+     * returned (trimmed to remove possible whitespaces around it)
+     * 
+     * @param clazz
+     *            from which the collection name shall be retrieved
+     * @return name of the entity to use for MongoDB
+     */
     public static String getCollectionName(Class<? extends Entity> clazz) {
+	Collection col = clazz.getAnnotation(Collection.class);
+	if (col != null) {
+	    // if we have a custom annotation we want to use this name instead
+	    checkArgument(StringUtils.isNotBlank(col.name()),
+		    "You must insert a collection name");
+	    return col.name().trim();
+	}
 	return Introspector.decapitalize(clazz.getSimpleName());
+    }
+
+    /**
+     * Searches classpath for all Occurences of a {@link Entity}(or only classes
+     * extending a given class) extending interfaces and creates indexes for
+     * these classes. This method is normally called on System startup to ensure
+     * that all indexes are in place
+     * 
+     * @param clazz
+     * @param type
+     */
+    public static void addIndexes(Class<? extends Entity> clazz,
+	    IndexOperationType type) {
+
+    }
+
+    public static enum IndexOperationType {
+	/**
+	 * create Indexes, fails if Index exist
+	 */
+	CREATE,
+	/**
+	 * create Indexes, doesn't fail if Index alredy exist
+	 */
+	ENSURE
     }
 }

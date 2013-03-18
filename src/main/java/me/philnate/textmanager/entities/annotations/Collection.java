@@ -15,7 +15,31 @@
  *   See the GNU General Public License for more details. You should have received a copy of the GNU
  *   General Public License along with textManager. If not, see <http://www.gnu.org/licenses/>.
  */
-package me.philnate.textmanager.entities;
+package me.philnate.textmanager.entities.annotations;
 
-public abstract class _Entities {
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+/**
+ * Information about the Collection
+ * 
+ * @author philnate
+ * 
+ */
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface Collection {
+
+    /**
+     * Name of the collection, if no annotation is given the Collection name
+     * will match the Name of the Interface
+     */
+    public String name();
+
+    /**
+     * Indexes for this Collection
+     */
+    public Index[] indexes() default {};
 }

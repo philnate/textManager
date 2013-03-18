@@ -15,7 +15,23 @@
  *   See the GNU General Public License for more details. You should have received a copy of the GNU
  *   General Public License along with textManager. If not, see <http://www.gnu.org/licenses/>.
  */
-package me.philnate.textmanager.entities;
+package me.philnate.textmanager.entities.annotations;
 
-public abstract class _Entities {
+/**
+ * Holds information about one single Field of an Index
+ * 
+ * @author philnate
+ * 
+ */
+public @interface IndexField {
+    /**
+     * name of the field for this Index, must match the actual name used for the
+     * field in mongodb (not in java)
+     */
+    public String field();
+
+    /**
+     * Ordering of the Field (ascending=true, descending=false)
+     */
+    public boolean order() default true;
 }

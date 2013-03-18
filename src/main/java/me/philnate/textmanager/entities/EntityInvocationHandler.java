@@ -40,6 +40,7 @@ import com.google.common.collect.Maps;
 import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
+import com.mongodb.DBCollection;
 
 /**
  * Handler which maps Interfaces to the underlying DBObject which is then stored
@@ -69,8 +70,6 @@ public class EntityInvocationHandler implements InvocationHandler {
 
     private boolean isVersioned = false;
 
-    private final Class<? extends Entity> clazz;
-
     /**
      * stores the name of the field which is used as Id
      */
@@ -81,10 +80,19 @@ public class EntityInvocationHandler implements InvocationHandler {
      */
     private final Map<String, String> mappings = Maps.newHashMap();
 
+    /**
+     * collection to which this class maps
+     */
+    private final DBCollection collection;
+
+    /**
+     * shared instance to the DB where data is being stored
+     */
     @Autowired
     static DB db;
 
     public EntityInvocationHandler(Class<? extends Entity> clazz) {
+	collection = db.getCollection(Entities.getCollectionName(clazz));
 	if (clazz.getAnnotation(Versioned.class) != null) {
 	    isVersioned = true;
 	}
@@ -120,7 +128,6 @@ public class EntityInvocationHandler implements InvocationHandler {
 	// set Id field per default to Id (thus annotation on setId/getId not
 	// needed
 	this.idFieldName = idFieldName.isPresent() ? idFieldName.get() : "id";
-	this.clazz = clazz;
     }
 
     @Override
@@ -160,7 +167,7 @@ public class EntityInvocationHandler implements InvocationHandler {
 		    "Get method is expected to have no arguments");
 	    return container.get(nameNoPrefix);
 	} else if (name.equals("save")) {
-	    db.getCollection(Entities.getCollectionName(clazz)).save(container);
+	    collection.save(container);
 	} else if (name.equals("toString")) {
 	    return container.toString();
 	}

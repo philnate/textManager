@@ -15,7 +15,27 @@
  *   See the GNU General Public License for more details. You should have received a copy of the GNU
  *   General Public License along with textManager. If not, see <http://www.gnu.org/licenses/>.
  */
-package me.philnate.textmanager.entities;
+package me.philnate.textmanager.entities.annotations;
 
-public abstract class _Entities {
+/**
+ * Represents a Index, constructed out of multiple IndexFields
+ * 
+ * @author philnate
+ * 
+ */
+public @interface Index {
+    /**
+     * contains a list of all Fields making this Index
+     */
+    public IndexField[] value();
+
+    /**
+     * Is this index unique or not? Default false
+     */
+    public boolean unqiue() default false;
+
+    /**
+     * Is this a sparse Index or not? Default false
+     */
+    public boolean sparse() default false;
 }

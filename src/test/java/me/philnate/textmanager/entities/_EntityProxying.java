@@ -162,6 +162,8 @@ public class _EntityProxying extends MongoBase {
 	}
     }
 
+    // TODO move those tests into custom Class for testing read/write (keeping
+    // this free from MongoBase
     @Test
     public void testSaveEntity() {
 	DBCollection col = getCollection(Valid.class);
