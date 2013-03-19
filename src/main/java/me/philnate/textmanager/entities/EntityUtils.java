@@ -94,13 +94,9 @@ public class EntityUtils {
      */
     public static String getCollectionName(Class<? extends Entity> clazz) {
 	Collection col = clazz.getAnnotation(Collection.class);
-	if (col != null) {
-	    // if we have a custom annotation we want to use this name instead
-	    checkArgument(StringUtils.isNotBlank(col.name()),
-		    "You must insert a collection name");
-	    return col.name().trim();
-	}
-	return Introspector.decapitalize(clazz.getSimpleName());
+	// if we have a custom annotation we want to use this name instead
+	return (col != null && StringUtils.isNotBlank(col.name()) ? col.name()
+		.trim() : Introspector.decapitalize(clazz.getSimpleName()));
     }
 
     public static Set<String> getFields(Class<? extends Entity> clazz) {

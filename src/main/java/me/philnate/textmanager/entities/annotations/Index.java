@@ -34,8 +34,4 @@ public @interface Index {
      */
     public boolean unqiue() default false;
 
-    /**
-     * Is this a sparse Index or not? Default false
-     */
-    public boolean sparse() default false;
 }

@@ -26,7 +26,9 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 import me.philnate.textmanager.MongoBase;
 import me.philnate.textmanager.entities.annotations.Id;
+import me.philnate.textmanager.entities.annotations.Named;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -72,6 +74,26 @@ public class _Id extends MongoBase {
 	entities.instantiate(IdOnGet.class, handler).setMyId("id");
 	assertEquals("id", handler.container.get("myId"));
 	assertNull(handler.container.get("_id"));
+    }
+
+    @Test
+    @Ignore
+    public void testIdFieldAndNamedIdSet() {
+	try {
+	    entities.instantiate(ConflictingNamed.class);
+	    fail("should throw an NPE");
+	} catch (IllegalArgumentException e) {
+	    assertThat(
+		    e.getMessage(),
+		    containsString("You can not have a method annotated with Named(id) and a setId method"));
+	}
+    }
+
+    private static interface ConflictingNamed extends Entity {
+	public ConflictingNamed setId(String type);
+
+	@Named("_id")
+	public ConflictingNamed setType(String id);
     }
 
     private static interface IdOnGet extends Entity {

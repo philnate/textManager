@@ -94,8 +94,8 @@ public class Entities {
      * @param clazz
      * @param type
      */
-    public static void addIndexes(Class<? extends Entity> clazz,
-	    IndexOperationType type) {
+    public static void addIndexes(Class<? extends Entity> clazz) {
+	throw new UnsupportedOperationException();
     }
 
     /**
@@ -109,7 +109,7 @@ public class Entities {
      *            already exists
      */
     // TODO make this package private once addIndexes is filled with life
-    public void addIndex(Class<? extends Entity> clazz, IndexOperationType type) {
+    public void addIndex(Class<? extends Entity> clazz) {
 
 	Collection col = clazz.getAnnotation(Collection.class);
 	Set<String> fields = getFields(clazz);
@@ -125,29 +125,10 @@ public class Entities {
 		    index.put(field.field(), field.order() == Ordering.ASC ? 1
 			    : -1);
 		}
-		_addIndex(clazz, index, type);
+		// create index
+		db.getCollection(getCollectionName(clazz)).ensureIndex(index,
+			DBCollection.genIndexName(index), idx.unqiue());
 	    }
 	}
-    }
-
-    /**
-     * Helper method creating the performing the actual Index operation
-     */
-    private void _addIndex(Class<? extends Entity> clazz, DBObject index,
-	    IndexOperationType type) {
-	DBCollection collection = db.getCollection(getCollectionName(clazz));
-
-	switch (type) {
-	case CREATE:
-	    collection.createIndex(index);
-	    break;
-	}
-    }
-
-    public static enum IndexOperationType {
-	/**
-	 * create Indexes
-	 */
-	CREATE
     }
 }

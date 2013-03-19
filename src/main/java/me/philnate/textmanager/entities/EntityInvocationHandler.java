@@ -84,6 +84,7 @@ public class EntityInvocationHandler implements InvocationHandler {
 
     public EntityInvocationHandler(Class<? extends Entity> clazz, DB db) {
 	collection = db.getCollection(getCollectionName(clazz));
+
 	if (clazz.getAnnotation(Versioned.class) != null) {
 	    isVersioned = true;
 	}
@@ -94,9 +95,8 @@ public class EntityInvocationHandler implements InvocationHandler {
 	    if (!m.getName().startsWith("set")) {
 		continue;
 	    }
-	    mappings.put(getPropertyNameFromMethod(m, true),
-		    getPropertyNameFromMethod(m));
 	    String methodName = getPropertyNameFromMethod(m);
+	    mappings.put(getPropertyNameFromMethod(m, true), methodName);
 	    // check for Id field
 	    if (m.isAnnotationPresent(Id.class)) {
 		if (idFieldName.isPresent()

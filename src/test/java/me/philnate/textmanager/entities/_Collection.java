@@ -23,14 +23,12 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 import me.philnate.textmanager.MongoBase;
-import me.philnate.textmanager.entities.Entities.IndexOperationType;
 import me.philnate.textmanager.entities.annotations.Collection;
 import me.philnate.textmanager.entities.annotations.Index;
 import me.philnate.textmanager.entities.annotations.IndexField;
 import me.philnate.textmanager.entities.annotations.IndexField.Ordering;
 import me.philnate.textmanager.entities.annotations.Named;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -61,11 +59,12 @@ public class _Collection extends MongoBase {
     @Test
     public void testNameResolutionAnnotation() {
 	assertEquals("myCollection", getCollectionName(DifferentName.class));
+	assertEquals("indexes", getCollectionName(Indexes.class));
     }
 
     @Test
     public void testIndexCreation() {
-	entities.addIndex(Indexes.class, IndexOperationType.CREATE);
+	entities.addIndex(Indexes.class);
 	DBCollection col = db.getCollection("system.indexes");
 	assertEquals(
 		1,
@@ -73,13 +72,13 @@ public class _Collection extends MongoBase {
 			BasicDBObjectBuilder.start("name", "_id_-1_type_1")
 				.add("ns", dbName + ".indexes").get()).count());
 	// should not fail if invoked twice
-	entities.addIndex(Indexes.class, IndexOperationType.CREATE);
+	entities.addIndex(Indexes.class);
     }
 
     @Test
     public void testIndexCreationNotValidField() {
 	try {
-	    entities.addIndex(IndexNoField.class, IndexOperationType.CREATE);
+	    entities.addIndex(IndexNoField.class);
 	    fail("Should throw an exception");
 	} catch (IllegalArgumentException e) {
 	    assertThat(
@@ -89,21 +88,15 @@ public class _Collection extends MongoBase {
     }
 
     @Test
-    @Ignore
-    public void testNoNameSetButCollectionAnnotationPresent() {
-	// TODO should be possible to have Annotation just for declaring Indexes
-    }
-
-    @Test
-    @Ignore
-    public void testSparseIndex() {
-
-    }
-
-    @Test
-    @Ignore
     public void testUniqueIndex() {
-
+	entities.addIndex(IndexOptions.class);
+	DBCollection col = db.getCollection("system.indexes");
+	assertEquals(
+		1,
+		col.find(
+			BasicDBObjectBuilder.start("name", "type_1")
+				.add("ns", dbName + ".indexOptions")
+				.add("unique", true).get()).count());
     }
 
     private static interface CamelCase extends Entity {
@@ -114,7 +107,7 @@ public class _Collection extends MongoBase {
     private static interface DifferentName extends Entity {
     }
 
-    @Collection(name = "indexes", indexes = @Index({
+    @Collection(indexes = @Index({
 	    @IndexField(field = "_id", order = Ordering.DESC),
 	    @IndexField(field = "type", order = Ordering.ASC) }))
     private static interface Indexes extends Entity {
@@ -124,7 +117,12 @@ public class _Collection extends MongoBase {
 	public Indexes setMyType(String type);
     }
 
-    @Collection(name = "indexNoField", indexes = @Index({ @IndexField(field = "notHere") }))
+    @Collection(indexes = @Index({ @IndexField(field = "notHere") }))
     private static interface IndexNoField extends Entity {
+    }
+
+    @Collection(indexes = @Index(value = @IndexField(field = "type"), unqiue = true))
+    private static interface IndexOptions extends Entity {
+	public Indexes setType(String type);
     }
 }

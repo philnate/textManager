@@ -25,7 +25,6 @@ import static org.junit.Assert.fail;
 import me.philnate.textmanager.MongoBase;
 import me.philnate.textmanager.entities.annotations.Named;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -43,12 +42,6 @@ public class _Named extends MongoBase {
 	entities.instantiate(NamedClass.class, handler).setType("id");
 	assertEquals("id", handler.container.get("_id"));
 	assertNull(handler.container.get("type"));
-    }
-
-    @Test
-    @Ignore
-    public void testIdFieldAndNamedIdSet() {
-	// should give an exception
     }
 
     @Test

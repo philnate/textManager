@@ -34,9 +34,9 @@ public @interface Collection {
 
     /**
      * Name of the collection, if no annotation is given the Collection name
-     * will match the Name of the Interface
+     * will match the Name of the Interface.
      */
-    public String name();
+    public String name() default "";
 
     /**
      * Indexes for this Collection
