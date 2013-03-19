@@ -41,6 +41,7 @@ public class _EntityUtils extends TestBase {
     @Test
     @Ignore
     public void testParamNameFromMethod() {
+	// TODO requires powermock
 	// TODO tests retrieval of paramname
 	// TODO tets retrieval of paramname without Named
     }

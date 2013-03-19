@@ -18,6 +18,7 @@
 package me.philnate.textmanager.entities;
 
 import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.anyOf;
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -60,7 +61,8 @@ public class _Id extends MongoBase {
 	    assertThat(
 		    e.getMessage(),
 		    allOf(containsString("You can only specify one @Id annotation per Document type, but found for"),
-			    containsString("[myId,idMy]")));
+			    anyOf(containsString("[myId,idMy]"),
+				    containsString("[idMy,myId]"))));
 	}
     }
 
