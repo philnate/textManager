@@ -26,7 +26,6 @@ import me.philnate.textmanager.MongoBase;
 import me.philnate.textmanager.entities.annotations.Id;
 import me.philnate.textmanager.entities.annotations.Named;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -73,7 +72,6 @@ public class _Id extends MongoBase {
     }
 
     @Test
-    @Ignore
     public void testIdFieldAndNamedIdSet() {
 	try {
 	    entities.instantiate(ConflictingNamed.class);
@@ -81,7 +79,7 @@ public class _Id extends MongoBase {
 	} catch (IllegalArgumentException e) {
 	    assertThat(
 		    e.getMessage(),
-		    containsString("You can not have a method annotated with Named(id) and a setId method"));
+		    containsString("You cannot have multiple properties named '_id'"));
 	}
     }
 
