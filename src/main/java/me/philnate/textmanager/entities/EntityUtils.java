@@ -25,6 +25,7 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 import me.philnate.textmanager.entities.annotations.Collection;
+import me.philnate.textmanager.entities.annotations.Id;
 import me.philnate.textmanager.entities.annotations.Named;
 
 import org.apache.commons.lang.StringUtils;
@@ -67,6 +68,10 @@ public class EntityUtils {
      * @return property name matching this method
      */
     public static String getPropertyNameFromMethod(Method m, boolean ignoreNamed) {
+	if (!ignoreNamed && m.isAnnotationPresent(Id.class)) {
+	    // if there's an Id annotation we have to return _id as name
+	    return "_id";
+	}
 	// if only the method Name shall be used for lookup ignore @Named
 	Named named = ignoreNamed ? null : m.getAnnotation(Named.class);
 	if (named != null) {
@@ -101,11 +106,14 @@ public class EntityUtils {
     public static Set<String> getFields(Class<? extends Entity> clazz) {
 	Set<String> fields = Sets.newHashSet();
 	for (Method m : clazz.getMethods()) {
-	    // if (!m.getName().startsWith("set")) {
 	    if (!Pattern.matches("^set.+$", m.getName())) {
 		continue;
 	    }
-	    fields.add(getPropertyNameFromMethod(m));
+	    checkArgument(
+		    fields.add(getPropertyNameFromMethod(m)),
+		    String.format(
+			    "You cannot have multiple properties named '%s'. Please check your set method names and @Named annotations.",
+			    getPropertyNameFromMethod(m)));
 	}
 	return fields;
     }

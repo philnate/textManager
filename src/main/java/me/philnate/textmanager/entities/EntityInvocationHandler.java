@@ -34,7 +34,6 @@ import me.philnate.textmanager.entities.annotations.Versioned;
 
 import com.google.common.base.Objects;
 import com.google.common.base.Optional;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
@@ -97,7 +96,7 @@ public class EntityInvocationHandler implements InvocationHandler {
 	}
 	// detect if we have some explicitly named Id field (different from Id)
 	Optional<String> idFieldName = Optional.absent();
-	for (Method m : Lists.newArrayList(clazz.getMethods())) {
+	for (Method m : clazz.getMethods()) {
 	    // only check for annotations on set (eases life)
 	    if (!m.getName().startsWith("set")) {
 		continue;
@@ -106,13 +105,6 @@ public class EntityInvocationHandler implements InvocationHandler {
 	    mappings.put(getPropertyNameFromMethod(m, true), methodName);
 	    // check for Id field
 	    if (m.isAnnotationPresent(Id.class)) {
-		if (idFieldName.isPresent()
-			&& !idFieldName.get().equals(methodName)) {
-		    throw new IllegalArgumentException(
-			    format("You can only specify one @Id annotation per Document type, but found for '%s' [%s,%s]",
-				    clazz.getName(), idFieldName.get(),
-				    methodName));
-		}
 		idFieldName = Optional.of(methodName);
 	    }
 	}

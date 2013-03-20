@@ -25,6 +25,7 @@ import static org.junit.Assert.fail;
 import me.philnate.textmanager.MongoBase;
 import me.philnate.textmanager.entities.annotations.Named;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -35,6 +36,13 @@ import org.junit.Test;
  */
 public class _Named extends MongoBase {
     private EntityInvocationHandler handler;
+
+    @Test
+    @Ignore
+    public void testMultipleEqualNamedFail() {
+	// test that it's not possible to have multiple methods matching the
+	// same name
+    }
 
     @Test
     public void testNamedReplacesMethodname() {

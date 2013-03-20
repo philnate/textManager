@@ -32,9 +32,10 @@ public class _EntityUtils extends TestBase {
     @Test
     public void testFieldReading() {
 	Set<String> fields = EntityUtils.getFields(Fields.class);
-	assertEquals(2, fields.size());
+	assertEquals(3, fields.size());
 	assertTrue("missing field 'field'", fields.contains("field"));
 	assertTrue("missing field 'value'", fields.contains("value"));
+	assertTrue("mssing field '_id'", fields.contains("_id"));
     }
 
     @Test
@@ -64,5 +65,7 @@ public class _EntityUtils extends TestBase {
 
 	@Named("value")
 	public Fields setVal(String value);
+
+	public Fields setId(String id);
     }
 }

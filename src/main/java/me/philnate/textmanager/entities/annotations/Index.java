@@ -34,4 +34,5 @@ public @interface Index {
      */
     public boolean unqiue() default false;
 
+    // TODO add indexName option
 }

@@ -17,8 +17,6 @@
  */
 package me.philnate.textmanager.entities;
 
-import static org.hamcrest.Matchers.allOf;
-import static org.hamcrest.Matchers.anyOf;
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -60,11 +58,9 @@ public class _Id extends MongoBase {
 	    newHandler(MultiIdInValid.class);
 	    fail("should throw an IAE exception");
 	} catch (IllegalArgumentException e) {
-	    assertThat(
-		    e.getMessage(),
-		    allOf(containsString("You can only specify one @Id annotation per Document type, but found for"),
-			    anyOf(containsString("[myId,idMy]"),
-				    containsString("[idMy,myId]"))));
+	    assertEquals(
+		    "You cannot have multiple properties named '_id'. Please check your set method names and @Named annotations.",
+		    e.getMessage());
 	}
     }
 

@@ -39,7 +39,7 @@ public @interface Collection {
     public String name() default "";
 
     /**
-     * Indexes for this Collection
+     * Index definitions for this Collection
      */
     public Index[] indexes() default {};
 }
