@@ -29,6 +29,7 @@ import java.util.Map;
 import java.util.Set;
 
 import me.philnate.textmanager.entities.annotations.Id;
+import me.philnate.textmanager.entities.annotations.Named;
 import me.philnate.textmanager.entities.annotations.Versioned;
 
 import com.google.common.base.Objects;
@@ -162,20 +163,35 @@ public class EntityInvocationHandler implements InvocationHandler {
 	return null;
     }
 
-    private void set(String name, Object value) {
+    /**
+     * sets the value for the given property, will fail with
+     * IllegalArgumentException if the property isn't declared either through
+     * set method or {@link Named} annotation on set method. If this entity is
+     * versioned and it's the first change to it after write, a copy for history
+     * will be created
+     * 
+     * @param property
+     *            name of the property to set
+     * @param value
+     *            of the property to set
+     * @throws IllegalArgumentException
+     *             if the property tried to be set isn't declared for that
+     *             entity
+     */
+    private void set(String property, Object value) {
 	checkArgument(
-		fields.contains(name),
+		fields.contains(property),
 		format("You can only save properties which have setter methods. Property '%s' has no matching 'set%s' method.",
-			name, EntityUtils.capitalize(name)));
+			property, EntityUtils.capitalize(property)));
 	// only make any changes if the new value is different from the old
 	// one
-	if (!value.equals(container.get(name))) {
+	if (!value.equals(container.get(property))) {
 	    // copy the old version of document only if it's not new (empty)
 	    if (isVersioned && !container.isEmpty() && !hasChanged) {
 		oldVersions.add(container.copy());
 	    }
 	    hasChanged = true;
-	    container.put(name, value);
+	    container.put(property, value);
 	}
     }
 }

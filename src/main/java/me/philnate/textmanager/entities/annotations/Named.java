@@ -31,5 +31,10 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 public @interface Named {
+    /**
+     * name of the property in mongodb
+     * 
+     * @return
+     */
     public String value();
 }

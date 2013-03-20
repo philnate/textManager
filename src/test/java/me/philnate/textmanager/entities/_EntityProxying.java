@@ -176,8 +176,6 @@ public class _EntityProxying extends MongoBase {
 	// TODO extend to read saved entry back
     }
 
-    // TODO add Tests/functionality to set/get Value arbitrary
-
     @Test
     public void testSaveVersionedEntity() {
 	DBCollection col = getCollection(Valid.class);

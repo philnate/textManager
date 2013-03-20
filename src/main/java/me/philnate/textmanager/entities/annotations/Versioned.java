@@ -30,6 +30,8 @@ import java.lang.annotation.Target;
  * @author philnate
  * 
  */
+// TODO maybe switch to VersionedEntity which allows to offer additional methods
+// like, get Property in version x.
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited

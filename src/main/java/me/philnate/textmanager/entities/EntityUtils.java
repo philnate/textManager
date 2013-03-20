@@ -38,8 +38,7 @@ import com.google.common.collect.Sets;
  * 
  */
 public class EntityUtils {
-    // TODO check how StringUtils.decapitalize works/has a equivalent
-    /* no need for an Instance */
+
     private EntityUtils() {
     }
 
@@ -111,6 +110,15 @@ public class EntityUtils {
 	return fields;
     }
 
+    /**
+     * decapitalizes a String. E.g. CamelCase will become camelCase while URL
+     * will stay URL, but URLe becomes uRLe.
+     * 
+     * @param name
+     *            string to decapitalize. For invertion see
+     *            {@link EntityUtils#capitalize(String)}
+     * @return decapitalized string
+     */
     static String decapitalize(String name) {
 	if (!StringUtils.isAllUpperCase(name)) {
 	    return StringUtils.uncapitalize(name);
@@ -119,6 +127,15 @@ public class EntityUtils {
 	}
     }
 
+    /**
+     * Capitalizes a String. I.e. the first Letter will be converted into
+     * uppercase, all other letters will stay as is. For invertion see
+     * {@link EntityUtils#decapitalize(String)}
+     * 
+     * @param name
+     *            string to capitalize.
+     * @return capitalized string
+     */
     static String capitalize(String name) {
 	return StringUtils.capitalize(name);
     }

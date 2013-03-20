@@ -17,6 +17,7 @@
  */
 package me.philnate.textmanager.entities;
 
+import me.philnate.textmanager.entities.annotations.Named;
 import me.philnate.textmanager.entities.annotations.Versioned;
 
 /**
@@ -34,7 +35,29 @@ public interface Entity {
      */
     public void save();
 
-    public Object get(String name);
+    /**
+     * allows to programatically read a given value from an entity. Will fail if
+     * the given property isn't declared through a method name /{@link Named}.
+     * 
+     * @param property
+     *            name to retrive
+     * @return value of the property or null if the value isn't present.
+     * @throws IllegalArgumentException
+     *             if the property isn't declared for that entity
+     */
+    public Object get(String property);
 
-    public void set(String name, Object value);
+    /**
+     * allows to programmatically set a given property for an entity. Will fail
+     * if the property isn't declared either through an explicit set method or
+     * {@link Named} annotation on a set method
+     * 
+     * @param property
+     *            name to write to
+     * @param value
+     *            to write
+     * @throws IllegalArgumentException
+     *             if the property isn't declared for that entity
+     */
+    public void set(String property, Object value);
 }
