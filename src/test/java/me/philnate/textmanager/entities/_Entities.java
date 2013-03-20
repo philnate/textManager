@@ -46,12 +46,38 @@ public class _Entities extends MongoBase {
 	} catch (IllegalArgumentException e) {
 	    assertThat(
 		    e.getMessage(),
-		    containsString("You can only save properties which have setter methods. Property 'typ' has no matching 'setTyp' method."));
+		    containsString("You can only access properties which have been declared through a setter methods. Given Property 'typ', has no matching 'setTyp' method."));
 	}
 	assertEquals(0, handler.container.size());
     }
 
+    @Test
+    public void testReadUnknownProperty() {
+	try {
+	    entities.instantiate(TestProps.class).get("typ");
+	    fail("should throw an NPE");
+	} catch (IllegalArgumentException e) {
+	    assertThat(
+		    e.getMessage(),
+		    containsString("You can only access properties which have been declared through a setter methods. Given Property 'typ', has no matching 'setTyp' method."));
+	}
+    }
+
+    @Test
+    public void testReadSaveProperty() {
+	// test various combinations of get/set methods userdefined/entity
+	// defined
+	TestProps entity = entities.instantiate(TestProps.class);
+	entity.set("type", "me");
+	assertEquals("me", entity.get("type"));
+	assertEquals("em", entity.setType("em").get("type"));
+	entity.set("type", "me");
+	assertEquals("me", entity.getType());
+    }
+
     private static interface TestProps extends Entity {
 	public TestProps setType(String type);
+
+	public String getType();
     }
 }

@@ -144,9 +144,15 @@ public class EntityInvocationHandler implements InvocationHandler {
 		return proxy;
 	    }
 	} else if (name.startsWith("get")) {
-	    checkArgument(args == null || args.length == 0,
-		    "Get method is expected to have no arguments");
-	    return container.get(nameNoPrefix);
+	    if (name.equals("get") && args.length == 1) {
+		// Entity defined get
+		return get((String) args[0]);
+	    } else {
+		// custom get Method
+		checkArgument(args == null || args.length == 0,
+			"Get method is expected to have no arguments");
+		return get(nameNoPrefix);
+	    }
 	} else if (name.equals("save")) {
 	    collection.save(container);
 	} else if (name.equals("toString")) {
@@ -171,10 +177,7 @@ public class EntityInvocationHandler implements InvocationHandler {
      *             entity
      */
     private void set(String property, Object value) {
-	checkArgument(
-		fields.contains(property),
-		format("You can only save properties which have setter methods. Property '%s' has no matching 'set%s' method.",
-			property, EntityUtils.capitalize(property)));
+	checkPropertyDeclared(property);
 	// only make any changes if the new value is different from the old
 	// one
 	if (!value.equals(container.get(property))) {
@@ -185,5 +188,17 @@ public class EntityInvocationHandler implements InvocationHandler {
 	    hasChanged = true;
 	    container.put(property, value);
 	}
+    }
+
+    private Object get(String property) {
+	checkPropertyDeclared(property);
+	return container.get(property);
+    }
+
+    private void checkPropertyDeclared(String property) {
+	checkArgument(
+		fields.contains(property),
+		format("You can only access properties which have been declared through a setter methods. Given Property '%s', has no matching 'set%s' method.",
+			property, EntityUtils.capitalize(property)));
     }
 }
