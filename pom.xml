@@ -5,7 +5,7 @@
 	<artifactId>textmanager</artifactId>
 	<packaging>war</packaging>
 	<version>2.0.0-SNAPSHOT</version>
-	<name>Spring MVC Application</name>
+	<name>TextManager app</name>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<java-version>1.7</java-version>
