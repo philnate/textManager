@@ -30,7 +30,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static uk.co.datumedge.hamcrest.json.SameJSONAs.sameJSONAs;
 import me.philnate.textmanager.MongoBase;
-import me.philnate.textmanager.entities.annotations.Versioned;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -199,8 +198,7 @@ public class _EntityProxying extends MongoBase {
 	public String getParam(String arg);
     }
 
-    @Versioned
-    private static interface VersionedValid extends Entity {
+    private static interface VersionedValid extends VersionedEntity {
 	public VersionedValid setType(String param);
     }
 

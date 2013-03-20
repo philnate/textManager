@@ -15,25 +15,16 @@
  *   See the GNU General Public License for more details. You should have received a copy of the GNU
  *   General Public License along with textManager. If not, see <http://www.gnu.org/licenses/>.
  */
-package me.philnate.textmanager.entities.annotations;
+package me.philnate.textmanager.entities;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Inherited;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
 
 /**
- * Simple Marker Annotation to show that the given record is versioned and needs
- * to keep old versions separated
+ * Basic Interface for documents containing common functionality for all
+ * records, this type of entity keeps a history of previously saved states.
  * 
  * @author philnate
- * 
+ * @see Entity
  */
-// TODO maybe switch to VersionedEntity which allows to offer additional methods
-// like, get Property in version x.
-@Target(ElementType.TYPE)
-@Retention(RetentionPolicy.RUNTIME)
-@Inherited
-public @interface Versioned {
+public interface VersionedEntity extends Entity {
+
 }

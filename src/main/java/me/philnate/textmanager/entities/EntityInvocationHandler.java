@@ -30,7 +30,6 @@ import java.util.Set;
 
 import me.philnate.textmanager.entities.annotations.Id;
 import me.philnate.textmanager.entities.annotations.Named;
-import me.philnate.textmanager.entities.annotations.Versioned;
 
 import com.google.common.base.Objects;
 import com.google.common.base.Optional;
@@ -91,7 +90,7 @@ public class EntityInvocationHandler implements InvocationHandler {
 	collection = db.getCollection(getCollectionName(clazz));
 	fields = EntityUtils.getFields(clazz);
 
-	if (clazz.getAnnotation(Versioned.class) != null) {
+	if (VersionedEntity.class.isAssignableFrom(clazz)) {
 	    isVersioned = true;
 	}
 	// detect if we have some explicitly named Id field (different from Id)

@@ -18,13 +18,12 @@
 package me.philnate.textmanager.entities;
 
 import me.philnate.textmanager.entities.annotations.Named;
-import me.philnate.textmanager.entities.annotations.Versioned;
 
 /**
  * Basic Interface for documents containing common functionality for all
- * records. If the Document needs to be versioned one must add the Annotation
- * {@link Versioned}. If there's a a setter/Getter method called setId/getId
- * will be used as Id for this document.
+ * records. If the Document needs to be versioned one must use
+ * {@link VersionedEntity}. If there's a a setter/Getter method called
+ * setId/getId will be used as Id for this document.
  * 
  * @author philnate
  * 
