@@ -72,6 +72,7 @@ public class _EntityProxying extends MongoBase {
 	Valid obj = entities.instantiate(Valid.class, handler).setType("me");
 	assertNotNull(obj);
 	verify(spy, times(1)).put("type", "me");
+	assertEquals(1, handler.container.size());
     }
 
     @Test

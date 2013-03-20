@@ -25,7 +25,6 @@ import java.util.Set;
 import me.philnate.textmanager.TestBase;
 import me.philnate.textmanager.entities.annotations.Named;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class _EntityUtils extends TestBase {
@@ -39,11 +38,25 @@ public class _EntityUtils extends TestBase {
     }
 
     @Test
-    @Ignore
-    public void testParamNameFromMethod() {
-	// TODO requires powermock
-	// TODO tests retrieval of paramname
-	// TODO tets retrieval of paramname without Named
+    public void testParamNameFromMethod() throws NoSuchMethodException,
+	    SecurityException {
+	// once just from method name
+	assertEquals("field",
+		EntityUtils.getPropertyNameFromMethod(Fields.class.getMethod(
+			"setField", String.class)));
+	// once with @Named attribute present
+	assertEquals("value",
+		EntityUtils.getPropertyNameFromMethod(Fields.class.getMethod(
+			"setVal", String.class)));
+    }
+
+    @Test
+    public void testCapitalizationStringUtils() {
+	assertEquals("camelCase", EntityUtils.decapitalize("CamelCase"));
+	assertEquals("URL", EntityUtils.decapitalize("URL"));
+
+	assertEquals("CamelCase", EntityUtils.capitalize("camelCase"));
+	assertEquals("URL", EntityUtils.capitalize("URL"));
     }
 
     private static interface Fields extends Entity {

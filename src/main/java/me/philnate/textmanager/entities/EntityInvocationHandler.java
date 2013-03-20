@@ -26,6 +26,7 @@ import static me.philnate.textmanager.entities.EntityUtils.getPropertyNameFromMe
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.Map;
+import java.util.Set;
 
 import me.philnate.textmanager.entities.annotations.Id;
 import me.philnate.textmanager.entities.annotations.Versioned;
@@ -68,6 +69,10 @@ public class EntityInvocationHandler implements InvocationHandler {
     private boolean isVersioned = false;
 
     /**
+     * Stores all fields this entity contains
+     */
+    private final Set<String> fields;
+    /**
      * stores the name of the field which is used as Id
      */
     private final String idFieldName;
@@ -84,6 +89,7 @@ public class EntityInvocationHandler implements InvocationHandler {
 
     public EntityInvocationHandler(Class<? extends Entity> clazz, DB db) {
 	collection = db.getCollection(getCollectionName(clazz));
+	fields = EntityUtils.getFields(clazz);
 
 	if (clazz.getAnnotation(Versioned.class) != null) {
 	    isVersioned = true;
@@ -129,18 +135,16 @@ public class EntityInvocationHandler implements InvocationHandler {
 	    nameNoPrefix = "_id";
 	}
 	if (name.startsWith("set")) {
-	    checkNotNull(args, "Set method without any argument isn't valid");
-	    checkArgument(args.length == 1,
-		    "Set method is expected to only hold one argument");
-	    // only make any changes if the new value is different from the old
-	    // one
-	    if (!args[0].equals(container.get(nameNoPrefix))) {
-		// copy the old version of document only if it's not new (empty)
-		if (isVersioned && !container.isEmpty() && !hasChanged) {
-		    oldVersions.add(container.copy());
-		}
-		hasChanged = true;
-		container.put(nameNoPrefix, args[0]);
+	    if (name.equals("set") && args.length == 2) {
+		// entity defined set
+		set((String) args[0], args[1]);
+	    } else {
+		// custom setter methods
+		checkNotNull(args,
+			"Set method without any argument isn't valid");
+		checkArgument(args.length == 1,
+			"Set method is expected to only hold one argument");
+		set(nameNoPrefix, args[0]);
 	    }
 	    // if method has Class as return type return the proxy
 	    if (method.getReturnType().isInstance(proxy)) {
@@ -156,5 +160,22 @@ public class EntityInvocationHandler implements InvocationHandler {
 	    return container.toString();
 	}
 	return null;
+    }
+
+    private void set(String name, Object value) {
+	checkArgument(
+		fields.contains(name),
+		format("You can only save properties which have setter methods. Property '%s' has no matching 'set%s' method.",
+			name, EntityUtils.capitalize(name)));
+	// only make any changes if the new value is different from the old
+	// one
+	if (!value.equals(container.get(name))) {
+	    // copy the old version of document only if it's not new (empty)
+	    if (isVersioned && !container.isEmpty() && !hasChanged) {
+		oldVersions.add(container.copy());
+	    }
+	    hasChanged = true;
+	    container.put(name, value);
+	}
     }
 }

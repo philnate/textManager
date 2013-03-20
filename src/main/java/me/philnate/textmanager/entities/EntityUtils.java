@@ -20,9 +20,9 @@ package me.philnate.textmanager.entities;
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
 
-import java.beans.Introspector;
 import java.lang.reflect.Method;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import me.philnate.textmanager.entities.annotations.Collection;
 import me.philnate.textmanager.entities.annotations.Named;
@@ -38,7 +38,7 @@ import com.google.common.collect.Sets;
  * 
  */
 public class EntityUtils {
-
+    // TODO check how StringUtils.decapitalize works/has a equivalent
     /* no need for an Instance */
     private EntityUtils() {
     }
@@ -77,7 +77,7 @@ public class EntityUtils {
 		    format("Name of field must be not empty or null. On method '%s'",
 			    m.getName()));
 	}
-	String field = Introspector.decapitalize(named != null ? named.value()
+	String field = EntityUtils.decapitalize(named != null ? named.value()
 		: m.getName().substring(3));
 	return "id".equals(field) ? "_id" : field;
     }
@@ -96,17 +96,30 @@ public class EntityUtils {
 	Collection col = clazz.getAnnotation(Collection.class);
 	// if we have a custom annotation we want to use this name instead
 	return (col != null && StringUtils.isNotBlank(col.name()) ? col.name()
-		.trim() : Introspector.decapitalize(clazz.getSimpleName()));
+		.trim() : EntityUtils.decapitalize(clazz.getSimpleName()));
     }
 
     public static Set<String> getFields(Class<? extends Entity> clazz) {
 	Set<String> fields = Sets.newHashSet();
 	for (Method m : clazz.getMethods()) {
-	    if (!m.getName().startsWith("set")) {
+	    // if (!m.getName().startsWith("set")) {
+	    if (!Pattern.matches("^set.+$", m.getName())) {
 		continue;
 	    }
 	    fields.add(getPropertyNameFromMethod(m));
 	}
 	return fields;
+    }
+
+    static String decapitalize(String name) {
+	if (!StringUtils.isAllUpperCase(name)) {
+	    return StringUtils.uncapitalize(name);
+	} else {
+	    return name;
+	}
+    }
+
+    static String capitalize(String name) {
+	return StringUtils.capitalize(name);
     }
 }

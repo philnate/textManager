@@ -16,6 +16,7 @@
 		<org.slf4j-version>1.7.4</org.slf4j-version>
 		<ch.qos.logback-version>1.0.10</ch.qos.logback-version>
 		<org.apache.tiles-version>3.0.1</org.apache.tiles-version>
+		<!-- <powermock.version>1.5</powermock.version> -->
 		<guava.version>14.0.1</guava.version>
 		<embedMongo.version>1.28</embedMongo.version>
 	</properties>
@@ -187,6 +188,31 @@
 			<version>1.9.5</version>
 			<scope>test</scope>
 		</dependency>
+		<!-- PowerMock dependencies -->
+	<!-- 	<dependency>
+			<groupId>org.powermock</groupId>
+			<artifactId>powermock-module-junit4</artifactId>
+			<version>${powermock.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.powermock</groupId>
+			<artifactId>powermock-api-mockito</artifactId>
+			<version>${powermock.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.powermock</groupId>
+			<artifactId>powermock-module-junit4-rule</artifactId>
+			<version>${powermock.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.powermock</groupId>
+			<artifactId>powermock-classloading-xstream</artifactId>
+			<version>${powermock.version}</version>
+			<scope>test</scope>
+		</dependency> -->
 		<dependency>
 			<groupId>org.hamcrest</groupId>
 			<artifactId>hamcrest-library</artifactId>

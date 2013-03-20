@@ -17,5 +17,41 @@
  */
 package me.philnate.textmanager.entities;
 
-public abstract class _Entities {
+import static org.hamcrest.Matchers.containsString;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
+import me.philnate.textmanager.MongoBase;
+
+import org.junit.Test;
+
+public class _Entities extends MongoBase {
+
+    private EntityInvocationHandler handler;
+
+    @Test
+    public void testSaveMethod() {
+	handler = newHandler(TestProps.class);
+	entities.instantiate(TestProps.class, handler).set("type", "me");
+	assertEquals(1, handler.container.size());
+	assertEquals("me", handler.container.get("type"));
+    }
+
+    @Test
+    public void testSaveUnknownProperty() {
+	handler = newHandler(TestProps.class);
+	try {
+	    entities.instantiate(TestProps.class, handler).set("typ", "me");
+	    fail("should throw an NPE");
+	} catch (IllegalArgumentException e) {
+	    assertThat(
+		    e.getMessage(),
+		    containsString("You can only save properties which have setter methods. Property 'typ' has no matching 'setTyp' method."));
+	}
+	assertEquals(0, handler.container.size());
+    }
+
+    private static interface TestProps extends Entity {
+	public TestProps setType(String type);
+    }
 }

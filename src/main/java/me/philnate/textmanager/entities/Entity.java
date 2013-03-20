@@ -29,5 +29,12 @@ import me.philnate.textmanager.entities.annotations.Versioned;
  * 
  */
 public interface Entity {
+    /**
+     * Saves the entity to MongoDB
+     */
     public void save();
+
+    public Object get(String name);
+
+    public void set(String name, Object value);
 }
