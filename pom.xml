@@ -11,12 +11,13 @@
 		<java-version>1.7</java-version>
 		<jetty.version>9.0.0.v20130308</jetty.version>
 		<jetty.jsp.version>9.0.0.v20130308</jetty.jsp.version>
-		<org.springframework-version>3.2.0.RELEASE</org.springframework-version>
-		<org.springframework.security-version>3.1.3.RELEASE</org.springframework.security-version>
-		<org.aspectj-version>1.7.0</org.aspectj-version>
-		<org.slf4j-version>1.7.2</org.slf4j-version>
-		<ch.qos.logback-version>1.0.7</ch.qos.logback-version>
+		<org.springframework-version>3.2.2.RELEASE</org.springframework-version>
+		<org.aspectj-version>1.7.2</org.aspectj-version>
+		<org.slf4j-version>1.7.4</org.slf4j-version>
+		<ch.qos.logback-version>1.0.10</ch.qos.logback-version>
 		<org.apache.tiles-version>3.0.1</org.apache.tiles-version>
+		<guava.version>14.0.1</guava.version>
+		<embedMongo.version>1.28</embedMongo.version>
 	</properties>
 	<repositories>
 		<repository>
@@ -40,7 +41,7 @@
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
-			<version>13.0.1</version>
+			<version>${guava.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-lang</groupId>
@@ -163,11 +164,11 @@
 			<version>1.2</version>
 		</dependency>
 		<!-- JSON -->
-		<dependency>
+<!-- 		<dependency>
 			<groupId>org.codehaus.jackson</groupId>
 			<artifactId>jackson-mapper-asl</artifactId>
 			<version>1.9.9</version>
-		</dependency>
+		</dependency> -->
 		<!-- Test -->
 		<dependency>
 			<groupId>uk.co.datumedge</groupId>
@@ -177,13 +178,13 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.8.2</version>
+			<version>4.11</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-all</artifactId>
-			<version>1.9.0</version>
+			<version>1.9.5</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -201,7 +202,7 @@
 		<dependency>
 			<groupId>de.flapdoodle.embed</groupId>
 			<artifactId>de.flapdoodle.embed.mongo</artifactId>
-			<version>1.28</version>
+			<version>${embedMongo.version}</version>
 		</dependency>
 	</dependencies>
 	<build>
