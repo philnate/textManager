@@ -21,7 +21,7 @@ import java.io.IOException;
 import java.net.UnknownHostException;
 import java.util.UUID;
 
-import me.philnate.textmanager.entities.Entities;
+import me.philnate.cherimongo.db.entities.Entities;
 import me.philnate.textmanager.web.config.cfgMongoDB.cfgProduction;
 import me.philnate.textmanager.web.config.cfgMongoDB.cfgTesting;
 
@@ -39,7 +39,6 @@ import de.flapdoodle.embed.mongo.MongodStarter;
 import de.flapdoodle.embed.mongo.config.AbstractMongoConfig.Net;
 import de.flapdoodle.embed.mongo.config.AbstractMongoConfig.Storage;
 import de.flapdoodle.embed.mongo.config.AbstractMongoConfig.Timeout;
-import de.flapdoodle.embed.mongo.config.DownloadConfig;
 import de.flapdoodle.embed.mongo.config.MongodConfig;
 import de.flapdoodle.embed.mongo.config.RuntimeConfig;
 import de.flapdoodle.embed.mongo.distribution.Version;
@@ -124,16 +123,11 @@ public class cfgMongoDB {
 
     @Bean
     public RuntimeConfig runtimeConfig() {
+	FixedPath store = new FixedPath("./bin/");
 	RuntimeConfig runtimeConfig = new RuntimeConfig();
-	runtimeConfig.setTempDirFactory(new FixedPath("./bin/"));
+	runtimeConfig.setTempDirFactory(store);
+	runtimeConfig.getDownloadConfig().setArtifactStorePathNaming(store);
 	return runtimeConfig;
-    }
-
-    @Bean
-    public DownloadConfig downloadConfig() {
-	DownloadConfig dconfig = runtimeConfig().getDownloadConfig();
-	dconfig.setArtifactStorePathNaming(new FixedPath("./bin/"));
-	return dconfig;
     }
 
     @Bean

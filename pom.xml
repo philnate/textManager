@@ -230,6 +230,11 @@
 			<artifactId>de.flapdoodle.embed.mongo</artifactId>
 			<version>${embedMongo.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>me.philnate</groupId>
+			<artifactId>cherimongo-db</artifactId>
+			<version>1.0.0-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>
