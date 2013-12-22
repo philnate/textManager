@@ -15,28 +15,25 @@
  *   See the GNU General Public License for more details. You should have received a copy of the GNU
  *   General Public License along with textManager. If not, see <http://www.gnu.org/licenses/>.
  */
-package me.philnate.textmanager.web.config;
+package me.philnate.textmanager.web.config.profiles;
 
-import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
+import java.io.File;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 
-import me.philnate.textmanager.web.config.datastore.cfgMongo;
-import me.philnate.textmanager.web.config.profiles.cfgProduction;
-import me.philnate.textmanager.web.config.profiles.cfgTesting;
+import static me.philnate.textmanager.web.config.RootConfig.PROFILE_PRODUCTION;
 
-@Configuration
-@Import({ cfgProduction.class, cfgTesting.class, cfgMongo.class, cfgController.class })
-public class RootConfig {
-
-	public static final String PROFILE_PRODUCTION = "production";
-	public static final String PROFILE_TESTING = "testing";
+@Configuration(PROFILE_PRODUCTION)
+public class cfgProduction {
 
 	@Bean
-	public static PropertyPlaceholderConfigurer propertyPlaceholderConfigurer() {
-		PropertyPlaceholderConfigurer ppc = new PropertyPlaceholderConfigurer();
-		return ppc;
+	public String mongoDBName() {
+		return "textManager";
 	}
 
+	@Bean
+	public File storagePath() {
+		return new File("./data");
+	}
 }

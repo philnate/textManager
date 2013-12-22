@@ -32,43 +32,40 @@ import org.springframework.web.context.support.AnnotationConfigWebApplicationCon
 import org.springframework.web.filter.CharacterEncodingFilter;
 import org.springframework.web.servlet.DispatcherServlet;
 
+import static me.philnate.textmanager.web.config.RootConfig.PROFILE_TESTING;
+
 public class WebAppInitializer implements WebApplicationInitializer {
 
-    @Override
-    public void onStartup(ServletContext servletContext)
-	    throws ServletException {
+	@Override
+	public void onStartup(ServletContext servletContext) throws ServletException {
 
-	// set the Production profile to be active
-	System.setProperty("spring.profiles.active",
-		cfgMongoDB.PROFILE_PRODUCTION);
-	AnnotationConfigWebApplicationContext context = new AnnotationConfigWebApplicationContext();
-	context.setConfigLocation("me.philnate.textmanager.web.config");
+		// set the Production profile to be active
+		System.setProperty("spring.profiles.default", PROFILE_TESTING);
+		AnnotationConfigWebApplicationContext context = new AnnotationConfigWebApplicationContext();
 
-	FilterRegistration.Dynamic characterEncodingFilter = servletContext
-		.addFilter("characterEncodingFilter",
-			new CharacterEncodingFilter());
-	characterEncodingFilter.addMappingForUrlPatterns(
-		EnumSet.allOf(DispatcherType.class), true, "/*");
-	characterEncodingFilter.setInitParameter("encoding", "UTF-8");
-	characterEncodingFilter.setInitParameter("forceEncoding", "true");
+		context.setConfigLocation(getClass().getPackage().toString());
 
-	servletContext.addListener(new ContextLoaderListener(context));
-	servletContext.setInitParameter("defaultHtmlEscape", "true");
+		FilterRegistration.Dynamic characterEncodingFilter = servletContext.addFilter("characterEncodingFilter",
+				new CharacterEncodingFilter());
+		characterEncodingFilter.addMappingForUrlPatterns(EnumSet.allOf(DispatcherType.class), true, "/*");
+		characterEncodingFilter.setInitParameter("encoding", "UTF-8");
+		characterEncodingFilter.setInitParameter("forceEncoding", "true");
 
-	DispatcherServlet servlet = new DispatcherServlet();
-	// no explicit configuration reference here: everything is configured in
-	// the root container for simplicity
-	servlet.setContextConfigLocation("");
+		servletContext.addListener(new ContextLoaderListener(context));
+		servletContext.setInitParameter("defaultHtmlEscape", "true");
 
-	ServletRegistration.Dynamic appServlet = servletContext.addServlet(
-		"appServlet", servlet);
-	appServlet.setLoadOnStartup(1);
-	appServlet.setAsyncSupported(true);
+		DispatcherServlet servlet = new DispatcherServlet();
+		// no explicit configuration reference here: everything is configured in
+		// the root container for simplicity
+		servlet.setContextConfigLocation("");
 
-	Set<String> mappingConflicts = appServlet.addMapping("/");
-	if (!mappingConflicts.isEmpty()) {
-	    throw new IllegalStateException(
-		    "'appServlet' cannot be mapped to '/' under Tomcat versions <= 7.0.14");
+		ServletRegistration.Dynamic appServlet = servletContext.addServlet("appServlet", servlet);
+		appServlet.setLoadOnStartup(1);
+		appServlet.setAsyncSupported(true);
+
+		Set<String> mappingConflicts = appServlet.addMapping("/");
+		if (!mappingConflicts.isEmpty()) {
+			throw new IllegalStateException("'appServlet' cannot be mapped to '/' under Tomcat versions <= 7.0.14");
+		}
 	}
-    }
 }

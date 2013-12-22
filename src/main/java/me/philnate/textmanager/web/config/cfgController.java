@@ -17,26 +17,29 @@
  */
 package me.philnate.textmanager.web.config;
 
-import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 
-import me.philnate.textmanager.web.config.datastore.cfgMongo;
-import me.philnate.textmanager.web.config.profiles.cfgProduction;
-import me.philnate.textmanager.web.config.profiles.cfgTesting;
+import com.github.cherimojava.data.mongo.entity.EntityFactory;
 
-@Configuration
-@Import({ cfgProduction.class, cfgTesting.class, cfgMongo.class, cfgController.class })
-public class RootConfig {
+import me.philnate.textmanager.web.controller.HomeController;
+import me.philnate.textmanager.web.entities.Setting;
+import me.philnate.textmanager.web.util.EntityConverter;
 
-	public static final String PROFILE_PRODUCTION = "production";
-	public static final String PROFILE_TESTING = "testing";
+import static me.philnate.textmanager.web.config.RootConfig.PROFILE_PRODUCTION;
+
+@Configuration(PROFILE_PRODUCTION)
+public class cfgController {
 
 	@Bean
-	public static PropertyPlaceholderConfigurer propertyPlaceholderConfigurer() {
-		PropertyPlaceholderConfigurer ppc = new PropertyPlaceholderConfigurer();
-		return ppc;
+	public HomeController homeController() {
+		return new HomeController();
 	}
 
+	@Bean
+	@Autowired
+	public EntityConverter<Setting> settingConverter(EntityFactory factory) {
+		return new EntityConverter<Setting>(factory.create(Setting.class), factory);
+	}
 }

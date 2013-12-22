@@ -17,17 +17,15 @@
  */
 package me.philnate.textmanager.web.controller;
 
-import java.security.Principal;
+import org.junit.runner.RunWith;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.web.WebAppConfiguration;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import me.philnate.textmanager.web.config.RootConfig;
 
-@Controller
-public class HomeController {
-
-	@RequestMapping(value = "/", method = RequestMethod.GET)
-	public String index(Principal principal) {
-		return principal != null ? "homeSignedIn" : "homeNotSignedIn";
-	}
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes={RootConfig.class})
+@WebAppConfiguration
+public class ControllerBaseTest {
 }

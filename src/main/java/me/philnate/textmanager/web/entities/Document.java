@@ -15,19 +15,28 @@
  *   See the GNU General Public License for more details. You should have received a copy of the GNU
  *   General Public License along with textManager. If not, see <http://www.gnu.org/licenses/>.
  */
-package me.philnate.textmanager.web.controller;
+package me.philnate.textmanager.web.entities;
 
-import java.security.Principal;
+import org.bson.types.ObjectId;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import com.github.cherimojava.data.mongo.entity.Entity;
 
-@Controller
-public class HomeController {
+/**
+ * Holds the information about stored documents like title and wordcount.
+ *
+ * @author philnate
+ */
+public interface Document extends Entity<Document> {
 
-	@RequestMapping(value = "/", method = RequestMethod.GET)
-	public String index(Principal principal) {
-		return principal != null ? "homeSignedIn" : "homeNotSignedIn";
-	}
+	public Document setId(ObjectId id);
+
+	public ObjectId getId();
+
+	public Document setTitle(String title);
+
+	public String getTitle();
+
+	public Document setWordCount(Integer wc);
+
+	public Integer getWordCount();
 }

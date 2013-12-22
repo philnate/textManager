@@ -15,19 +15,21 @@
  *   See the GNU General Public License for more details. You should have received a copy of the GNU
  *   General Public License along with textManager. If not, see <http://www.gnu.org/licenses/>.
  */
-package me.philnate.textmanager.web.controller;
+package me.philnate.textmanager.web.entities;
 
-import java.security.Principal;
+import com.github.cherimojava.data.mongo.entity.Entity;
+import com.github.cherimojava.data.mongo.entity.annotation.Id;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+/**
+ * @author philnate holds information about the application configuration
+ */
+public interface Setting extends Entity<Setting> {
+	public Setting setName(String key);
 
-@Controller
-public class HomeController {
+	@Id
+	public String getName();
 
-	@RequestMapping(value = "/", method = RequestMethod.GET)
-	public String index(Principal principal) {
-		return principal != null ? "homeSignedIn" : "homeNotSignedIn";
-	}
+	public Setting setValue(String value);
+
+	public String getValue();
 }
