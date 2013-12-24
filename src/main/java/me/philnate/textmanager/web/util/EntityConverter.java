@@ -19,10 +19,8 @@ package me.philnate.textmanager.web.util;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.io.StringWriter;
 
 import org.apache.commons.io.IOUtils;
-import org.mongodb.json.JSONWriter;
 import org.springframework.http.HttpInputMessage;
 import org.springframework.http.HttpOutputMessage;
 import org.springframework.http.MediaType;
@@ -32,7 +30,6 @@ import org.springframework.http.converter.HttpMessageNotWritableException;
 
 import com.github.cherimojava.data.mongo.entity.Entity;
 import com.github.cherimojava.data.mongo.entity.EntityFactory;
-import com.github.cherimojava.data.mongo.io.EntityEncoder;
 import com.google.common.base.Charsets;
 
 //TODO this probably could move into cherimodata spring support
@@ -72,11 +69,8 @@ public class EntityConverter<T extends Entity> extends AbstractHttpMessageConver
 	@Override
 	protected void writeInternal(T t, HttpOutputMessage outputMessage) throws IOException,
 			HttpMessageNotWritableException {
-		try (StringWriter swriter = new StringWriter();
-				JSONWriter writer = new JSONWriter(swriter);
-				OutputStreamWriter osw = new OutputStreamWriter(outputMessage.getBody());) {
-			new EntityEncoder<T>(factory, EntityFactory.getProperties(t.entityClass())).encode(writer, t);
-			osw.write(swriter.toString());
+		try (OutputStreamWriter osw = new OutputStreamWriter(outputMessage.getBody());) {
+			osw.write(t.toString());
 		}
 	}
 }
