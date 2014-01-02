@@ -21,10 +21,12 @@ import java.io.File;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 
 import static me.philnate.textmanager.web.config.RootConfig.PROFILE_PRODUCTION;
 
-@Configuration(PROFILE_PRODUCTION)
+@Configuration
+@Profile(PROFILE_PRODUCTION)
 public class cfgProduction {
 
 	@Bean

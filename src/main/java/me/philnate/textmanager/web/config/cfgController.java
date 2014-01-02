@@ -20,6 +20,7 @@ package me.philnate.textmanager.web.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 
 import com.github.cherimojava.data.mongo.entity.EntityFactory;
 
@@ -29,7 +30,8 @@ import me.philnate.textmanager.web.util.EntityConverter;
 
 import static me.philnate.textmanager.web.config.RootConfig.PROFILE_PRODUCTION;
 
-@Configuration(PROFILE_PRODUCTION)
+@Configuration
+@Profile(PROFILE_PRODUCTION)
 public class cfgController {
 
 	@Bean

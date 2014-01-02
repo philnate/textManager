@@ -18,6 +18,8 @@
 package me.philnate.textmanager.web.config.datastore;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 
 import javax.annotation.PostConstruct;
@@ -46,7 +48,10 @@ import de.flapdoodle.embed.mongo.config.Storage;
 import de.flapdoodle.embed.mongo.config.Timeout;
 import de.flapdoodle.embed.mongo.distribution.Version;
 import de.flapdoodle.embed.process.config.IRuntimeConfig;
+import de.flapdoodle.embed.process.config.io.ProcessOutput;
 import de.flapdoodle.embed.process.extract.UserTempNaming;
+import de.flapdoodle.embed.process.io.IStreamProcessor;
+import de.flapdoodle.embed.process.io.Processors;
 import de.flapdoodle.embed.process.io.directories.FixedPath;
 import de.flapdoodle.embed.process.runtime.Network;
 
@@ -65,10 +70,18 @@ public class cfgMongo {
 	@Autowired
 	File storagePath;
 
+	@Autowired
+	File logPath;
+
 	private MongodExecutable exe;
 
 	File mongoStoragePath() {
 		return new File(storagePath, "mongo");
+	}
+
+	@Bean
+	public File logPath() {
+		return new File("./log");
 	}
 
 	@Bean
@@ -102,7 +115,19 @@ public class cfgMongo {
 
 	private IRuntimeConfig runtimeConfig() {
 		FixedPath path = new FixedPath("bin/");
-		return new RuntimeConfigBuilder().defaults(Command.MongoD).artifactStore(
+		IStreamProcessor mongodOutput;
+		IStreamProcessor mongodError;
+		IStreamProcessor commandsOutput;
+		try {
+			mongodOutput = Processors.named("[mongod>]", new FileStreamProcessor(new File(logPath, "mongo.log")));
+
+			mongodError = new FileStreamProcessor(new File(logPath, "mongo-err.log"));
+			commandsOutput = Processors.named("[mongod>]", new FileStreamProcessor(new File(logPath, "mongo.log")));
+		} catch (FileNotFoundException e) {
+			throw Throwables.propagate(e);
+		}
+		return new RuntimeConfigBuilder().defaults(Command.MongoD).processOutput(
+				new ProcessOutput(mongodOutput, mongodError, commandsOutput)).artifactStore(
 				new ArtifactStoreBuilder().executableNaming(new UserTempNaming()).tempDir(path).download(
 						new DownloadConfigBuilder().defaultsForCommand(Command.MongoD).artifactStorePath(path))).build();
 	}
@@ -123,4 +148,32 @@ public class cfgMongo {
 		exe.stop();
 	}
 
+	public class FileStreamProcessor implements IStreamProcessor {
+
+		private FileOutputStream outputStream;
+
+		public FileStreamProcessor(File file) throws FileNotFoundException {
+            file.getParentFile().mkdirs();
+			outputStream = new FileOutputStream(file);
+		}
+
+		@Override
+		public void process(String block) {
+			try {
+				outputStream.write(block.getBytes());
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+
+		@Override
+		public void onProcessed() {
+			try {
+				outputStream.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+
+	}
 }

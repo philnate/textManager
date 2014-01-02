@@ -22,10 +22,12 @@ import java.util.UUID;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 
 import static me.philnate.textmanager.web.config.RootConfig.PROFILE_TESTING;
 
-@Configuration(PROFILE_TESTING)
+@Configuration
+@Profile(PROFILE_TESTING)
 public class cfgTesting {
 
 	@Bean
