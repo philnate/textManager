@@ -15,17 +15,15 @@
  *   See the GNU General Public License for more details. You should have received a copy of the GNU
  *   General Public License along with textManager. If not, see <http://www.gnu.org/licenses/>.
  */
-package me.philnate.textmanager.web.controller;
+package me.philnate.textmanager.web.entities;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import java.util.List;
 
-@Controller
-public class HomeController {
+import com.github.cherimojava.data.mongo.entity.Entity;
 
-	@RequestMapping(value = "/", method = RequestMethod.GET)
-	public String index() {
-		return "index";
-	}
+public interface Listed<T extends Entity> extends Entity<Listed> {
+
+	public Listed<T> setList(List<T> entities);
+
+	public List<T> getList();
 }

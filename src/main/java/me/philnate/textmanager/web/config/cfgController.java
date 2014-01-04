@@ -23,15 +23,16 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
 import com.github.cherimojava.data.mongo.entity.EntityFactory;
+import com.github.cherimojava.data.spring.EntityConverter;
 
 import me.philnate.textmanager.web.controller.HomeController;
-import me.philnate.textmanager.web.entities.Setting;
-import me.philnate.textmanager.web.util.EntityConverter;
+import me.philnate.textmanager.web.controller.LayoutController;
+import me.philnate.textmanager.web.controller.SettingController;
 
-import static me.philnate.textmanager.web.config.RootConfig.PROFILE_PRODUCTION;
+import static me.philnate.textmanager.web.config.RootConfig.PROFILE_UNITTEST;
 
 @Configuration
-@Profile(PROFILE_PRODUCTION)
+@Profile("!" + PROFILE_UNITTEST)
 public class cfgController {
 
 	@Bean
@@ -40,8 +41,18 @@ public class cfgController {
 	}
 
 	@Bean
+	public SettingController settingController() {
+		return new SettingController();
+	}
+
+	@Bean
+	public LayoutController layoutController() {
+		return new LayoutController();
+	}
+
+	@Bean
 	@Autowired
-	public EntityConverter<Setting> settingConverter(EntityFactory factory) {
-		return new EntityConverter<Setting>(factory.create(Setting.class), factory);
+	public EntityConverter entityConverter(EntityFactory factory) {
+		return new EntityConverter(factory);
 	}
 }

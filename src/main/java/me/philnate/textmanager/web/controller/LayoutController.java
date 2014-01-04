@@ -18,14 +18,18 @@
 package me.philnate.textmanager.web.controller;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 
+import static org.springframework.web.bind.annotation.RequestMethod.GET;
+
+/**
+ * Controller simply returning the page layouts
+ */
 @Controller
-public class HomeController {
-
-	@RequestMapping(value = "/", method = RequestMethod.GET)
-	public String index() {
-		return "index";
+public class LayoutController {
+	@RequestMapping(value = "/layout/{entity}", method = GET)
+	public String layout(@PathVariable("entity") String entity) {
+		return "layout/" + entity;
 	}
 }

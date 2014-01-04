@@ -30,13 +30,16 @@ import me.philnate.textmanager.web.config.profiles.cfgTesting;
 @Import({ cfgProduction.class, cfgTesting.class, cfgMongo.class, cfgController.class })
 public class RootConfig {
 
+	// config needed for production
 	public static final String PROFILE_PRODUCTION = "production";
+	// config needed for testing
 	public static final String PROFILE_TESTING = "testing";
+	// config needed for unit test
+	public static final String PROFILE_UNITTEST = "unittest";
 
 	@Bean
 	public static PropertyPlaceholderConfigurer propertyPlaceholderConfigurer() {
 		PropertyPlaceholderConfigurer ppc = new PropertyPlaceholderConfigurer();
 		return ppc;
 	}
-
 }

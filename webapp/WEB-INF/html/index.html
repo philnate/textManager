@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en" ng-app="textManagerApp">
+<head>
+    <meta charset="utf-8">
+    <title>Service App</title>
+    <link rel="stylesheet" href="resource/css/bootstrap.min.css"/>
+</head>
+<body>
+<div class="container" id="nav-top">
+    <div class="navbar">
+        <div class="navbar-inner">
+            <a class="brand" href="#">textManager</a>
+            <ul class="nav">
+                <li class="active"><a href="#/Settings">Settings</a></li>
+                <li><a href="#">Other Tab</a></li>
+            </ul>
+        </div>
+    </div>
+    <div ng-view></div>
+</div>
+<script src="resource/js/angular.min.js"></script>
+<script src="resource/js/app.js"></script>
+<script src="resource/js/controller/settings.js"></script>
+
+</body>
+</html>

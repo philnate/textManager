@@ -17,15 +17,26 @@
  */
 package me.philnate.textmanager.web.controller;
 
+import org.hamcrest.Matcher;
 import org.junit.runner.RunWith;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 import me.philnate.textmanager.web.config.RootConfig;
 
+import static me.philnate.textmanager.web.config.RootConfig.PROFILE_TESTING;
+import static me.philnate.textmanager.web.config.RootConfig.PROFILE_UNITTEST;
+import static org.junit.Assert.assertThat;
+
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes={RootConfig.class})
+@ContextConfiguration(classes = { RootConfig.class })
 @WebAppConfiguration
+@ActiveProfiles({ PROFILE_UNITTEST, PROFILE_TESTING })
 public class ControllerBaseTest {
+
+	public void assertJson(Matcher<? super String> expected, String actual) {
+		assertThat(actual, expected);
+	}
 }

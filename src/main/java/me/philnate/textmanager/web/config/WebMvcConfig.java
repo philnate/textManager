@@ -17,25 +17,34 @@
  */
 package me.philnate.textmanager.web.config;
 
-import org.springframework.context.MessageSource;
+import java.io.File;
+import java.util.List;
+import java.util.Properties;
+
+import org.apache.commons.lang3.SystemUtils;
+import org.apache.velocity.app.VelocityEngine;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.support.ReloadableResourceBundleMessageSource;
+import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
-import org.springframework.web.servlet.view.tiles3.TilesViewResolver;
+import org.springframework.web.servlet.view.velocity.VelocityConfig;
+import org.springframework.web.servlet.view.velocity.VelocityConfigurer;
+import org.springframework.web.servlet.view.velocity.VelocityViewResolver;
+
+import com.github.cherimojava.data.spring.EntityConverter;
 
 @Configuration
 public class WebMvcConfig extends WebMvcConfigurationSupport {
 
-	private static final String MESSAGE_SOURCE = "/WEB-INF/i18n/messages";
-	private static final String TILES = "/WEB-INF/tiles/tiles.xml";
-	private static final String VIEWS = "/WEB-INF/views/**/views.xml";
+	private static final File webapp = new File(SystemUtils.getUserDir(), "webapp");
 
-	private static final String RESOURCES_HANDLER = "/resources/";
-	private static final String RESOURCES_LOCATION = RESOURCES_HANDLER + "**";
+	// TODO could autowire list of converter if needed
+	@Autowired
+	EntityConverter converter;
 
 	@Override
 	public RequestMappingHandlerMapping requestMappingHandlerMapping() {
@@ -45,36 +54,36 @@ public class WebMvcConfig extends WebMvcConfigurationSupport {
 		return requestMappingHandlerMapping;
 	}
 
-	@Bean(name = "messageSource")
-	public MessageSource configureMessageSource() {
-		ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
-		messageSource.setBasename(MESSAGE_SOURCE);
-		messageSource.setCacheSeconds(5);
-		return messageSource;
+	@Override
+	public void addResourceHandlers(ResourceHandlerRegistry registry) {
+		registry.addResourceHandler("/resource/**").addResourceLocations("file:" + webapp.toString() + "/resources/");
+	}
+
+	@Override
+	protected void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
+		super.configureMessageConverters(converters);
+//		addDefaultHttpMessageConverters(converters);
+		converters.add(converter);
 	}
 
 	@Bean
-	public TilesViewResolver configureTilesViewResolver() {
-		return new TilesViewResolver();
+	public VelocityConfig velocityConfig() {
+		Properties p = new Properties();
+		p.put("resource.loader", "webapp");
+		p.put("webapp.resource.loader.path", new File(webapp, "WEB-INF/html").toString());
+		p.put("webapp.resource.loader.class", "org.apache.velocity.runtime.resource.loader.FileResourceLoader");
+		VelocityConfigurer vc = new VelocityConfigurer();
+		vc.setVelocityEngine(new VelocityEngine(p));
+		return vc;
 	}
 
-//	@Bean
-//	public TilesConfigurer configureTilesConfigurer() {
-//		TilesConfigurer configurer = new TilesConfigurer();
-//		configurer.setDefinitions(new String[] { TILES, VIEWS });
-//		return configurer;
-//	}
-
-	// @Override
-	// public Validator getValidator() {
-	// LocalValidatorFactoryBean validator = new LocalValidatorFactoryBean();
-	// validator.setValidationMessageSource(configureMessageSource());
-	// return validator;
-	// }
-
-	@Override
-	public void addResourceHandlers(ResourceHandlerRegistry registry) {
-		registry.addResourceHandler(RESOURCES_HANDLER).addResourceLocations(RESOURCES_LOCATION);
+	@Bean
+	public VelocityViewResolver velocityViewResolver() {
+		VelocityViewResolver vvw = new VelocityViewResolver();
+		vvw.setPrefix("");
+		vvw.setSuffix(".html");
+		vvw.setCache(false);
+		return vvw;
 	}
 
 	@Override

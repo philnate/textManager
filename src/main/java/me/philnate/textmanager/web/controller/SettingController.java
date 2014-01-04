@@ -17,6 +17,11 @@
  */
 package me.philnate.textmanager.web.controller;
 
+import java.util.List;
+
+import org.mongodb.Document;
+import org.mongodb.MongoCursor;
+import org.mongodb.MongoDatabase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -27,18 +32,28 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.github.cherimojava.data.mongo.entity.EntityFactory;
+import com.github.cherimojava.data.mongo.entity.EntityUtils;
+import com.github.cherimojava.data.mongo.io.EntityCodec;
+import com.google.common.collect.Lists;
 
+import me.philnate.textmanager.web.entities.Listed;
 import me.philnate.textmanager.web.entities.Setting;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
+/**
+ * Controller managing Settings of textManager
+ */
 @RestController
 @RequestMapping(value = "/entity/setting", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 public class SettingController {
 
 	@Autowired
 	protected EntityFactory factory;
+
+	@Autowired
+	protected MongoDatabase db;
 
 	/**
 	 * returns OK if the document was successfully saved
@@ -60,5 +75,14 @@ public class SettingController {
 		} else {
 			return new ResponseEntity(HttpStatus.NOT_FOUND);
 		}
+	}
+
+	@RequestMapping(value = "/query", method = POST)
+	public Listed<Setting> query() {
+		MongoCursor<Setting> cursor = db.getCollection(EntityUtils.getCollectionName(Setting.class),
+				new EntityCodec<Setting>(db, EntityFactory.getProperties(Setting.class))).find(new Document()).iterator();
+		List<Setting> settings = Lists.newArrayList(cursor);
+		cursor.close();
+		return EntityFactory.instantiate(Listed.class).setList(settings);
 	}
 }
