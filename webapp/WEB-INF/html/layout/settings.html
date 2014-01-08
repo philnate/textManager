@@ -1,10 +1,14 @@
-<table>
-    <tr>
-        <td>
-            hello
-        </td>
-        <td>
-            me
-        </td>
-    </tr>
-</table>
+<script>var settingsTableConfig= {
+        data: 'settings',
+        columnDefs: [{field: "_id", displayName: "Name" },
+                    {field: "value", displayName: "Value", enableCellEdit: true}],
+        multiSelect: false,
+        enableSorting: false,
+        enableCellSelection: true,
+        sortInfo: { fields: ["_id"], directions: ["ASC"]}
+    }
+</script>
+<div ng-controller="SettingsController">
+    <div class="alert alert-info" ng-show="settings.length == 0">No Settings found. Something is wrong!</div>
+    <div ng-grid="settingOptions" class="settingGrid"></div>
+</div>

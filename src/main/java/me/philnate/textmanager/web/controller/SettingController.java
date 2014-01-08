@@ -36,7 +36,7 @@ import com.github.cherimojava.data.mongo.entity.EntityUtils;
 import com.github.cherimojava.data.mongo.io.EntityCodec;
 import com.google.common.collect.Lists;
 
-import me.philnate.textmanager.web.entities.Listed;
+import com.github.cherimojava.data.spring.Listed;
 import me.philnate.textmanager.web.entities.Setting;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;

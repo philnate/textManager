@@ -21,14 +21,22 @@ import com.github.cherimojava.data.mongo.entity.Entity;
 import com.github.cherimojava.data.mongo.entity.annotation.Id;
 
 /**
- * @author philnate holds information about the application configuration
+ * holds information about the application configuration
+ *
+ * @author philnate
  */
 public interface Setting extends Entity<Setting> {
+	/**
+	 * Name of setting
+	 */
 	public Setting setName(String key);
 
 	@Id
 	public String getName();
 
+	/**
+	 * Value of setting
+	 */
 	public Setting setValue(String value);
 
 	public String getValue();

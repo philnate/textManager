@@ -42,7 +42,6 @@ public class WebMvcConfig extends WebMvcConfigurationSupport {
 
 	private static final File webapp = new File(SystemUtils.getUserDir(), "webapp");
 
-	// TODO could autowire list of converter if needed
 	@Autowired
 	EntityConverter converter;
 
@@ -62,7 +61,7 @@ public class WebMvcConfig extends WebMvcConfigurationSupport {
 	@Override
 	protected void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
 		super.configureMessageConverters(converters);
-//		addDefaultHttpMessageConverters(converters);
+		// addDefaultHttpMessageConverters(converters);
 		converters.add(converter);
 	}
 

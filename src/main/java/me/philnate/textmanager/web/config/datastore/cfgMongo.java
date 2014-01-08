@@ -21,10 +21,13 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URL;
+import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
+import org.apache.commons.io.FileUtils;
 import org.mongodb.MongoClients;
 import org.mongodb.MongoDatabase;
 import org.mongodb.connection.ServerAddress;
@@ -32,8 +35,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import com.github.cherimojava.data.mongo.entity.Entity;
 import com.github.cherimojava.data.mongo.entity.EntityFactory;
+import com.github.cherimojava.data.mongo.entity.EntityUtils;
+import com.google.common.base.Charsets;
 import com.google.common.base.Throwables;
+import com.google.common.collect.Lists;
 
 import de.flapdoodle.embed.mongo.Command;
 import de.flapdoodle.embed.mongo.MongodExecutable;
@@ -54,6 +61,9 @@ import de.flapdoodle.embed.process.io.IStreamProcessor;
 import de.flapdoodle.embed.process.io.Processors;
 import de.flapdoodle.embed.process.io.directories.FixedPath;
 import de.flapdoodle.embed.process.runtime.Network;
+import me.philnate.textmanager.web.entities.Setting;
+
+import static java.lang.String.format;
 
 /**
  * MongoDB spring configuration
@@ -138,6 +148,8 @@ public class cfgMongo {
 			MongodStarter runtime = MongodStarter.getInstance(runtimeConfig());
 			exe = runtime.prepare(mongodConfig());
 			exe.start();
+			// TODO we need some check if init happened already, right now simply create it always
+			imprt();
 		} catch (Exception e) {
 			throw Throwables.propagate(e);
 		}
@@ -148,12 +160,33 @@ public class cfgMongo {
 		exe.stop();
 	}
 
+	/**
+	 * import entities which need to be there on first startup
+	 *
+	 * @throws IOException
+	 */
+	private void imprt() throws IOException {
+		EntityFactory factory = factory();
+		List<Class<? extends Entity>> imports = Lists.newArrayList();
+		imports.add(Setting.class);
+
+		for (Class<? extends Entity> imprt : imports) {
+			URL url = Thread.currentThread().getContextClassLoader().getResource(
+					format("%s.import", EntityUtils.getCollectionName(imprt)));
+			File file = new File(url.getPath());
+			List<String> entities = FileUtils.readLines(file, Charsets.UTF_8);
+			for (String entity : entities) {
+				factory.fromJson(imprt, entity).save();
+			}
+		}
+	}
+
 	public class FileStreamProcessor implements IStreamProcessor {
 
 		private FileOutputStream outputStream;
 
 		public FileStreamProcessor(File file) throws FileNotFoundException {
-            file.getParentFile().mkdirs();
+			file.getParentFile().mkdirs();
 			outputStream = new FileOutputStream(file);
 		}
 
