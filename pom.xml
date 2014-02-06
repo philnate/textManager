@@ -237,24 +237,23 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>com.google.code.maven-license-plugin</groupId>
-                <artifactId>maven-license-plugin</artifactId>
-                <version>1.4.0</version>
-                <configuration>
-                    <header>licenseHeader.tpl</header>
-                    <excludes>
-                    </excludes>
-                    <includes>
-                        <include>**/*.java</include>
-                    </includes>
-                    <properties>
-                        <project>
-                            textManager
-                        </project>
-                        <year>2013</year>
-                    </properties>
-                    <encoding>UTF-8</encoding>
-                </configuration>
+                <groupId>com.mycila</groupId>
+                <artifactId>license-maven-plugin</artifactId>
+                <!--<executions>-->
+                    <!--<execution>-->
+                        <!--<goals>-->
+                            <!--<goal>check</goal>-->
+                        <!--</goals>-->
+                        <configuration>
+                            <header>com/mycila/maven/plugin/license/templates/APACHE-2.txt</header>
+                            <properties>
+                                <owner>philnate</owner>
+                                <project.inceptionYear>2012</project.inceptionYear>
+                                <email>http://github.com/philnate/textmanager</email>
+                            </properties>
+                        </configuration>
+                <!--</execution>-->
+                <!--</executions>-->
             </plugin>
             <plugin>
                 <groupId>org.eclipse.jetty</groupId>
