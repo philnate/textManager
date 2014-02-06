@@ -42,6 +42,10 @@
         </repository>
     </repositories>
     <dependencies>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-validator</artifactId>
+        </dependency>
         <!-- Util Classes -->
         <dependency>
             <groupId>com.google.guava</groupId>
@@ -200,7 +204,14 @@
         <dependency>
             <groupId>org.mongodb</groupId>
             <artifactId>mongo-java-driver</artifactId>
-            <!--<version>3.0.0-SNAPSHOT</version>-->
+            <systemPath>${project.basedir}/tmplib/mongodb-driver-3.0.0-SNAPSHOT.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>org.bson</groupId>
+            <artifactId>bson</artifactId>
+            <systemPath>${project.basedir}/tmplib/bson-3.0.0-SNAPSHOT.jar</systemPath>
+            <scope>system</scope>
+            <version>3.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.github.cherimojava.data</groupId>
