@@ -81,6 +81,9 @@ public class cfgMongo {
 	@Autowired
 	File logPath;
 
+	@Autowired
+	boolean production;
+
 	private MongodExecutable exe;
 
 	File mongoStoragePath() {
@@ -147,7 +150,10 @@ public class cfgMongo {
 			exe = runtime.prepare(mongodConfig());
 			exe.start();
 			// TODO we need some check if init happened already, right now simply create it always
-			imprt();
+			if (production) {
+				// stuff which needs to be done only in production
+				imprt();
+			}
 		} catch (Exception e) {
 			throw Throwables.propagate(e);
 		}
@@ -172,7 +178,7 @@ public class cfgMongo {
 			URL url = Thread.currentThread().getContextClassLoader().getResource(
 					format("%s.import", EntityUtils.getCollectionName(imprt)));
 			File file = new File(url.getPath());
-			List<String> entities = FileUtils.readLines(file, Charsets.UTF_8);
+			List<String> entities = FileUtils.readLines(file, Charsets.UTF_8.name());
 			for (String entity : entities) {
 				factory.fromJson(imprt, entity).save();
 			}
@@ -205,6 +211,5 @@ public class cfgMongo {
 				e.printStackTrace();
 			}
 		}
-
 	}
 }

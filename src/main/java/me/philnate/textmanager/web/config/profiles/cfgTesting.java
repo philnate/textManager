@@ -37,4 +37,9 @@ public class cfgTesting {
 	public File storagePath() {
 		return new File("./target/" + UUID.randomUUID());
 	}
+
+	@Bean
+	public boolean production() {
+		return false;
+	}
 }

@@ -36,4 +36,9 @@ public class cfgProduction {
 	public File storagePath() {
 		return new File("./data");
 	}
+
+	@Bean
+	public boolean production() {
+		return false;
+	}
 }
