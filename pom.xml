@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>me.philnate</groupId>
     <artifactId>textmanager</artifactId>
-    <packaging>war</packaging>
+    <packaging>jar</packaging>
     <version>2.0.0-SNAPSHOT</version>
     <name>TextManager app</name>
 
@@ -240,18 +240,18 @@
                 <groupId>com.mycila</groupId>
                 <artifactId>license-maven-plugin</artifactId>
                 <!--<executions>-->
-                    <!--<execution>-->
-                        <!--<goals>-->
-                            <!--<goal>check</goal>-->
-                        <!--</goals>-->
-                        <configuration>
-                            <header>com/mycila/maven/plugin/license/templates/APACHE-2.txt</header>
-                            <properties>
-                                <owner>philnate</owner>
-                                <project.inceptionYear>2012</project.inceptionYear>
-                                <email>http://github.com/philnate/textmanager</email>
-                            </properties>
-                        </configuration>
+                <!--<execution>-->
+                <!--<goals>-->
+                <!--<goal>check</goal>-->
+                <!--</goals>-->
+                <configuration>
+                    <header>com/mycila/maven/plugin/license/templates/APACHE-2.txt</header>
+                    <properties>
+                        <owner>philnate</owner>
+                        <project.inceptionYear>2012</project.inceptionYear>
+                        <email>http://github.com/philnate/textmanager</email>
+                    </properties>
+                </configuration>
                 <!--</execution>-->
                 <!--</executions>-->
             </plugin>
@@ -267,15 +267,6 @@
                 <configuration>
                     <source>${java-version}</source>
                     <target>${java-version}</target>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-war-plugin</artifactId>
-                <version>2.1.1</version>
-                <configuration>
-                    <warName>textmanager-2.0.0-SNAPSHOT</warName>
-                    <ignoreWebxml>false</ignoreWebxml>
                 </configuration>
             </plugin>
             <plugin>
