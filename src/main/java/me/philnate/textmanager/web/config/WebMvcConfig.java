@@ -67,7 +67,7 @@ public class WebMvcConfig extends WebMvcConfigurationSupport {
 	public VelocityConfig velocityConfig() {
 		Properties p = new Properties();
 		p.put("resource.loader", "webapp");
-		p.put("webapp.resource.loader.path", new File(webapp, "WEB-INF/html").toString());
+		p.put("webapp.resource.loader.path", new File(webapp, "html").toString());
 		p.put("webapp.resource.loader.class", "org.apache.velocity.runtime.resource.loader.FileResourceLoader");
 		VelocityConfigurer vc = new VelocityConfigurer();
 		vc.setVelocityEngine(new VelocityEngine(p));
