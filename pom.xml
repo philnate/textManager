@@ -33,7 +33,7 @@
         <repository>
             <id>localrepo</id>
             <name>temporary artifacts</name>
-            <url>file://${project.basedir}</url>
+            <url>file://${basedir}/tmplib</url>
         </repository>
         <repository>
             <id>sonatype-oss-repository</id>
