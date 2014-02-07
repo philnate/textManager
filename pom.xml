@@ -31,6 +31,11 @@
             <url>http://download.java.net/maven/2</url>
         </repository>
         <repository>
+            <id>localrepo</id>
+            <name>temporary artifacts</name>
+            <url>file://${project.basedir}</url>
+        </repository>
+        <repository>
             <id>sonatype-oss-repository</id>
             <url>https://oss.sonatype.org/content/groups/public/</url>
             <releases>
@@ -130,12 +135,6 @@
             <artifactId>tiles-jsp</artifactId>
             <version>${org.apache.tiles-version}</version>
         </dependency>
-        <!-- AspectJ -->
-        <!--<dependency>-->
-        <!--<groupId>org.aspectj</groupId>-->
-        <!--<artifactId>aspectjrt</artifactId>-->
-        <!--<version>${org.aspectj-version}</version>-->
-        <!--</dependency>-->
         <!-- Logging -->
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -204,13 +203,10 @@
         <dependency>
             <groupId>org.mongodb</groupId>
             <artifactId>mongo-java-driver</artifactId>
-            <systemPath>${project.basedir}/tmplib/mongodb-driver-3.0.0-SNAPSHOT.jar</systemPath>
         </dependency>
         <dependency>
-            <groupId>org.bson</groupId>
+            <groupId>org.mongodb</groupId>
             <artifactId>bson</artifactId>
-            <systemPath>${project.basedir}/tmplib/bson-3.0.0-SNAPSHOT.jar</systemPath>
-            <scope>system</scope>
             <version>3.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
