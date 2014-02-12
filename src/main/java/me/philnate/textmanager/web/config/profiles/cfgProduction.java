@@ -39,6 +39,6 @@ public class cfgProduction {
 
 	@Bean
 	public boolean production() {
-		return false;
+		return true;
 	}
 }

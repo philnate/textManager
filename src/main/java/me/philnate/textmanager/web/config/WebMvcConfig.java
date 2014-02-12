@@ -26,9 +26,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
-import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.springframework.web.servlet.view.velocity.VelocityConfig;
 import org.springframework.web.servlet.view.velocity.VelocityConfigurer;
 import org.springframework.web.servlet.view.velocity.VelocityViewResolver;
@@ -36,7 +36,8 @@ import org.springframework.web.servlet.view.velocity.VelocityViewResolver;
 import com.github.cherimojava.data.spring.EntityConverter;
 
 @Configuration
-public class WebMvcConfig extends WebMvcConfigurationSupport {
+@EnableWebMvc
+public class WebMvcConfig extends WebMvcConfigurerAdapter {
 
 	private static final File webapp = new File(SystemUtils.getUserDir(), "webapp");
 
@@ -44,20 +45,13 @@ public class WebMvcConfig extends WebMvcConfigurationSupport {
 	EntityConverter converter;
 
 	@Override
-	public RequestMappingHandlerMapping requestMappingHandlerMapping() {
-		RequestMappingHandlerMapping requestMappingHandlerMapping = super.requestMappingHandlerMapping();
-		requestMappingHandlerMapping.setUseSuffixPatternMatch(false);
-		requestMappingHandlerMapping.setUseTrailingSlashMatch(false);
-		return requestMappingHandlerMapping;
-	}
-
-	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
 		registry.addResourceHandler("/resource/**").addResourceLocations("file:" + webapp.toString() + "/resources/");
+		System.out.println("invokedd");
 	}
 
 	@Override
-	protected void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
+	public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
 		super.configureMessageConverters(converters);
 		// addDefaultHttpMessageConverters(converters);
 		converters.add(converter);
@@ -79,12 +73,14 @@ public class WebMvcConfig extends WebMvcConfigurationSupport {
 		VelocityViewResolver vvw = new VelocityViewResolver();
 		vvw.setPrefix("");
 		vvw.setSuffix(".html");
+		// vvw.setViewNames(new String[]{"*.html","*"});
 		vvw.setCache(false);
 		return vvw;
 	}
 
 	@Override
 	public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
+		System.out.println("itsme");
 		configurer.enable();
 	}
 }
