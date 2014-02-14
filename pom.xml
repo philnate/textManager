@@ -23,6 +23,7 @@
         <org.slf4j-version>1.7.5</org.slf4j-version>
         <logback-version>1.0.13</logback-version>
         <org.apache.tiles-version>3.0.3</org.apache.tiles-version>
+        <parentDir>${basedir}</parentDir>
     </properties>
     <repositories>
         <repository>
@@ -31,19 +32,8 @@
             <url>http://download.java.net/maven/2</url>
         </repository>
         <repository>
-            <id>localrepo</id>
-            <name>temporary artifacts</name>
-            <url>file://${basedir}/tmplib</url>
-        </repository>
-        <repository>
             <id>sonatype-oss-repository</id>
             <url>https://oss.sonatype.org/content/groups/public/</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
         </repository>
     </repositories>
     <dependencies>
@@ -236,11 +226,6 @@
             <plugin>
                 <groupId>com.mycila</groupId>
                 <artifactId>license-maven-plugin</artifactId>
-                <!--<executions>-->
-                <!--<execution>-->
-                <!--<goals>-->
-                <!--<goal>check</goal>-->
-                <!--</goals>-->
                 <configuration>
                     <header>com/mycila/maven/plugin/license/templates/APACHE-2.txt</header>
                     <properties>
@@ -249,13 +234,6 @@
                         <email>http://github.com/philnate/textmanager</email>
                     </properties>
                 </configuration>
-                <!--</execution>-->
-                <!--</executions>-->
-            </plugin>
-            <plugin>
-                <groupId>org.eclipse.jetty</groupId>
-                <artifactId>jetty-maven-plugin</artifactId>
-                <version>${jetty.version}</version>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -264,27 +242,6 @@
                 <configuration>
                     <source>${java-version}</source>
                     <target>${java-version}</target>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>install</id>
-                        <phase>install</phase>
-                        <goals>
-                            <goal>sources</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-resources-plugin</artifactId>
-                <version>2.5</version>
-                <configuration>
-                    <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
             <plugin>
