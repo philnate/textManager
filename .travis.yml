@@ -1,3 +1,9 @@
 language: java
 jdk:
   - openjdk7
+before_script:
+  - npm install protractor
+  - ./node_modules/protractor/bin/webdriver-manager update --standalone
+script:
+  - mvn exec:java
+  - ./node_modules/protractor/bin/protractor src/test/js/textManager.conf.js

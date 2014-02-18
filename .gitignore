@@ -6,3 +6,4 @@ bin/
 collection/
 *.log
 data
+node_modules
