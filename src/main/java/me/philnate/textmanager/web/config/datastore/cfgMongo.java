@@ -19,24 +19,25 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.URL;
+import java.io.InputStream;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
-import org.apache.commons.io.FileUtils;
 import org.mongodb.MongoClients;
 import org.mongodb.MongoDatabase;
 import org.mongodb.connection.ServerAddress;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.util.StreamUtils;
 
 import com.github.cherimojava.data.mongo.entity.Entity;
 import com.github.cherimojava.data.mongo.entity.EntityFactory;
 import com.github.cherimojava.data.mongo.entity.EntityUtils;
 import com.google.common.base.Charsets;
+import com.google.common.base.Splitter;
 import com.google.common.base.Throwables;
 import com.google.common.collect.Lists;
 
@@ -175,11 +176,11 @@ public class cfgMongo {
 		imports.add(Setting.class);
 
 		for (Class<? extends Entity> imprt : imports) {
-			URL url = Thread.currentThread().getContextClassLoader().getResource(
+			InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream(
 					format("%s.import", EntityUtils.getCollectionName(imprt)));
-			File file = new File(url.getPath());
-			List<String> entities = FileUtils.readLines(file, Charsets.UTF_8.name());
-			for (String entity : entities) {
+
+			String entities = StreamUtils.copyToString(is, Charsets.UTF_8);
+			for (String entity : Splitter.on("\n").omitEmptyStrings().split(entities)) {
 				factory.fromJson(imprt, entity).save();
 			}
 		}

@@ -73,14 +73,12 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
 		VelocityViewResolver vvw = new VelocityViewResolver();
 		vvw.setPrefix("");
 		vvw.setSuffix(".html");
-		// vvw.setViewNames(new String[]{"*.html","*"});
 		vvw.setCache(false);
 		return vvw;
 	}
 
 	@Override
 	public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
-		System.out.println("itsme");
 		configurer.enable();
 	}
 }
