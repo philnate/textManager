@@ -1,9 +1,9 @@
-describe('Say Hello', function() {
+describe('Start Page', function() {
   ptor = protractor.getInstance();
 
   beforeEach(function() {
     ptor.get('#/');
-    button = ptor.findElement(protractor.By.className('btn-say-hello'));
+    button = ptor.findElement(protractor.By.className('brand').);
     button.click();
   });
 
