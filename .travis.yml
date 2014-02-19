@@ -17,6 +17,6 @@ before_script:
   - npm install protractor
   - ./node_modules/protractor/bin/webdriver-manager update --standalone
   - mvn exec:java &
-  - sleep 3
+  - sleep 20
 script:
   - ./node_modules/protractor/bin/protractor src/test/js/textManager.conf.js
