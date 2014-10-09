@@ -15,19 +15,16 @@
  */
 package me.philnate.textmanager.web.config.datastore;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import static java.lang.String.format;
+
+import java.io.*;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
-import org.mongodb.MongoClients;
-import org.mongodb.MongoDatabase;
-import org.mongodb.connection.ServerAddress;
+import me.philnate.textmanager.web.entities.Setting;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -40,18 +37,14 @@ import com.google.common.base.Charsets;
 import com.google.common.base.Splitter;
 import com.google.common.base.Throwables;
 import com.google.common.collect.Lists;
+import com.mongodb.MongoClient;
+import com.mongodb.ServerAddress;
+import com.mongodb.client.MongoDatabase;
 
 import de.flapdoodle.embed.mongo.Command;
 import de.flapdoodle.embed.mongo.MongodExecutable;
 import de.flapdoodle.embed.mongo.MongodStarter;
-import de.flapdoodle.embed.mongo.config.ArtifactStoreBuilder;
-import de.flapdoodle.embed.mongo.config.DownloadConfigBuilder;
-import de.flapdoodle.embed.mongo.config.IMongodConfig;
-import de.flapdoodle.embed.mongo.config.MongodConfigBuilder;
-import de.flapdoodle.embed.mongo.config.Net;
-import de.flapdoodle.embed.mongo.config.RuntimeConfigBuilder;
-import de.flapdoodle.embed.mongo.config.Storage;
-import de.flapdoodle.embed.mongo.config.Timeout;
+import de.flapdoodle.embed.mongo.config.*;
 import de.flapdoodle.embed.mongo.distribution.Version;
 import de.flapdoodle.embed.process.config.IRuntimeConfig;
 import de.flapdoodle.embed.process.config.io.ProcessOutput;
@@ -60,9 +53,6 @@ import de.flapdoodle.embed.process.io.IStreamProcessor;
 import de.flapdoodle.embed.process.io.Processors;
 import de.flapdoodle.embed.process.io.directories.FixedPath;
 import de.flapdoodle.embed.process.runtime.Network;
-import me.philnate.textmanager.web.entities.Setting;
-
-import static java.lang.String.format;
 
 /**
  * MongoDB spring configuration
@@ -107,7 +97,7 @@ public class cfgMongo {
 
 	@Bean
 	Version version() {
-		return Version.V2_4_6;
+		return Version.V2_6_1;
 	}
 
 	@Bean
@@ -117,7 +107,7 @@ public class cfgMongo {
 
 	@Bean
 	MongoDatabase mongoDatabase() {
-		return MongoClients.create(new ServerAddress("localhost", mongoPort())).getDatabase(mongoDBName);
+		return new MongoClient(new ServerAddress("localhost", mongoPort())).getDatabase(mongoDBName);
 	}
 
 	private IMongodConfig mongodConfig() throws IOException {

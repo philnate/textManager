@@ -15,11 +15,13 @@
  */
 package me.philnate.textmanager.web.controller;
 
+import static org.springframework.web.bind.annotation.RequestMethod.GET;
+import static org.springframework.web.bind.annotation.RequestMethod.POST;
+
 import java.util.List;
 
-import org.mongodb.Document;
-import org.mongodb.MongoCursor;
-import org.mongodb.MongoDatabase;
+import me.philnate.textmanager.web.entities.Setting;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -30,15 +32,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.github.cherimojava.data.mongo.entity.EntityFactory;
-import com.github.cherimojava.data.mongo.entity.EntityUtils;
 import com.github.cherimojava.data.mongo.io.EntityCodec;
-import com.google.common.collect.Lists;
-
 import com.github.cherimojava.data.spring.Listed;
-import me.philnate.textmanager.web.entities.Setting;
-
-import static org.springframework.web.bind.annotation.RequestMethod.GET;
-import static org.springframework.web.bind.annotation.RequestMethod.POST;
+import com.google.common.collect.Lists;
+import com.mongodb.MongoCursor;
+import com.mongodb.client.MongoDatabase;
 
 /**
  * Controller managing Settings of textManager
@@ -77,8 +75,8 @@ public class SettingController {
 
 	@RequestMapping(value = "/query", method = POST)
 	public Listed<Setting> query() {
-		MongoCursor<Setting> cursor = db.getCollection(EntityUtils.getCollectionName(Setting.class),
-				new EntityCodec<Setting>(db, EntityFactory.getProperties(Setting.class))).find(new Document()).iterator();
+		MongoCursor<Setting> cursor = EntityCodec.getCollectionFor(db, EntityFactory.getProperties(Setting.class)).find(
+				Setting.class).iterator();
 		List<Setting> settings = Lists.newArrayList(cursor);
 		cursor.close();
 		return EntityFactory.instantiate(Listed.class).setList(settings);
